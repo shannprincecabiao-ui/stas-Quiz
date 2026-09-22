@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STAS 100-Item Interactive Reviewer</title>
+    <title>STAS Reviewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,6 +16,7 @@
             --correct-color: #22c55e;
             --incorrect-color: #ef4444;
             --border-color: #334155;
+            --glow-color: rgba(56, 189, 248, 0.25);
         }
 
         * {
@@ -33,6 +34,25 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Subtle animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
+            z-index: -1;
+            animation: pulseGlow 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
 
         .app-container {
@@ -40,11 +60,12 @@
             max-width: 850px;
             background: var(--card-bg);
             border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 0 15px var(--glow-color);
             border: 1px solid var(--border-color);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         header {
@@ -59,10 +80,11 @@
         }
 
         .header-title h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: #ffffff;
             letter-spacing: -0.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
         .header-title p {
@@ -109,11 +131,27 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, var(--accent-color), #818cf8);
-            transition: width 0.3s ease;
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 8px var(--accent-color);
         }
 
         .quiz-body {
             padding: 30px;
+        }
+
+        .question-card-anim {
+            animation: slideIn 0.35s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .question-meta {
@@ -147,16 +185,23 @@
             text-align: left;
             font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
         .option-btn:hover:not(:disabled) {
-            background-color: rgba(56, 189, 248, 0.1);
+            background-color: rgba(56, 189, 248, 0.12);
             border-color: var(--accent-color);
-            transform: translateY(-2px);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.99);
         }
 
         .option-btn .prefix {
@@ -168,12 +213,28 @@
             background-color: rgba(34, 197, 94, 0.2) !important;
             border-color: var(--correct-color) !important;
             color: #86efac !important;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+            animation: popSuccess 0.3s ease-out;
         }
 
         .option-btn.incorrect {
             background-color: rgba(239, 68, 68, 0.2) !important;
             border-color: var(--incorrect-color) !important;
             color: #fca5a5 !important;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+            animation: shakeError 0.3s ease-in-out;
+        }
+
+        @keyframes popSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
         }
 
         .explanation-box {
@@ -209,23 +270,27 @@
             padding: 12px 24px;
             border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
         }
 
-        .btn-nav:hover {
+        .btn-nav:hover:not(:disabled) {
             background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--glow-color);
         }
 
         .btn-nav:disabled {
             background-color: var(--border-color);
             color: var(--text-muted);
             cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .score-screen {
             text-align: center;
             padding: 40px 20px;
             display: none;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .score-screen h2 {
@@ -241,14 +306,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 30px auto;
+            margin: 25px auto;
             font-size: 2.5rem;
             font-weight: 800;
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 30px var(--glow-color);
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .motivation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #818cf8;
+            border-radius: 8px;
+            padding: 18px 24px;
+            margin: 25px auto 30px auto;
+            max-width: 600px;
+            font-style: italic;
+            color: #e2e8f0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .motivation-card span {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+        }
+
+        /* Particle effect canvas */
+        #fx-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -270,9 +371,11 @@
 <body>
 
     <div class="app-container">
+        <canvas id="fx-canvas"></canvas>
+
         <header>
             <div class="header-title">
-                <h1>STAS Interactive Reviewer</h1>
+                <h1>STAS Reviewer</h1>
                 <p>Prelims Comprehensive Reviewer (100 Items)</p>
             </div>
             <div class="stats-container">
@@ -292,21 +395,30 @@
         </div>
 
         <div class="quiz-body" id="quiz-view">
-            <div class="question-meta">
-                <span id="question-number">Question 1 of 100</span>
-                <span id="category-tag">Week 1</span>
+            <div id="question-card" class="question-card-anim">
+                <div class="question-meta">
+                    <span id="question-number">Question 1 of 100</span>
+                    <span id="category-tag">Week 1</span>
+                </div>
+                <div class="question-text" id="question-text">Loading question...</div>
+                <div class="options-grid" id="options-container"></div>
+                <div class="explanation-box" id="explanation-box"></div>
             </div>
-            <div class="question-text" id="question-text">Loading question...</div>
-            <div class="options-grid" id="options-container"></div>
-            <div class="explanation-box" id="explanation-box"></div>
         </div>
 
         <div class="score-screen" id="score-view">
             <h2>Quiz Completed!</h2>
             <p>Here is your total score:</p>
             <div class="score-circle" id="final-score">0/100</div>
-            <p id="score-message" style="margin-bottom: 25px; color: var(--text-muted);"></p>
-            <button class="btn-nav" id="restart-btn" onclick="restartQuiz()">Restart Quiz 🔄</button>
+            <p id="score-message" style="margin-bottom: 15px; color: var(--text-muted);"></p>
+            
+            <!-- Dynamic Changing Motivation Box -->
+            <div class="motivation-card" id="motivation-box">
+                <p id="quote-text">"Success is not final, failure is not fatal: it is the courage to continue that counts."</p>
+                <span id="quote-author">— Winston Churchill</span>
+            </div>
+
+            <button class="btn-nav" id="restart-btn" onclick="restartQuiz()">Restart Review 🔄</button>
         </div>
 
         <div class="footer" id="quiz-footer">
@@ -316,7 +428,7 @@
     </div>
 
     <script>
-        const quizData = [
+        const rawQuizData = [
             // Week 1
             { cat: "Week 1", q: "What is defined as a system of knowledge of the natural world gained through the scientific method?", options: ["Technology", "Science", "Research", "Development"], answer: 1, exp: "Science is the systematic study of the natural world using the scientific method." },
             { cat: "Week 1", q: "The word 'Technology' originates from Greek 'Techne' and 'Logia'. What does 'Techne' mean?", options: ["Subject or interest", "Practical application", "Art or craft", "Systematic study"], answer: 2, exp: "Techne means art or craft, while Logia means subject or interest." },
@@ -334,7 +446,7 @@
             { cat: "Week 1", q: "Which type of society relied primarily on hunting wild animals and moved to find resources?", options: ["Agricultural society", "Horticultural society", "Hunter and Gatherer society", "Industrial society"], answer: 2, exp: "Hunter and Gatherer societies moved continuously following natural food supplies." },
             { cat: "Week 1", q: "A society driven primarily by high technology, information, and science-intensive services is:", options: ["Post-Industrial society", "Industrial society", "Agricultural society", "Pastoral society"], answer: 0, exp: "Post-Industrial society is high-tech and information/service-based." },
 
-            // Week 2-3 (Ancient Civilizations)
+            // Week 2-3
             { cat: "Week 2-3", q: "What term refers to events, ideas, or circumstances that came before and influenced something?", options: ["Paradigm", "Historical Antecedents", "Intellectual Revolutions", "Innovations"], answer: 1, exp: "Antecedents refer to prior events or conditions that influenced the present." },
             { cat: "Week 2-3", q: "Which ancient civilization in Mesopotamia developed Cuneiform writing?", options: ["Egyptian", "Babylonian", "Sumerian", "Indus"], answer: 2, exp: "Sumerians developed Cuneiform, one of the earliest systems of writing." },
             { cat: "Week 2-3", q: "The sexagesimal system (base 60) and 360-degree circle were first introduced by the:", options: ["Greeks", "Romans", "Sumerians", "Chinese"], answer: 2, exp: "Sumerians introduced the sexagesimal system and 360-degree circle concept." },
@@ -356,7 +468,7 @@
             { cat: "Week 2-3", q: "The Iron Pillar of Delhi and the architectural Stupa originate from which culture?", options: ["Indus-Hindu", "Arabic", "Sumerian", "Greek"], answer: 0, exp: "The rust-resistant Iron Pillar of Delhi and Buddhist Stupas are Indus-Hindu heritage." },
             { cat: "Week 2-3", q: "Which period lies between Ancient times and Modern times, featuring the heavy plough and mechanical clock?", options: ["Renaissance", "Medieval Times", "Age of Enlightenment", "Industrial Era"], answer: 1, exp: "Medieval Times (Dark & High Middle Ages) bridges Ancient and Modern history." },
 
-            // Week 4 (Intellectual Revolutions)
+            // Week 4
             { cat: "Week 4", q: "The Renaissance period is often called the transition of Ancient to Modern times or the:", options: ["Agricultural Era", "Age of Enlightenment", "Information Age", "Bronze Age"], answer: 1, exp: "The Renaissance marks the transition into the Age of Enlightenment." },
             { cat: "Week 4", q: "What is defined as a standard pattern, model, or framework of scientific thinking?", options: ["Antecedent", "Hypothesis", "Paradigm", "Philosophy"], answer: 2, exp: "A paradigm is a distinct set of concepts or thought patterns in a discipline." },
             { cat: "Week 4", q: "Which definition of science emphasizes it as an 'observation about nature'?", options: ["Intellectual activity", "Science as an idea", "Body of knowledge", "Personal & social activity"], answer: 1, exp: "Science as an idea = core observations and ideas regarding natural phenomena." },
@@ -378,7 +490,7 @@
             { cat: "Week 4", q: "You see an unattended phone. The thought 'Stealing is wrong; return it' represents the:", options: ["Id", "Ego", "Superego", "Libido"], answer: 2, exp: "Moral conscience regarding right and wrong comes from the Superego." },
             { cat: "Week 4", q: "Which theory posits that human population grows faster than food supply?", options: ["Darwinian Theory", "Malthusian Theory", "Copernican Model", "Economic Determinism"], answer: 1, exp: "Thomas Malthus proposed the Malthusian Theory of Population vs resources." },
 
-            // Week 5 (Nation-Building & PH S&T)
+            // Week 5
             { cat: "Week 5", q: "In Philippine context, what native word means 'spelling' and refers to ancient pre-colonial script?", options: ["Alibata", "Baybayin", "Balangay", "Caracoa"], answer: 1, exp: "Baybayin comes from the root word meaning 'to spell'." },
             { cat: "Week 5", q: "What trade route connected Manila and Mexico across the Pacific Ocean using large ships?", options: ["Silk Road", "Galleon Trade", "Spice Route", "Trans-Pacific Railway"], answer: 1, exp: "The Manila-Acapulco Galleon Trade connected Asia and the Americas." },
             { cat: "Week 5", q: "What is defined as a group of people sharing culture, history, language, and national identity using state power?", options: ["Community", "Nation", "Society", "Colony"], answer: 1, exp: "A Nation builds collective identity via historical and cultural bonds under state power." },
@@ -405,7 +517,7 @@
             { cat: "Week 5", q: "Universal Health Care Act (RA 11223) ensuring healthcare access for all Filipinos was signed under:", options: ["Joseph Estrada", "Rodrigo Duterte", "Fidel V. Ramos", "Corazon Aquino"], answer: 1, exp: "Duterte signed RA 11223 (Universal Health Care) in 2019." },
             { cat: "Week 5", q: "What emergency legislation was passed during COVID-19 under Duterte for vaccine drive and response?", options: ["Clean Air Act", "Magna Carta for Health Workers", "Bayanihan to Heal As One Act (RA 11469)", "STAND 2000"], answer: 2, exp: "RA 11469 provided emergency pandemic powers and recovery funding." },
 
-            // Notable Figures & Review Wrap-up
+            // Wrap up items
             { cat: "Key Figures", q: "Which National Scientist is a pioneer in child healthcare and founder of early pediatric care in PH?", options: ["Eduardo Quisumbing", "Fe del Mundo", "Angel Alcala", "Gavino Trono"], answer: 1, exp: "Dr. Fe del Mundo was a pioneer in Philippine pediatrics and child healthcare." },
             { cat: "Key Figures", q: "Dr. Ramon C. Barba is famous for his scientific contribution in:", options: ["Coral reef conservation", "Year-round flowering and production of mangoes", "Seaweed biodiversity", "Herbal medicine"], answer: 1, exp: "Ramon Barba invented potassium nitrate spray for year-round mango flowering." },
             { cat: "Key Figures", q: "Who is recognized as the 'Father of Seaweed Diversity' in the Philippines?", options: ["Angel C. Alcala", "Gavino C. Trono", "Edgardo D. Gomez", "Eduardo Quisumbing"], answer: 1, exp: "Gavino C. Trono made vast contributions to seaweed biodiversity research." },
@@ -428,11 +540,25 @@
             { cat: "Science", q: "In scientific method, a testable prediction formulated after making observations is a:", options: ["Conclusion", "Hypothesis", "Theory", "Paradigm"], answer: 1, exp: "A Hypothesis is an educated, testable prediction answering a scientific question." }
         ];
 
+        // List of dynamic motivational quotes that rotate at the end
+        const motivationalQuotes = [
+            { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { quote: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+            { quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { quote: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+            { quote: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+            { quote: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+            { quote: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+            { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" }
+        ];
+
+        let quizData = [];
         let currentIdx = 0;
         let score = 0;
         let streak = 0;
-        let userAnswers = new Array(quizData.length).fill(null);
+        let userAnswers = [];
 
+        const questionCardElem = document.getElementById("question-card");
         const questionNumElem = document.getElementById("question-number");
         const categoryElem = document.getElementById("category-tag");
         const questionTextElem = document.getElementById("question-text");
@@ -444,14 +570,69 @@
         const prevBtn = document.getElementById("prev-btn");
         const nextBtn = document.getElementById("next-btn");
 
+        // Helper: Shuffle Array (Fisher-Yates)
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Feature 2: Slight dynamic grammar/wording variations so choices aren't memorized strictly
+        function applyGrammarVariation(text) {
+            const rephrases = [
+                { from: "What is defined as", to: "Which term describes" },
+                { from: "Which of the following is", to: "Which option represents" },
+                { from: "Who is considered", to: "Who is known as" },
+                { from: "refer to", to: "denote" },
+                { from: "is associated with", to: "is linked to" }
+            ];
+            let modified = text;
+            rephrases.forEach(rule => {
+                if (Math.random() > 0.5 && modified.includes(rule.from)) {
+                    modified = modified.replace(rule.from, rule.to);
+                }
+            });
+            return modified;
+        }
+
+        // Initialize and shuffle questions + internal choices
+        function setupQuiz() {
+            // Clone deep
+            let deepCopy = JSON.parse(JSON.stringify(rawQuizData));
+
+            // Shuffle questions
+            quizData = shuffleArray(deepCopy).map(item => {
+                item.q = applyGrammarVariation(item.q);
+                
+                // Track correct option text
+                const correctText = item.options[item.answer];
+                
+                // Shuffle options
+                item.options = shuffleArray([...item.options]);
+                
+                // Update answer index to match new location
+                item.answer = item.options.indexOf(correctText);
+                return item;
+            });
+
+            userAnswers = new Array(quizData.length).fill(null);
+        }
+
         function loadQuestion() {
+            // Trigger simple card animation effect
+            questionCardElem.classList.remove("question-card-anim");
+            void questionCardElem.offsetWidth; // Force reflow
+            questionCardElem.classList.add("question-card-anim");
+
             const data = quizData[currentIdx];
             
             questionNumElem.innerText = `Question ${currentIdx + 1} of ${quizData.length}`;
             categoryElem.innerText = data.cat;
             questionTextElem.innerText = data.q;
             
-            // Update progress bar
+            // Progress Bar
             const progress = ((currentIdx + 1) / quizData.length) * 100;
             progressBar.style.width = `${progress}%`;
 
@@ -465,7 +646,7 @@
                 btn.innerHTML = `<span class="prefix">${letters[index]}.</span> ${opt}`;
                 btn.onclick = () => selectOption(index);
                 
-                // If user already answered this question
+                // Restore selection if previously answered
                 if (userAnswers[currentIdx] !== null) {
                     btn.disabled = true;
                     if (index === data.answer) {
@@ -483,7 +664,7 @@
                 showExplanation();
             }
 
-            // Button controls
+            // Button status
             prevBtn.disabled = currentIdx === 0;
             nextBtn.disabled = userAnswers[currentIdx] === null;
             if (currentIdx === quizData.length - 1 && userAnswers[currentIdx] !== null) {
@@ -494,7 +675,7 @@
         }
 
         function selectOption(index) {
-            if (userAnswers[currentIdx] !== null) return; // Prevent changing answer
+            if (userAnswers[currentIdx] !== null) return;
 
             userAnswers[currentIdx] = index;
             const data = quizData[currentIdx];
@@ -510,7 +691,6 @@
                 buttons[data.answer].classList.add("correct");
             }
 
-            // Disable all options
             for (let btn of buttons) {
                 btn.disabled = true;
             }
@@ -568,16 +748,26 @@
             } else {
                 msgElem.innerText = "Keep practicing! Re-read the lecture notes and give it another shot. 💪";
             }
+
+            // Feature 4: Pick a random motivational quote
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById("quote-text").innerText = `"${randomQuote.quote}"`;
+            document.getElementById("quote-author").innerText = `— ${randomQuote.author}`;
+
+            // Feature 5: Launch dynamic celebratory particle effects
+            triggerConfettiFX();
         }
 
         function restartQuiz() {
             currentIdx = 0;
             score = 0;
             streak = 0;
-            userAnswers.fill(null);
 
             scoreElem.innerText = "0";
             streakElem.innerText = "0 🔥";
+
+            // Re-shuffle everything on restart
+            setupQuiz();
 
             document.getElementById("quiz-view").style.display = "block";
             document.getElementById("quiz-footer").style.display = "flex";
@@ -586,7 +776,58 @@
             loadQuestion();
         }
 
-        // Initialize quiz on start
+        // Feature 5: Particle/Confetti Effect Canvas
+        function triggerConfettiFX() {
+            const canvas = document.getElementById("fx-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = [];
+            const colors = ["#38bdf8", "#818cf8", "#22c55e", "#f43f5e", "#fbbf24"];
+
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12 - 3,
+                    size: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        alive = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.15; // Gravity
+                        p.life -= 1.5;
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.life / 100;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+
+        // Start initialization
+        setupQuiz();
         loadQuestion();
     </script>
 </body>
