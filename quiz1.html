@@ -4,175 +4,366 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MATM111: Mathematics in the Modern World Reviewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --border-radius: 12px;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --correct-color: #22c55e;
+            --incorrect-color: #ef4444;
+            --border-color: #334155;
+            --glow-color: rgba(56, 189, 248, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+        /* Subtle animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
+            z-index: -1;
+            animation: pulseGlow 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 0 15px var(--glow-color);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
         header {
-            text-align: center;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            margin: 0 0 10px 0;
-            font-size: 2rem;
-        }
-
-        p.subtitle {
-            color: #7f8c8d;
-            margin: 0;
-            font-size: 1.1rem;
-        }
-
-        .controls {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
-        .btn:hover {
-            background-color: #2980b9;
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            margin-top: 4px;
         }
 
-        .btn-submit {
-            background-color: var(--success-color);
-            display: block;
-            width: 100%;
-            padding: 15px;
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
             font-size: 1.2rem;
-            margin-top: 30px;
-            border-radius: var(--border-radius);
+            font-weight: 700;
+            color: var(--text-main);
         }
 
-        .btn-submit:hover {
-            background-color: #27ae60;
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-color);
         }
 
-        .question-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-color), #818cf8);
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 8px var(--accent-color);
         }
 
-        .question-num {
-            font-weight: bold;
-            color: var(--secondary-color);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+        .quiz-body {
+            padding: 30px;
+        }
+
+        .question-card-anim {
+            animation: slideIn 0.35s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
         }
 
         .question-text {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
         }
 
-        .options-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .option-item {
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: rgba(56, 189, 248, 0.12);
+            border-color: var(--accent-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.99);
+        }
+
+        .option-btn .prefix {
+            font-weight: 700;
+            opacity: 0.7;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            border-color: var(--correct-color) !important;
+            color: #86efac !important;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+            animation: popSuccess 0.3s ease-out;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--incorrect-color) !important;
+            color: #fca5a5 !important;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+            animation: shakeError 0.3s ease-in-out;
+        }
+
+        @keyframes popSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .explanation-box {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .explanation-box strong {
+            color: var(--text-main);
+        }
+
+        .footer {
+            padding: 20px 30px;
+            background-color: rgba(15, 23, 42, 0.5);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-nav {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--glow-color);
+        }
+
+        .btn-nav:disabled {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .score-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .score-screen h2 {
+            font-size: 2rem;
             margin-bottom: 10px;
         }
 
-        .option-label {
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-color);
             display: flex;
+            justify-content: center;
             align-items: center;
-            padding: 12px 15px;
-            background: #f1f3f5;
+            margin: 25px auto;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 0 30px var(--glow-color);
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .motivation-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #818cf8;
             border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .option-label:hover {
-            background: #e9ecef;
-        }
-
-        .option-label input[type="radio"] {
-            margin-right: 12px;
-            transform: scale(1.2);
-        }
-
-        .feedback {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            display: none;
-        }
-
-        .feedback.correct {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .feedback.incorrect {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        #score-board {
-            display: none;
+            padding: 18px 24px;
+            margin: 25px auto 30px auto;
+            max-width: 600px;
+            font-style: italic;
+            color: #e2e8f0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-            font-weight: bold;
         }
 
-        /* MathJax Inline Scaling */
-        .MathJax {
-            font-size: 1.05em !important;
+        .motivation-card span {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+        }
+
+        #fx-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stats-container {
+                width: 100%;
+                justify-content: space-around;
+            }
+            .quiz-body {
+                padding: 20px;
+            }
         }
     </style>
     <!-- MathJax Library -->
@@ -189,628 +380,431 @@
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>MATM111: Mathematics in the Modern World</h1>
-        <p class="subtitle">100-Item Comprehensive Examination Reviewer</p>
-    </header>
+    <div class="app-container">
+        <canvas id="fx-canvas"></canvas>
 
-    <div class="controls">
-        <button class="btn" onclick="toggleAnswers()">Toggle Reveal Answers</button>
-        <span id="progress">100 Questions Total</span>
+        <header>
+            <div class="header-title">
+                <h1>MATM111 Reviewer</h1>
+                <p>Mathematics in the Modern World (100 Items)</p>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="current-score">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Streak</span>
+                    <span class="stat-value" id="current-streak">0 🔥</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="quiz-body" id="quiz-view">
+            <div id="question-card" class="question-card-anim">
+                <div class="question-meta">
+                    <span id="question-number">Question 1 of 100</span>
+                    <span id="category-tag">General</span>
+                </div>
+                <div class="question-text" id="question-text">Loading question...</div>
+                <div class="options-grid" id="options-container"></div>
+                <div class="explanation-box" id="explanation-box"></div>
+            </div>
+        </div>
+
+        <div class="score-screen" id="score-view">
+            <h2>Examination Completed!</h2>
+            <p>Here is your total score:</p>
+            <div class="score-circle" id="final-score">0/100</div>
+            <p id="score-message" style="margin-bottom: 15px; color: var(--text-muted);"></p>
+
+            <div class="motivation-card" id="motivation-box">
+                <p id="quote-text">"Pure mathematics is, in its way, the poetry of logical ideas."</p>
+                <span id="quote-author">— Albert Einstein</span>
+            </div>
+
+            <button class="btn-nav" id="restart-btn" onclick="restartQuiz()">Restart Review 🔄</button>
+        </div>
+
+        <div class="footer" id="quiz-footer">
+            <button class="btn-nav" id="prev-btn" onclick="prevQuestion()" disabled>Previous</button>
+            <button class="btn-nav" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+        </div>
     </div>
 
-    <div id="score-board"></div>
+    <script>
+        const rawQuizData = [
+            // I. Nature of Mathematics & The Golden Ratio
+            { cat: "Nature of Math", q: "What formal system of thought is used for recognizing, classifying, and exploiting patterns?", options: ["Logic", "Mathematics", "Statistics", "Language"], answer: 1, exp: "Mathematics provides a structured framework for recognizing, predicting, and exploiting patterns." },
+            { cat: "Nature of Math", q: "Regular, repeated, or recurring forms or designs found in nature and art are called:", options: ["Formulas", "Variables", "Patterns", "Constants"], answer: 2, exp: "Patterns represent repeating forms across natural structures and artistic works." },
+            { cat: "Golden Ratio", q: "Who is credited with discovering the sequence $1, 1, 2, 3, 5, 8, 13, \\dots$?", options: ["Leonardo da Vinci", "Jay Hambridge", "Leonardo Fibonacci", "George Pólya"], answer: 2, exp: "Leonardo Fibonacci introduced this sequence to Western mathematics in Liber Abaci." },
+            { cat: "Golden Ratio", q: "In the Fibonacci sequence, what is the $8\\text{th}$ term?", options: ["13", "21", "34", "55"], answer: 1, exp: "The sequence goes: 1, 1, 2, 3, 5, 8, 13, 21. Thus, the 8th term is 21." },
+            { cat: "Golden Ratio", q: "What is the approximate value of the Golden Ratio ($\\phi$)?", options: ["1.414", "1.618", "2.718", "3.141"], answer: 1, exp: "Phi (\\phi) evaluates approximately to 1.618033988..." },
+            { cat: "Golden Ratio", q: "Starting from which term in the Fibonacci sequence does the ratio between successive terms fix at approximately $1.618$?", options: ["$5\\text{th}$ term", "$10\\text{th}$ term", "$13\\text{th}$ term ($233$)", "$20\\text{th}$ term"], answer: 2, exp: "By the 13th term (233), ratios stabilize precisely to ~1.618." },
+            { cat: "Golden Ratio", q: "Which famous illustration by Leonardo da Vinci demonstrates that the human body is proportioned according to the Golden Ratio?", options: ["Mona Lisa", "Vitruvian Man", "The Last Supper", "Creation of Adam"], answer: 1, exp: "The Vitruvian Man illustrates optimal human body proportions." },
+            { cat: "Golden Ratio", q: "American researcher who established that the Golden Ratio can be found in human body proportions:", options: ["Jay Hambridge", "René Descartes", "Blaise Pascal", "John Venn"], answer: 0, exp: "Jay Hambridge established dynamic symmetry and body ratio connections." },
+            { cat: "Golden Ratio", q: "Geometric figure constructed by connecting quarter-circle arcs inside adjacent squares with Fibonacci side lengths:", options: ["Golden Triangle", "Fibonacci Spiral", "Archimedean Spiral", "Fractal Curve"], answer: 1, exp: "The Fibonacci Spiral forms logarithmic spirals through adjacent Fibonacci squares." },
+            { cat: "Golden Ratio", q: "If the $12\\text{th}$ Fibonacci number is $144$ and the $13\\text{th}$ is $233$, what is the $14\\text{th}$ Fibonacci number?", options: ["377", "310", "412", "610"], answer: 0, exp: "F_{14} = F_{12} + F_{13} = 144 + 233 = 377." },
+            { cat: "Nature of Math", q: "Which of the following is NOT a primary purpose of mathematics?", options: ["To help us organize patterns and regularities", "To put order in disorder", "To guarantee total predictability in human emotion", "To help us control weather and epidemics"], answer: 2, exp: "Mathematics cannot guarantee total predictability of subjective human emotion." },
+            { cat: "Golden Ratio", q: "What ratio definition states that two quantities $a$ and $b$ ($a > b$) are in the golden ratio?", options: ["$\\frac{a+b}{a} = \\frac{a}{b}$", "$\\frac{a-b}{a} = \\frac{b}{a}$", "$\\frac{a+b}{b} = \\frac{b}{a}$", "$\\frac{a}{a+b} = \\frac{b}{a}$"], answer: 0, exp: "The golden ratio definition requires (a + b) / a = a / b." },
+            { cat: "Golden Ratio", q: "If a flower has 21 petals, this number belongs to which sequence?", options: ["Arithmetic Progression", "Geometric Progression", "Fibonacci Sequence", "Prime Sequence"], answer: 2, exp: "Petal counts across nature frequently match Fibonacci numbers like 21." },
+            { cat: "Nature of Math", q: "Which characteristic best describes how mathematics is done?", options: ["With trial and error", "With fear of facing more questions", "By memorizing without seeking patterns", "Rigidly without curiosity"], answer: 0, exp: "Mathematics relies on exploratory trial, structural error, and pattern testing." },
+            { cat: "Golden Ratio", q: "What ratio is obtained by dividing $610 \\div 377$?", options: ["$1.555\\dots$", "$1.618\\dots$", "$1.732\\dots$", "$2.000\\dots$"], answer: 1, exp: "610 / 377 = 1.618037..., closely matching Phi." },
 
-    <form id="quiz-form">
-        <div id="questions-container"></div>
-        <button type="button" class="btn btn-submit" onclick="submitQuiz()">Submit Examination</button>
-    </form>
-</div>
+            // II. Language of Mathematics & Algebraic Translations
+            { cat: "Language of Math", q: "Being able to make very fine distinctions or definitions in mathematical language is known as being:", options: ["Concise", "Precise", "Powerful", "Complex"], answer: 1, exp: "Precision refers to declaring exact, unambiguous definitions." },
+            { cat: "Language of Math", q: "Being able to say things briefly in mathematical language is known as being:", options: ["Concise", "Precise", "Powerful", "Abstract"], answer: 0, exp: "Conciseness means expressing complex concepts compactly." },
+            { cat: "Language of Math", q: "A mathematical analog of an English noun (a name given to an object of interest) is called a(n):", options: ["Sentence", "Expression", "Operator", "Relation"], answer: 1, exp: "An expression acts like a noun phrase (naming an object, e.g., 3x + 2)." },
+            { cat: "Language of Math", q: "Which of the following is a mathematical sentence?", options: ["$3x + 5$", "$x - 1 = 0$", "$t + 3$", "$2m - n$"], answer: 1, exp: "x - 1 = 0 contains a complete mathematical state/verb (=)." },
+            { cat: "Language of Math", q: "Which of the following is an expression?", options: ["$x + 0 = x$", "$5 - 3 = 2$", "$5 - 3$", "$1 + 2 = 4$"], answer: 2, exp: "5 - 3 is an expression because it lacks equality or inequality relation symbols." },
+            { cat: "Language of Math", q: "What is the truth value of the mathematical sentence '$1 + 2 = 4$'?", options: ["True", "False", "Sometimes True / Sometimes False", "Undetermined"], answer: 1, exp: "1 + 2 = 3, so statement '1 + 2 = 4' is strictly False." },
+            { cat: "Language of Math", q: "What is the truth value of the statement '$x = 1$'?", options: ["True", "False", "Sometimes True / Sometimes False", "Always False"], answer: 2, exp: "It depends entirely on the variable x value." },
+            { cat: "Translations", q: "Translate into an algebraic expression: 'The difference between twice $m$ and $n$'", options: ["$2(m - n)$", "$2m - n$", "$m^2 - n$", "$n - 2m$"], answer: 1, exp: "'Twice m' is 2m, and its difference with n gives 2m - n." },
+            { cat: "Translations", q: "Translate into an algebraic expression: 'The sum of $a$ and $b$ divided by their difference'", options: ["$\\frac{a-b}{a+b}$", "$\\frac{a+b}{a-b}$", "$(a+b)(a-b)$", "$\\frac{ab}{a-b}$"], answer: 1, exp: "Sum (a+b) divided by difference (a-b) = (a+b)/(a-b)." },
+            { cat: "Translations", q: "Translate into an algebraic expression: 'Eleven more than seven times a number $x$'", options: ["$7(x + 11)$", "$11x + 7$", "$7x + 11$", "$x + 77$"], answer: 2, exp: "Seven times x is 7x; eleven more gives 7x + 11." },
+            { cat: "Translations", q: "If Jay is $x$ years old now, what was his age $6$ years ago?", options: ["$6x$", "$x + 6$", "$x - 6$", "$6 - x$"], answer: 2, exp: "Subtract 6 years from current age x -> x - 6." },
+            { cat: "Language of Math", q: "In the mathematical sentence $x + 2 < x - 3$, what is its truth value?", options: ["True", "False", "Sometimes True / Sometimes False", "None of the above"], answer: 1, exp: "Adding 2 to any real number can never be less than subtracting 3 from it; always False." },
+            { cat: "Language of Math", q: "In English vs. Mathematics, what acts as the 'verbs' in mathematics?", options: ["Numbers", "Variables", "Operations and equal signs ($=, +, -, \\text{etc.}$)", "Nouns"], answer: 2, exp: "Action symbols and relational equality operators function as mathematical verbs." },
+            { cat: "Translations", q: "Translate into symbols: 'Three times the sum of a number $x$ and five'", options: ["$3x + 5$", "$3(x + 5)$", "$x + 15$", "$3x + 15$"], answer: 1, exp: "3 multiplied by the full quantity (x + 5) gives 3(x + 5)." },
+            { cat: "Translations", q: "The phrase 'decreased from' or 'subtracted from' indicates which operation?", options: ["Addition", "Subtraction", "Multiplication", "Division"], answer: 1, exp: "These verbal expressions denote Subtraction." },
 
-<script>
-const quizData = [
-    // PART 1: MULTIPLE CHOICE (1-80)
-    // I. Nature of Mathematics & The Golden Ratio (Items 1-15)
-    {
-        q: "What formal system of thought is used for recognizing, classifying, and exploiting patterns?",
-        options: ["Logic", "Mathematics", "Statistics", "Language"],
-        answer: 1
-    },
-    {
-        q: "Regular, repeated, or recurring forms or designs found in nature and art are called:",
-        options: ["Formulas", "Variables", "Patterns", "Constants"],
-        answer: 2
-    },
-    {
-        q: "Who is credited with discovering the sequence $1, 1, 2, 3, 5, 8, 13, \\dots$?",
-        options: ["Leonardo da Vinci", "Jay Hambridge", "Leonardo Fibonacci", "George Pólya"],
-        answer: 2
-    },
-    {
-        q: "In the Fibonacci sequence, what is the $8\\text{th}$ term?",
-        options: ["13", "21", "34", "55"],
-        answer: 1
-    },
-    {
-        q: "What is the approximate value of the Golden Ratio ($\\phi$)?",
-        options: ["1.414", "1.618", "2.718", "3.141"],
-        answer: 1
-    },
-    {
-        q: "Starting from which term in the Fibonacci sequence does the ratio between successive terms fix at approximately $1.618$?",
-        options: ["$5\\text{th}$ term", "$10\\text{th}$ term", "$13\\text{th}$ term ($233$)", "$20\\text{th}$ term"],
-        answer: 2
-    },
-    {
-        q: "Which famous illustration by Leonardo da Vinci demonstrates that the human body is proportioned according to the Golden Ratio?",
-        options: ["Mona Lisa", "Vitruvian Man", "The Last Supper", "Creation of Adam"],
-        answer: 1
-    },
-    {
-        q: "American researcher who established that the Golden Ratio can be found in human body proportions:",
-        options: ["Jay Hambridge", "René Descartes", "Blaise Pascal", "John Venn"],
-        answer: 0
-    },
-    {
-        q: "Geometric figure constructed by connecting quarter-circle arcs inside adjacent squares with Fibonacci side lengths:",
-        options: ["Golden Triangle", "Fibonacci Spiral", "Archimedean Spiral", "Fractal Curve"],
-        answer: 1
-    },
-    {
-        q: "If the $12\\text{th}$ Fibonacci number is $144$ and the $13\\text{th}$ is $233$, what is the $14\\text{th}$ Fibonacci number?",
-        options: ["377", "310", "412", "610"],
-        answer: 0
-    },
-    {
-        q: "Which of the following is NOT a primary purpose of mathematics as listed in your reviewer?",
-        options: ["To help us organize patterns and regularities", "To put order in disorder", "To guarantee total predictability in human emotion", "To help us control weather and epidemics"],
-        answer: 2
-    },
-    {
-        q: "What ratio definition states that two quantities $a$ and $b$ ($a > b$) are in the golden ratio?",
-        options: ["$\\frac{a+b}{a} = \\frac{a}{b}$", "$\\frac{a-b}{a} = \\frac{b}{a}$", "$\\frac{a+b}{b} = \\frac{b}{a}$", "$\\frac{a}{a+b} = \\frac{b}{a}$"],
-        answer: 0
-    },
-    {
-        q: "If a flower has 21 petals, this number belongs to which sequence?",
-        options: ["Arithmetic Progression", "Geometric Progression", "Fibonacci Sequence", "Prime Sequence"],
-        answer: 2
-    },
-    {
-        q: "Which characteristic best describes how mathematics is done?",
-        options: ["With trial and error", "With fear of facing more questions", "By memorizing without seeking patterns", "Rigidly without curiosity"],
-        answer: 0
-    },
-    {
-        q: "What ratio is obtained by dividing $610 \\div 377$?",
-        options: ["$1.555\\dots$", "$1.618\\dots$", "$1.732\\dots$", "$2.000\\dots$"],
-        answer: 1
-    },
+            // III. Sets, Relations, and Functions
+            { cat: "Sets & Relations", q: "A well-defined collection of objects is called a:", options: ["Relation", "Function", "Set", "Matrix"], answer: 2, exp: "A set is defined as any well-specified collection of distinct objects." },
+            { cat: "Sets & Relations", q: "The method of representing a set by listing each element inside braces separated by commas is called the:", options: ["Set-Builder Method", "Roster Method", "Venn Diagram Method", "Rule Method"], answer: 1, exp: "The Roster or Listing method directly writes out elements." },
+            { cat: "Sets & Relations", q: "Given $C = \\{0, 1, 2, 3, 1, 4\\}$, what is the cardinal number $n(C)$?", options: ["6", "5", "4", "3"], answer: 1, exp: "Duplicate elements are counted once: unique elements {0, 1, 2, 3, 4} count n(C) = 5." },
+            { cat: "Sets & Relations", q: "Two sets are equal if and only if they have:", options: ["The same number of elements", "Exactly the same elements", "Disjoint elements", "The same universal set"], answer: 1, exp: "Equal sets contain identical elements regardless of order." },
+            { cat: "Sets & Relations", q: "Two sets are equivalent if and only if they have:", options: ["Exactly the same elements", "The same number of elements ($n(A) = n(B)$)", "The same subset notation", "No common elements"], answer: 1, exp: "Equivalent sets share identical cardinality (element count)." },
+            { cat: "Sets & Relations", q: "If a set $A$ has $n$ elements, how many total subsets does it have?", options: ["$2n$", "$n^2$", "$2^n$", "$2^{n-1}$"], answer: 2, exp: "Total subset count for n elements equals 2^n." },
+            { cat: "Sets & Relations", q: "How many total subsets does the set $S = \\{a, b\\}$ have?", options: ["2", "3", "4", "8"], answer: 2, exp: "2^2 = 4 subsets: \\emptyset, {a}, {b}, {a, b}." },
+            { cat: "Sets & Relations", q: "Which of the following is NOT a proper subset of $\\{a, b\\}$?", options: ["$\\emptyset$", "$\\{a\\}$", "$\\{b\\}$", "$\\{a, b\\}$"], answer: 3, exp: "A set itself is a subset, but NOT a proper subset." },
+            { cat: "Sets & Relations", q: "Given $U = \\{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\\}$ and $S = \\{2, 4, 6, 7\\}$, find $S'$:", options: ["$\\{1, 3, 5, 8, 9, 10\\}$", "$\\{2, 4, 6, 7\\}$", "$\\{1, 2, 3, 4, 5\\}$", "$\\{8, 9, 10\\}$"], answer: 0, exp: "Complement S' includes all elements in U not inside S." },
+            { cat: "Sets & Relations", q: "The set of all elements that belong to set $A$, set $B$, or both is called the:", options: ["Intersection ($A \\cap B$)", "Union ($A \\cup B$)", "Complement ($A'$)", "Difference ($A - B$)"], answer: 1, exp: "Union joins elements across sets A and B." },
+            { cat: "Sets & Relations", q: "Given $A = \\{1, 4, 5, 7\\}$ and $B = \\{2, 3, 4, 5, 6\\}$, find $A \\cap B$:", options: ["$\\{1, 2, 3, 4, 5, 6, 7\\}$", "$\\{4, 5\\}$", "$\\{1, 7\\}$", "$\\emptyset$"], answer: 1, exp: "Intersection captures shared common elements: {4, 5}." },
+            { cat: "Sets & Relations", q: "Given $A = \\{1, 4, 5, 7\\}$ and $C = \\{3, 6, 9\\}$, find $A \\cap C$:", options: ["$\\{3, 6\\}$", "$\\{1, 4, 5, 7, 3, 6, 9\\}$", "$\\emptyset$ (Empty Set)", "$\\{0\\}$"], answer: 2, exp: "No shared elements exist; intersection is the Empty Set (\\emptyset)." },
+            { cat: "Sets & Relations", q: "In a survey of 1000 people: 695 like action, 340 like comedies, and 180 like both. How many like action ONLY?", options: ["695", "515", "160", "145"], answer: 1, exp: "Action only = 695 - 180 = 515." },
+            { cat: "Sets & Relations", q: "From the same survey of 1000 people, how many do NOT like either genre?", options: ["180", "160", "515", "145"], answer: 3, exp: "Total liking at least one = 515 (Action only) + 160 (Comedy only) + 180 (Both) = 855. Neither = 1000 - 855 = 145." },
+            { cat: "Sets & Relations", q: "The set of all first coordinates ($x$-values) in a relation is called the:", options: ["Range", "Domain", "Element", "Subset"], answer: 1, exp: "Domain represents input values (x-coordinates)." },
+            { cat: "Sets & Relations", q: "The set of all second coordinates ($y$-values) in a relation is called the:", options: ["Domain", "Range", "Universal Set", "Function"], answer: 1, exp: "Range represents output values (y-coordinates)." },
+            { cat: "Functions", q: "Which of the following relations is a FUNCTION?", options: ["$\\{(1, a), (1, b), (2, c)\\}$", "$\\{(1, a), (2, b), (3, c)\\}$", "$\\{(2, x), (2, y), (2, z)\\}$", "$\\{(3, 4), (3, 5), (4, 6)\\}$"], answer: 1, exp: "In a function, each domain x-value maps to exactly one y-value." },
+            { cat: "Functions", q: "In the functional notation $y = f(x)$, $y$ is the _____ variable and $x$ is the _____ variable.", options: ["Independent, Dependent", "Dependent, Independent", "Constant, Variable", "Domain, Range"], answer: 1, exp: "y depends on input value x; y is dependent, x is independent." },
+            { cat: "Functions", q: "If $f(x) = x + 1$, what is the value of $f(2)$?", options: ["1", "2", "3", "4"], answer: 2, exp: "f(2) = 2 + 1 = 3." },
+            { cat: "Functions", q: "What type of relation maps one domain element to multiple range elements?", options: ["One-to-one", "Many-to-one", "One-to-many", "Many-to-many"], answer: 2, exp: "A single input connected to multiple outputs is a One-to-many relation." },
 
-    // II. Language of Mathematics & Algebraic Translations (Items 16-30)
-    {
-        q: "Being able to make very fine distinctions or definitions in mathematical language is known as being:",
-        options: ["Concise", "Precise", "Powerful", "Complex"],
-        answer: 1
-    },
-    {
-        q: "Being able to say things briefly in mathematical language is known as being:",
-        options: ["Concise", "Precise", "Powerful", "Abstract"],
-        answer: 0
-    },
-    {
-        q: "A mathematical analog of an English noun (a name given to a mathematical object of interest) is called a(n):",
-        options: ["Sentence", "Expression", "Operator", "Relation"],
-        answer: 1
-    },
-    {
-        q: "Which of the following is a mathematical sentence?",
-        options: ["$3x + 5$", "$x - 1 = 0$", "$t + 3$", "$2m - n$"],
-        answer: 1
-    },
-    {
-        q: "Which of the following is an expression?",
-        options: ["$x + 0 = x$", "$5 - 3 = 2$", "$5 - 3$", "$1 + 2 = 4$"],
-        answer: 2
-    },
-    {
-        q: "What is the truth value of the mathematical sentence '$1 + 2 = 4$'?",
-        options: ["True", "False", "Sometimes True / Sometimes False", "Undetermined"],
-        answer: 1
-    },
-    {
-        q: "What is the truth value of the statement '$x = 1$'?",
-        options: ["True", "False", "Sometimes True / Sometimes False", "Always False"],
-        answer: 2
-    },
-    {
-        q: "Translate into an algebraic expression: 'The difference between twice $m$ and $n$'",
-        options: ["$2(m - n)$", "$2m - n$", "$m^2 - n$", "$n - 2m$"],
-        answer: 1
-    },
-    {
-        q: "Translate into an algebraic expression: 'The sum of $a$ and $b$ divided by their difference'",
-        options: ["$\\frac{a-b}{a+b}$", "$\\frac{a+b}{a-b}$", "$(a+b)(a-b)$", "$\\frac{ab}{a-b}$"],
-        answer: 1
-    },
-    {
-        q: "Translate into an algebraic expression: 'Eleven more than seven times a number $x$'",
-        options: ["$7(x + 11)$", "$11x + 7$", "$7x + 11$", "$x + 77$"],
-        answer: 2
-    },
-    {
-        q: "If Jay is $x$ years old now, what was his age $6$ years ago?",
-        options: ["$6x$", "$x + 6$", "$x - 6$", "$6 - x$"],
-        answer: 2
-    },
-    {
-        q: "In the mathematical sentence $x + 2 < x - 3$, what is its truth value?",
-        options: ["True", "False", "Sometimes True / Sometimes False", "None of the above"],
-        answer: 1
-    },
-    {
-        q: "In English vs. Mathematics, what acts as the 'verbs' in mathematics?",
-        options: ["Numbers", "Variables", "Operations and equal signs ($=, +, -, \\text{etc.}$)", "Nouns"],
-        answer: 2
-    },
-    {
-        q: "Translate into symbols: 'Three times the sum of a number $x$ and five'",
-        options: ["$3x + 5$", "$3(x + 5)$", "$x + 15$", "$3x + 15$"],
-        answer: 1
-    },
-    {
-        q: "The phrase 'decreased from' or 'subtracted from' indicates which operation?",
-        options: ["Addition", "Subtraction", "Multiplication", "Division"],
-        answer: 1
-    },
+            // IV. Fundamentals of Logic
+            { cat: "Logic", q: "A declarative statement which is strictly either True or False (but not both) is a:", options: ["Proposition", "Sentence", "Variable", "Conjecture"], answer: 0, exp: "Propositions carry definitive binary truth values." },
+            { cat: "Logic", q: "Which of the following is a valid proposition?", options: ["'It's raining today.'", "'4 + 6 = 10'", "'Close the door!'", "'How old are you?'"], answer: 1, exp: "'4 + 6 = 10' is an absolute declarative statement with a known truth value." },
+            { cat: "Logic", q: "What is the negation ($\\neg P$) of the proposition '$\\sqrt{2}$ is a rational number'?", options: ["$\\sqrt{2}$ is an integer.", "$\\sqrt{2}$ is not a rational number.", "$\\sqrt{2}$ is equal to 2.", "$\\sqrt{2}$ is a real number."], answer: 1, exp: "Negation directly denies the original statement." },
+            { cat: "Logic", q: "The conjunction of $P$ and $Q$ ($P \\land Q$) is TRUE only when:", options: ["At least one statement is true", "Both $P$ and $Q$ are true", "Both $P$ and $Q$ are false", "$P$ is true and $Q$ is false"], answer: 1, exp: "Conjunction requires both input statements to evaluate as True." },
+            { cat: "Logic", q: "The disjunction of $P$ and $Q$ ($P \\lor Q$) is FALSE only when:", options: ["Both $P$ and $Q$ are false", "Both $P$ and $Q$ are true", "$P$ is true and $Q$ is false", "$P$ is false and $Q$ is true"], answer: 0, exp: "Disjunction evaluates as False only if all components are False." },
+            { cat: "Logic", q: "An implication $P \\implies Q$ is FALSE only when:", options: ["$P$ is false, $Q$ is true", "$P$ is true, $Q$ is false", "Both $P$ and $Q$ are false", "Both $P$ and $Q$ are true"], answer: 1, exp: "Implications break only when a true hypothesis produces a false conclusion." },
+            { cat: "Logic", q: "Given the implication $P \\implies Q$, its CONVERSE is:", options: ["$\\neg P \\implies \\neg Q$", "$Q \\implies P$", "$\\neg Q \\implies \\neg P$", "$\\neg P \\implies Q$"], answer: 1, exp: "Converse reverses hypothesis and conclusion: Q \\implies P." },
+            { cat: "Logic", q: "Given the implication $P \\implies Q$, its CONTRAPOSITIVE is:", options: ["$\\neg P \\implies \\neg Q$", "$Q \\implies P$", "$\\neg Q \\implies \\neg P$", "$P \\iff Q$"], answer: 2, exp: "Contrapositive negates and swaps terms: \\neg Q \\implies \\neg P." },
+            { cat: "Logic", q: "Given 'If this book is interesting, then I am staying at home.' What is its INVERSE?", options: ["If I am staying at home, then this book is interesting.", "If this book is not interesting, then I am not staying at home.", "If I am not staying home, then this book is not interesting.", "This book is interesting if and only if I stay home."], answer: 1, exp: "Inverse negates both hypothesis and conclusion without swapping." },
+            { cat: "Logic", q: "A compound statement that is always true regardless of truth values is a:", options: ["Contradiction", "Contingency", "Tautology", "Implication"], answer: 2, exp: "Tautologies yield True values under all combinations." },
+            { cat: "Logic", q: "A compound statement that is always false is called a:", options: ["Tautology", "Contradiction", "Contingency", "Bi-conditional"], answer: 1, exp: "Contradictions yield False across all truth conditions." },
+            { cat: "Logic", q: "The symbol $\\forall$ represents which quantifier?", options: ["Existential Quantifier", "Universal Quantifier ('for all')", "Equality Quantifier", "Negation Quantifier"], answer: 1, exp: "\\forall denotes Universal Quantification ('for all' / 'for every')." },
+            { cat: "Logic", q: "The symbol $\\exists$ represents which quantifier?", options: ["Universal Quantifier", "Existential Quantifier ('there exists')", "Bi-conditional", "Set inclusion"], answer: 1, exp: "\\exists denotes Existential Quantification ('there exists' / 'for some')." },
+            { cat: "Logic", q: "Let $P$: 'Sun is shining', $Q$: 'It is raining'. 'Sun is shining OR it is raining':", options: ["$P \\land Q$", "$P \\lor Q$", "$P \\implies Q$", "$P \\iff Q$"], answer: 1, exp: "Disjunction OR uses \\lor." },
+            { cat: "Logic", q: "Translate into symbols: 'If it is raining, then the sun is not shining.'", options: ["$Q \\implies \\neg P$", "$P \\implies \\neg Q$", "$\\neg Q \\implies P$", "$Q \\land \\neg P$"], answer: 0, exp: "Raining (Q) implies (\\implies) not shining (\\neg P)." },
 
-    // III. Sets, Relations, and Functions (Items 31-50)
-    {
-        q: "A well-defined collection of objects is called a:",
-        options: ["Relation", "Function", "Set", "Matrix"],
-        answer: 2
-    },
-    {
-        q: "The method of representing a set by listing each element inside braces separated by commas is called the:",
-        options: ["Set-Builder Method", "Roster Method", "Venn Diagram Method", "Rule Method"],
-        answer: 1
-    },
-    {
-        q: "Given $C = \\{0, 1, 2, 3, 1, 4\\}$, what is the cardinal number $n(C)$?",
-        options: ["6", "5", "4", "3"],
-        answer: 1
-    },
-    {
-        q: "Two sets are equal if and only if they have:",
-        options: ["The same number of elements", "Exactly the same elements", "Disjoint elements", "The same universal set"],
-        answer: 1
-    },
-    {
-        q: "Two sets are equivalent if and only if they have:",
-        options: ["Exactly the same elements", "The same number of elements ($n(A) = n(B)$)", "The same subset notation", "No common elements"],
-        answer: 1
-    },
-    {
-        q: "If a set $A$ has $n$ elements, how many total subsets does it have?",
-        options: ["$2n$", "$n^2$", "$2^n$", "$2^{n-1}$"],
-        answer: 2
-    },
-    {
-        q: "How many total subsets does the set $S = \\{a, b\\}$ have?",
-        options: ["2", "3", "4", "8"],
-        answer: 2
-    },
-    {
-        q: "Which of the following is NOT a proper subset of $\\{a, b\\}$?",
-        options: ["$\\emptyset$", "$\\{a\\}$", "$\\{b\\}$", "$\\{a, b\\}$"],
-        answer: 3
-    },
-    {
-        q: "Given Universal set $U = \\{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\\}$ and $S = \\{2, 4, 6, 7\\}$, find $S'$ (complement of $S$):",
-        options: ["$\\{1, 3, 5, 8, 9, 10\\}$", "$\\{2, 4, 6, 7\\}$", "$\\{1, 2, 3, 4, 5\\}$", "$\\{8, 9, 10\\}$"],
-        answer: 0
-    },
-    {
-        q: "The set of all elements that belong to set $A$, set $B$, or both is called the:",
-        options: ["Intersection ($A \\cap B$)", "Union ($A \\cup B$)", "Complement ($A'$)", "Difference ($A - B$)"],
-        answer: 1
-    },
-    {
-        q: "Given $A = \\{1, 4, 5, 7\\}$ and $B = \\{2, 3, 4, 5, 6\\}$, find $A \\cap B$:",
-        options: ["$\\{1, 2, 3, 4, 5, 6, 7\\}$", "$\\{4, 5\\}$", "$\\{1, 7\\}$", "$\\emptyset$"],
-        answer: 1
-    },
-    {
-        q: "Given $A = \\{1, 4, 5, 7\\}$ and $C = \\{3, 6, 9\\}$, find $A \\cap C$:",
-        options: ["$\\{3, 6\\}$", "$\\{1, 4, 5, 7, 3, 6, 9\\}$", "$\\emptyset$ (Empty Set)", "$\\{0\\}$"],
-        answer: 2
-    },
-    {
-        q: "In a survey of 1000 people: 695 like action movies, 340 like comedies, and 180 like both. How many like action movies ONLY?",
-        options: ["695", "515", "160", "145"],
-        answer: 1
-    },
-    {
-        q: "From the same survey of 1000 people above, how many people do NOT like either genre?",
-        options: ["180", "160", "515", "145"],
-        answer: 3
-    },
-    {
-        q: "The set of all first coordinates ($x$-values) in a relation is called the:",
-        options: ["Range", "Domain", "Element", "Subset"],
-        answer: 1
-    },
-    {
-        q: "The set of all second coordinates ($y$-values) in a relation is called the:",
-        options: ["Domain", "Range", "Universal Set", "Function"],
-        answer: 1
-    },
-    {
-        q: "Which of the following relations is a FUNCTION?",
-        options: ["$\\{(1, a), (1, b), (2, c)\\}$", "$\\{(1, a), (2, b), (3, c)\\}$", "$\\{(2, x), (2, y), (2, z)\\}$", "$\\{(3, 4), (3, 5), (4, 6)\\}$"],
-        answer: 1
-    },
-    {
-        q: "In the functional notation $y = f(x)$, $y$ is the _____ variable and $x$ is the _____ variable.",
-        options: ["Independent, Dependent", "Dependent, Independent", "Constant, Variable", "Domain, Range"],
-        answer: 1
-    },
-    {
-        q: "If $f(x) = x + 1$, what is the value of $f(2)$?",
-        options: ["1", "2", "3", "4"],
-        answer: 2
-    },
-    {
-        q: "What type of relation maps one domain element to multiple range elements?",
-        options: ["One-to-one", "Many-to-one", "One-to-many", "Many-to-many"],
-        answer: 2
-    },
+            // V. Problem Solving & Reasoning Strategies
+            { cat: "Reasoning", q: "Reaching a general conclusion by examining specific examples (Specific $\\rightarrow$ General):", options: ["Deductive Reasoning", "Inductive Reasoning", "Intuitive Reasoning", "Symbolic Logic"], answer: 1, exp: "Inductive reasoning builds general patterns from specific observed cases." },
+            { cat: "Reasoning", q: "Reaching a conclusion by applying general assumptions or rules (General $\\rightarrow$ Specific):", options: ["Inductive Reasoning", "Deductive Reasoning", "Speculative Reasoning", "Empirical Reasoning"], answer: 1, exp: "Deductive reasoning derives specific conclusions from general premises." },
+            { cat: "Reasoning", q: "A conclusion reached through inductive reasoning is called a:", options: ["Theorem", "Conjecture", "Axiom", "Corollary"], answer: 1, exp: "Unproven inductive conclusions are called conjectures." },
+            { cat: "Reasoning", q: "Sequence $3, 6, 9, 12, 15, \\dots$. Using inductive reasoning, what is the next term?", options: ["16", "17", "18", "21"], answer: 2, exp: "Add 3 continuously; 15 + 3 = 18." },
+            { cat: "Reasoning", q: "Sequence $2, 5, 10, 17, 26, \\dots$. Using inductive reasoning, what is the next term?", options: ["35", "37", "40", "50"], answer: 1, exp: "Differences are +3, +5, +7, +9. Next difference is +11 -> 26 + 11 = 37." },
+            { cat: "Problem Solving", q: "Who is known as the 'Father of Problem Solving' and authored 'How to Solve It'?", options: ["Leonardo Fibonacci", "George Pólya", "Blaise Pascal", "Jay Hambridge"], answer: 1, exp: "George Pólya established 4-step modern problem-solving frameworks." },
+            { cat: "Problem Solving", q: "What is Step 1 in Pólya's Four-Step Problem-Solving Strategy?", options: ["Devise a Plan", "Carry out the Plan", "Understand the Problem", "Look Back"], answer: 2, exp: "Step 1: Understand the Problem." },
+            { cat: "Problem Solving", q: "What is Step 2 in Pólya's Four-Step Problem-Solving Strategy?", options: ["Understand the Problem", "Devise a Plan", "Carry out the Plan", "Look Back"], answer: 1, exp: "Step 2: Devise a Plan." },
+            { cat: "Problem Solving", q: "What is Step 3 in Pólya's Four-Step Problem-Solving Strategy?", options: ["Devise a Plan", "Look Back", "Carry out the Plan", "Understand the Problem"], answer: 2, exp: "Step 3: Carry out the Plan." },
+            { cat: "Problem Solving", q: "What is Step 4 in Pólya's Four-Step Problem-Solving Strategy?", options: ["Look Back (Check your answer)", "Carry out the Plan", "Devise a Plan", "Formulate a conjecture"], answer: 0, exp: "Step 4: Look Back and review the solution." },
+            { cat: "Reasoning", q: "An example that proves a general statement or conjecture to be false is called a:", options: ["Proof", "Counterexample", "Negation", "Contradiction"], answer: 1, exp: "A single counterexample invalidates a universal claim." },
+            { cat: "Reasoning", q: "Evaluate: 'All prime numbers are odd.' Which serves as a counterexample?", options: ["3", "2", "5", "1"], answer: 1, exp: "2 is prime and even, disproving the claim." },
+            { cat: "Problem Solving", q: "Which strategy is recommended when tackling a complex problem according to Pólya?", options: ["Guess and check blindly", "Work backwards or solve a simpler related problem", "Ignore unknown variables", "Give up if not solved in 2 minutes"], answer: 1, exp: "Simplifying or working backward helps break down difficult problems." },
+            { cat: "Reasoning", q: "All dogs are mammals; all mammals are animals $\\implies$ all dogs are animals. Example of:", options: ["Inductive Reasoning", "Deductive Reasoning", "Conjecture", "Intuitive leap"], answer: 1, exp: "Deriving specific facts from established general rules is Deductive." },
+            { cat: "Reasoning", q: "Finding a pattern in $1, 4, 9, 16, 25$ and concluding the $n\\text{th}$ term is $n^2$ uses:", options: ["Deductive Reasoning", "Inductive Reasoning", "Universal Quantification", "Direct Proof"], answer: 1, exp: "Synthesizing general rule n^2 from specific examples is Inductive." },
 
-    // IV. Fundamentals of Logic (Items 51-65)
-    {
-        q: "A declarative statement which is strictly either True or False (but not both or sometimes both) is a:",
-        options: ["Proposition", "Sentence", "Variable", "Conjecture"],
-        answer: 0
-    },
-    {
-        q: "Which of the following is a valid proposition?",
-        options: ["'It's raining today.'", "'4 + 6 = 10'", "'Close the door!'", "'How old are you?'"],
-        answer: 1
-    },
-    {
-        q: "What is the negation ($\\neg P$) of the proposition '$\\sqrt{2}$ is a rational number'?",
-        options: ["$\\sqrt{2}$ is an integer.", "$\\sqrt{2}$ is not a rational number.", "$\\sqrt{2}$ is equal to 2.", "$\\sqrt{2}$ is a real number."],
-        answer: 1
-    },
-    {
-        q: "The conjunction of $P$ and $Q$ is denoted by $P \\land Q$. It is TRUE only when:",
-        options: ["At least one statement is true", "Both $P$ and $Q$ are true", "Both $P$ and $Q$ are false", "$P$ is true and $Q$ is false"],
-        answer: 1
-    },
-    {
-        q: "The disjunction of $P$ and $Q$ is denoted by $P \\lor Q$. It is FALSE only when:",
-        options: ["Both $P$ and $Q$ are false", "Both $P$ and $Q$ are true", "$P$ is true and $Q$ is false", "$P$ is false and $Q$ is true"],
-        answer: 0
-    },
-    {
-        q: "An implication (conditional statement) $P \\implies Q$ is FALSE only when:",
-        options: ["$P$ is false, $Q$ is true", "$P$ is true, $Q$ is false", "Both $P$ and $Q$ are false", "Both $P$ and $Q$ are true"],
-        answer: 1
-    },
-    {
-        q: "Given the implication $P \\implies Q$, its CONVERSE is:",
-        options: ["$\\neg P \\implies \\neg Q$", "$Q \\implies P$", "$\\neg Q \\implies \\neg P$", "$\\neg P \\implies Q$"],
-        answer: 1
-    },
-    {
-        q: "Given the implication $P \\implies Q$, its CONTRAPOSITIVE is:",
-        options: ["$\\neg P \\implies \\neg Q$", "$Q \\implies P$", "$\\neg Q \\implies \\neg P$", "$P \\iff Q$"],
-        answer: 2
-    },
-    {
-        q: "Given the conditional statement: 'If this book is interesting, then I am staying at home.' What is its INVERSE ($\\neg P \\implies \\neg Q$)?",
-        options: ["If I am staying at home, then this book is interesting.", "If this book is not interesting, then I am not staying at home.", "If I am not staying at home, then this book is not interesting.", "This book is interesting if and only if I stay home."],
-        answer: 1
-    },
-    {
-        q: "A compound statement that is always true regardless of the truth values of its component statements is called a:",
-        options: ["Contradiction", "Contingency", "Tautology", "Implication"],
-        answer: 2
-    },
-    {
-        q: "A compound statement that is always false is called a:",
-        options: ["Tautology", "Contradiction", "Contingency", "Bi-conditional"],
-        answer: 1
-    },
-    {
-        q: "The symbol $\\forall$ represents which quantifier?",
-        options: ["Existential Quantifier ('there exists')", "Universal Quantifier ('for all' / 'for every')", "Equality Quantifier", "Negation Quantifier"],
-        answer: 1
-    },
-    {
-        q: "The symbol $\\exists$ represents which quantifier?",
-        options: ["Universal Quantifier", "Existential Quantifier ('there exists' / 'for some')", "Bi-conditional", "Set inclusion"],
-        answer: 1
-    },
-    {
-        q: "Translate into logical symbols: Let $P$: 'The sun is shining', $Q$: 'It is raining'. Representation for 'The sun is shining OR it is raining':",
-        options: ["$P \\land Q$", "$P \\lor Q$", "$P \\implies Q$", "$P \\iff Q$"],
-        answer: 1
-    },
-    {
-        q: "Translate into logical symbols: 'If it is raining, then the sun is not shining.'",
-        options: ["$Q \\implies \\neg P$", "$P \\implies \\neg Q$", "$\\neg Q \\implies P$", "$Q \\land \\neg P$"],
-        answer: 0
-    },
+            // Computation & Identification
+            { cat: "Computation", q: "[COMPUTATION] Given Fibonacci sequence, if $F_{15} = 610$ and $F_{16} = 987$, calculate $F_{17}$.", options: ["1597", "1497", "1600", "1587"], answer: 0, exp: "F_{17} = 610 + 987 = 1597." },
+            { cat: "Identification", q: "[IDENTIFICATION] The symbol used to denote Golden Ratio, named after sculptor Phidias:", options: ["$\\pi$ (Pi)", "$\\phi$ or $\\Phi$ (Phi)", "$\\sigma$ (Sigma)", "$\\lambda$ (Lambda)"], answer: 1, exp: "Phi (\\phi) represents the Golden Ratio." },
+            { cat: "Computation", q: "[COMPUTATION] Translate: 'Five less than four times the cube of a number $x$'", options: ["$5 - 4x^3$", "$4x^3 - 5$", "$(4x)^3 - 5$", "$4(x^3 - 5)$"], answer: 1, exp: "Cube of x is x^3, four times gives 4x^3, five less gives 4x^3 - 5." },
+            { cat: "Identification", q: "[IDENTIFICATION] A mathematical statement using equal sign ($=$) to show two expressions are equal:", options: ["Algebraic Expression", "Equation", "Inequality", "Variable"], answer: 1, exp: "Equations contain explicit equality signs (=)." },
+            { cat: "Computation", q: "[COMPUTATION] Given $A = \\{2, 3, 5, 7, 11\\}$ and $B = \\{1, 3, 5, 7, 9\\}$, find $A - B$:", options: ["$\\{2, 11\\}$", "$\\{1, 9\\}$", "$\\{3, 5, 7\\}$", "$\\{1, 2, 3, 5, 7, 9, 11\\}$"], answer: 0, exp: "Elements in A that are not in B = {2, 11}." },
+            { cat: "Computation", q: "[COMPUTATION] If set $K = \\{x, y, z\\}$, how many PROPER subsets does set $K$ have?", options: ["8", "7", "6", "3"], answer: 1, exp: "2^3 - 1 = 7 proper subsets." },
+            { cat: "Identification", q: "[IDENTIFICATION] Relation where each element in domain is paired with EXACTLY ONE range element:", options: ["Function", "One-to-many relation", "Disjoint Set", "Universal Set"], answer: 0, exp: "Functions strictly mandate single outputs per input." },
+            { cat: "Computation", q: "[COMPUTATION] Given function $f(x) = 3x^2 - 2x + 5$, evaluate $f(-2)$:", options: ["13", "21", "17", "-3"], answer: 1, exp: "f(-2) = 3(-2)^2 - 2(-2) + 5 = 3(4) + 4 + 5 = 12 + 4 + 5 = 21." },
+            { cat: "Identification", q: "[IDENTIFICATION] In a conditional statement $P \\implies Q$, what is $P$ called?", options: ["Consequent", "Hypothesis (or Antecedent)", "Conclusion", "Negation"], answer: 1, exp: "P represents the starting Hypothesis or Antecedent." },
+            { cat: "Identification", q: "[IDENTIFICATION] In a conditional statement $P \\implies Q$, what is $Q$ called?", options: ["Antecedent", "Hypothesis", "Conclusion (or Consequent)", "Converse"], answer: 2, exp: "Q represents the derived Conclusion or Consequent." },
+            { cat: "Computation", q: "[COMPUTATION] Truth value of conjunction: '($5 > 3$) AND ($2 + 2 = 5$)':", options: ["True", "False", "Undetermined", "Sometimes True"], answer: 1, exp: "True AND False = False." },
+            { cat: "Computation", q: "[COMPUTATION] Truth value of disjunction: '($5 > 3$) OR ($2 + 2 = 5$)':", options: ["True", "False", "Undetermined", "Neither"], answer: 0, exp: "True OR False = True." },
+            { cat: "Computation", q: "[COMPUTATION] Truth value of implication: 'If $2 + 2 = 5$, then $3 + 3 = 6$':", options: ["True", "False", "Undetermined", "Invalid"], answer: 0, exp: "False hypothesis \\implies True conclusion evaluates as True." },
+            { cat: "Computation", q: "[COMPUTATION] What is the $9\\text{th}$ term of the Fibonacci sequence?", options: ["21", "34", "55", "89"], answer: 1, exp: "1, 1, 2, 3, 5, 8, 13, 21, 34 -> 9th term is 34." },
+            { cat: "Computation", q: "[COMPUTATION] Using inductive reasoning, find next term: $1, 8, 27, 64, \\dots$", options: ["81", "100", "125", "216"], answer: 2, exp: "Sequence of cubes: 1^3, 2^3, 3^3, 4^3, 5^3 = 125." },
+            { cat: "Identification", q: "[IDENTIFICATION] Visual diagram using overlapping circles to represent set relationships:", options: ["Euler Chart", "Venn Diagram", "Scatter Plot", "Tree Diagram"], answer: 1, exp: "Venn Diagrams represent set overlaps geometrically." },
+            { cat: "Identification", q: "[IDENTIFICATION] A set containing no elements, denoted by $\\emptyset$ or $\\{\\}$:", options: ["Universal Set", "Singleton Set", "Empty (or Null) Set", "Subset"], answer: 2, exp: "Null/Empty sets contain zero elements." },
+            { cat: "Computation", q: "[COMPUTATION] Solve for $x$: 'Twice a number $x$ plus 8 is equal to 20.'", options: ["$x = 4$", "$x = 6$", "$x = 8$", "$x = 10$"], answer: 1, exp: "2x + 8 = 20 \\implies 2x = 12 \\implies x = 6." },
+            { cat: "Identification", q: "[IDENTIFICATION] The connective 'if and only if' represents which logical operation?", options: ["Conditional", "Biconditional", "Conjunction", "Disjunction"], answer: 1, exp: "'If and only if' forms Biconditional statements (\\iff)." },
+            { cat: "Identification", q: "[IDENTIFICATION] Final step in Pólya's method where you check your result:", options: ["Step 1: Understand the Problem", "Step 2: Devise a Plan", "Step 3: Carry out the Plan", "Step 4: Look Back"], answer: 3, exp: "Step 4: Look Back verifies results and methods." }
+        ];
 
-    // V. Problem Solving & Reasoning Strategies (Items 66-80)
-    {
-        q: "The process of reaching a general conclusion (conjecture) by examining specific examples (Specific $\\rightarrow$ General) is called:",
-        options: ["Deductive Reasoning", "Inductive Reasoning", "Intuitive Reasoning", "Symbolic Logic"],
-        answer: 1
-    },
-    {
-        q: "The process of reaching a conclusion by applying general assumptions, procedures, or principles (General $\\rightarrow$ Specific) is called:",
-        options: ["Inductive Reasoning", "Deductive Reasoning", "Speculative Reasoning", "Empirical Reasoning"],
-        answer: 1
-    },
-    {
-        q: "A conclusion reached through inductive reasoning is called a:",
-        options: ["Theorem", "Conjecture", "Axiom", "Corollary"],
-        answer: 1
-    },
-    {
-        q: "Consider the sequence $3, 6, 9, 12, 15, \\dots$. Using inductive reasoning, what is the next term?",
-        options: ["16", "17", "18", "21"],
-        answer: 2
-    },
-    {
-        q: "Consider the sequence $2, 5, 10, 17, 26, \\dots$. Using inductive reasoning, what is the next term?",
-        options: ["35", "37", "40", "50"],
-        answer: 1
-    },
-    {
-        q: "Who is known as the 'Father of Problem Solving' and authored the 1945 book 'How to Solve It'?",
-        options: ["Leonardo Fibonacci", "George Pólya", "Blaise Pascal", "Jay Hambridge"],
-        answer: 1
-    },
-    {
-        q: "What is Step 1 in Pólya's Four-Step Problem-Solving Strategy?",
-        options: ["Devise a Plan", "Carry out the Plan", "Understand the Problem", "Look Back"],
-        answer: 2
-    },
-    {
-        q: "What is Step 2 in Pólya's Four-Step Problem-Solving Strategy?",
-        options: ["Understand the Problem", "Devise a Plan", "Carry out the Plan", "Look Back"],
-        answer: 1
-    },
-    {
-        q: "What is Step 3 in Pólya's Four-Step Problem-Solving Strategy?",
-        options: ["Devise a Plan", "Look Back", "Carry out the Plan", "Understand the Problem"],
-        answer: 2
-    },
-    {
-        q: "What is Step 4 in Pólya's Four-Step Problem-Solving Strategy?",
-        options: ["Look Back (Check your answer)", "Carry out the Plan", "Devise a Plan", "Formulate a conjecture"],
-        answer: 0
-    },
-    {
-        q: "An example that proves a general statement or conjecture to be false is called a:",
-        options: ["Proof", "Counterexample", "Negation", "Contradiction"],
-        answer: 1
-    },
-    {
-        q: "Evaluate: 'All prime numbers are odd.' Which of the following serves as a counterexample?",
-        options: ["3", "2", "5", "1"],
-        answer: 1
-    },
-    {
-        q: "Which strategy is recommended when tackling a complex problem according to Pólya?",
-        options: ["Guess and check blindly", "Work backwards or solve a simpler related problem", "Ignore unknown variables", "Give up if not solved in 2 minutes"],
-        answer: 1
-    },
-    {
-        q: "If all dogs are mammals and all mammals are animals, then all dogs are animals. This is an example of:",
-        options: ["Inductive Reasoning", "Deductive Reasoning", "Conjecture", "Intuitive leap"],
-        answer: 1
-    },
-    {
-        q: "Finding a pattern in $1, 4, 9, 16, 25$ and concluding that the $n\\text{th}$ term is $n^2$ uses:",
-        options: ["Deductive Reasoning", "Inductive Reasoning", "Universal Quantification", "Direct Proof"],
-        answer: 1
-    },
+        const motivationalQuotes = [
+            { quote: "Pure mathematics is, in its way, the poetry of logical ideas.", author: "Albert Einstein" },
+            { quote: "Mathematics is the language in which God has written the universe.", author: "Galileo Galilei" },
+            { quote: "Without mathematics, there's nothing you can do. Everything around you is mathematics.", author: "Shakuntala Devi" },
+            { quote: "Obvious is the most dangerous word in mathematics.", author: "Eric Temple Bell" },
+            { quote: "Mathematics is not about numbers, equations, computations, or algorithms: it is about understanding.", author: "William Paul Thurston" }
+        ];
 
-    // PART 2: IDENTIFICATION / COMPUTATION (81-100)
-    {
-        q: "[COMPUTATION] Given the Fibonacci sequence, if $F_{15} = 610$ and $F_{16} = 987$, calculate $F_{17}$.",
-        options: ["1597", "1497", "1600", "1587"],
-        answer: 0
-    },
-    {
-        q: "[IDENTIFICATION] The symbol used to denote the Golden Ratio, named after the Greek sculptor Phidias:",
-        options: ["$\\pi$ (Pi)", "$\\phi$ or $\\Phi$ (Phi)", "$\\sigma$ (Sigma)", "$\\lambda$ (Lambda)"],
-        answer: 1
-    },
-    {
-        q: "[COMPUTATION] Translate the verbal phrase into algebraic symbols: 'Five less than four times the cube of a number $x$'",
-        options: ["$5 - 4x^3$", "$4x^3 - 5$", "$(4x)^3 - 5$", "$4(x^3 - 5)$"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] A mathematical statement using an equal sign ($=$) to show that two expressions are equal:",
-        options: ["Algebraic Expression", "Equation", "Inequality", "Variable"],
-        answer: 1
-    },
-    {
-        q: "[COMPUTATION] Given $A = \\{2, 3, 5, 7, 11\\}$ and $B = \\{1, 3, 5, 7, 9\\}$, find $A - B$ (Difference of sets $A$ and $B$):",
-        options: ["$\\{2, 11\\}$", "$\\{1, 9\\}$", "$\\{3, 5, 7\\}$", "$\\{1, 2, 3, 5, 7, 9, 11\\}$"],
-        answer: 0
-    },
-    {
-        q: "[COMPUTATION] If set $K = \\{x, y, z\\}$, how many PROPER subsets does set $K$ have?",
-        options: ["8", "7", "6", "3"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] A relation where each element in the domain is paired with EXACTLY ONE element in the range:",
-        options: ["Function", "One-to-many relation", "Disjoint Set", "Universal Set"],
-        answer: 0
-    },
-    {
-        q: "[COMPUTATION] Given the function $f(x) = 3x^2 - 2x + 5$, evaluate $f(-2)$:",
-        options: ["13", "21", "17", "-3"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] In a conditional statement $P \\implies Q$, what is $P$ called?",
-        options: ["Consequent", "Hypothesis (or Antecedent)", "Conclusion", "Negation"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] In a conditional statement $P \\implies Q$, what is $Q$ called?",
-        options: ["Antecedent", "Hypothesis", "Conclusion (or Consequent)", "Converse"],
-        answer: 2
-    },
-    {
-        q: "[COMPUTATION] Determine the truth value of the conjunction: '($5 > 3$) AND ($2 + 2 = 5$)':",
-        options: ["True", "False", "Undetermined", "Sometimes True"],
-        answer: 1
-    },
-    {
-        q: "[COMPUTATION] Determine the truth value of the disjunction: '($5 > 3$) OR ($2 + 2 = 5$)':",
-        options: ["True", "False", "Undetermined", "Neither"],
-        answer: 0
-    },
-    {
-        q: "[COMPUTATION] Determine the truth value of the implication: 'If $2 + 2 = 5$, then $3 + 3 = 6$':",
-        options: ["True", "False", "Undetermined", "Invalid"],
-        answer: 0
-    },
-    {
-        q: "[COMPUTATION] What is the $9\\text{th}$ term of the Fibonacci sequence?",
-        options: ["21", "34", "55", "89"],
-        answer: 1
-    },
-    {
-        q: "[COMPUTATION] Using inductive reasoning, find the next term in the sequence: $1, 8, 27, 64, \\dots$",
-        options: ["81", "100", "125", "216"],
-        answer: 2
-    },
-    {
-        q: "[IDENTIFICATION] The visual diagram that uses overlapping circles to represent relationships among sets:",
-        options: ["Euler Chart", "Venn Diagram", "Scatter Plot", "Tree Diagram"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] A set containing no elements, denoted by $\\emptyset$ or $\\{\\}$:",
-        options: ["Universal Set", "Singleton Set", "Empty (or Null) Set", "Subset"],
-        answer: 2
-    },
-    {
-        q: "[COMPUTATION] Solve for $x$: 'Twice a number $x$ plus 8 is equal to 20.'",
-        options: ["$x = 4$", "$x = 6$", "$x = 8$", "$x = 10$"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] The connective 'if and only if' represents which logical operation?",
-        options: ["Conditional", "Biconditional", "Conjunction", "Disjunction"],
-        answer: 1
-    },
-    {
-        q: "[IDENTIFICATION] The final step in Pólya's problem-solving method where you check your result and interpretation:",
-        options: ["Step 1: Understand the Problem", "Step 2: Devise a Plan", "Step 3: Carry out the Plan", "Step 4: Look Back"],
-        answer: 3
-    }
-];
+        let quizData = [];
+        let currentIdx = 0;
+        let score = 0;
+        let streak = 0;
+        let userAnswers = [];
 
-let answersRevealed = false;
+        const questionCardElem = document.getElementById("question-card");
+        const questionNumElem = document.getElementById("question-number");
+        const categoryElem = document.getElementById("category-tag");
+        const questionTextElem = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const explanationBox = document.getElementById("explanation-box");
+        const scoreElem = document.getElementById("current-score");
+        const streakElem = document.getElementById("current-streak");
+        const progressBar = document.getElementById("progress-bar");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
 
-function renderQuiz() {
-    const container = document.getElementById('questions-container');
-    container.innerHTML = '';
-
-    quizData.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'question-card';
-        card.id = `q-card-${index}`;
-
-        let optionsHTML = '';
-        item.options.forEach((opt, optIdx) => {
-            optionsHTML += `
-                <li class="option-item">
-                    <label class="option-label">
-                        <input type="radio" name="q${index}" value="${optIdx}">
-                        <span>${opt}</span>
-                    </label>
-                </li>
-            `;
-        });
-
-        card.innerHTML = `
-            <div class="question-num">Question ${index + 1} of 100</div>
-            <div class="question-text">${item.q}</div>
-            <ul class="options-list">
-                ${optionsHTML}
-            </ul>
-            <div class="feedback" id="feedback-${index}"></div>
-        `;
-
-        container.appendChild(card);
-    });
-
-    if (window.MathJax) {
-        MathJax.typesetPromise();
-    }
-}
-
-function submitQuiz() {
-    let score = 0;
-    quizData.forEach((item, index) => {
-        const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        const feedback = document.getElementById(`feedback-${index}`);
-        
-        feedback.style.display = 'block';
-
-        if (selected) {
-            const userAns = parseInt(selected.value);
-            if (userAns === item.answer) {
-                score++;
-                feedback.className = 'feedback correct';
-                feedback.innerHTML = `Correct!`;
-            } else {
-                feedback.className = 'feedback incorrect';
-                feedback.innerHTML = `Incorrect. Correct Answer: ${item.options[item.answer]}`;
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-        } else {
-            feedback.className = 'feedback incorrect';
-            feedback.innerHTML = `Not Answered. Correct Answer: ${item.options[item.answer]}`;
+            return arr;
         }
-    });
 
-    const scoreBoard = document.getElementById('score-board');
-    scoreBoard.style.display = 'block';
-    scoreBoard.innerHTML = `You scored ${score} out of 100 (${((score / 100) * 100).toFixed(1)}%)`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        function setupQuiz() {
+            let deepCopy = JSON.parse(JSON.stringify(rawQuizData));
+            quizData = shuffleArray(deepCopy).map(item => {
+                const correctText = item.options[item.answer];
+                item.options = shuffleArray([...item.options]);
+                item.answer = item.options.indexOf(correctText);
+                return item;
+            });
 
-function toggleAnswers() {
-    answersRevealed = !answersRevealed;
-    quizData.forEach((item, index) => {
-        const feedback = document.getElementById(`feedback-${index}`);
-        if (answersRevealed) {
-            feedback.style.display = 'block';
-            feedback.className = 'feedback correct';
-            feedback.innerHTML = `Answer: ${item.options[item.answer]}`;
-        } else {
-            feedback.style.display = 'none';
+            userAnswers = new Array(quizData.length).fill(null);
         }
-    });
-}
 
-// Initialize on page load
-window.onload = renderQuiz;
-</script>
+        function loadQuestion() {
+            questionCardElem.classList.remove("question-card-anim");
+            void questionCardElem.offsetWidth;
+            questionCardElem.classList.add("question-card-anim");
 
+            const data = quizData[currentIdx];
+            
+            questionNumElem.innerText = `Question ${currentIdx + 1} of ${quizData.length}`;
+            categoryElem.innerText = data.cat;
+            questionTextElem.innerHTML = data.q;
+            
+            const progress = ((currentIdx + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            optionsContainer.innerHTML = "";
+            explanationBox.style.display = "none";
+
+            const letters = ["A", "B", "C", "D"];
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerHTML = `<span class="prefix">${letters[index]}.</span> <span>${opt}</span>`;
+                btn.onclick = () => selectOption(index);
+                
+                if (userAnswers[currentIdx] !== null) {
+                    btn.disabled = true;
+                    if (index === data.answer) {
+                        btn.classList.add("correct");
+                    }
+                    if (userAnswers[currentIdx] === index && index !== data.answer) {
+                        btn.classList.add("incorrect");
+                    }
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            if (userAnswers[currentIdx] !== null) {
+                showExplanation();
+            }
+
+            prevBtn.disabled = currentIdx === 0;
+            nextBtn.disabled = userAnswers[currentIdx] === null;
+            if (currentIdx === quizData.length - 1 && userAnswers[currentIdx] !== null) {
+                nextBtn.innerText = "Finish Exam 🎯";
+            } else {
+                nextBtn.innerText = "Next";
+            }
+
+            // Typeset MathJax dynamically
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(index) {
+            if (userAnswers[currentIdx] !== null) return;
+
+            userAnswers[currentIdx] = index;
+            const data = quizData[currentIdx];
+            const buttons = optionsContainer.children;
+
+            if (index === data.answer) {
+                score++;
+                streak++;
+                buttons[index].classList.add("correct");
+            } else {
+                streak = 0;
+                buttons[index].classList.add("incorrect");
+                buttons[data.answer].classList.add("correct");
+            }
+
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            scoreElem.innerText = score;
+            streakElem.innerText = `${streak} 🔥`;
+            
+            showExplanation();
+            nextBtn.disabled = false;
+
+            if (currentIdx === quizData.length - 1) {
+                nextBtn.innerText = "Finish Exam 🎯";
+            }
+        }
+
+        function showExplanation() {
+            const data = quizData[currentIdx];
+            explanationBox.innerHTML = `<strong>Explanation:</strong> ${data.exp}`;
+            explanationBox.style.display = "block";
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showScoreScreen();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                loadQuestion();
+            }
+        }
+
+        function showScoreScreen() {
+            document.getElementById("quiz-view").style.display = "none";
+            document.getElementById("quiz-footer").style.display = "none";
+            document.getElementById("score-view").style.display = "block";
+
+            const finalScoreElem = document.getElementById("final-score");
+            const msgElem = document.getElementById("score-message");
+
+            finalScoreElem.innerText = `${score}/100`;
+
+            const percentage = (score / quizData.length) * 100;
+            if (percentage >= 90) {
+                msgElem.innerText = "Mastery Level! You are fully prepared for your MATM111 Exam! 🌟";
+            } else if (percentage >= 75) {
+                msgElem.innerText = "Great job! Strong grasp of mathematical concepts. Review missed items! 👍";
+            } else if (percentage >= 60) {
+                msgElem.innerText = "Good effort! Practice problem-solving steps and try again. 📚";
+            } else {
+                msgElem.innerText = "Keep practicing! Review algebraic translations and formulas. 💪";
+            }
+
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById("quote-text").innerText = `"${randomQuote.quote}"`;
+            document.getElementById("quote-author").innerText = `— ${randomQuote.author}`;
+
+            triggerConfettiFX();
+        }
+
+        function restartQuiz() {
+            currentIdx = 0;
+            score = 0;
+            streak = 0;
+
+            scoreElem.innerText = "0";
+            streakElem.innerText = "0 🔥";
+
+            setupQuiz();
+
+            document.getElementById("quiz-view").style.display = "block";
+            document.getElementById("quiz-footer").style.display = "flex";
+            document.getElementById("score-view").style.display = "none";
+
+            loadQuestion();
+        }
+
+        function triggerConfettiFX() {
+            const canvas = document.getElementById("fx-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            let particles = [];
+            const colors = ["#38bdf8", "#818cf8", "#22c55e", "#f43f5e", "#fbbf24"];
+
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12 - 3,
+                    size: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        alive = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.15;
+                        p.life -= 1.5;
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.life / 100;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+
+        setupQuiz();
+        loadQuestion();
+    </script>
 </body>
 </html>
