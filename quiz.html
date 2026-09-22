@@ -1,31 +1,593 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Quiz</title>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAS 100-Item Interactive Reviewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --correct-color: #22c55e;
+            --incorrect-color: #ef4444;
+            --border-color: #334155;
+        }
 
-<body>
-    <h1>My Anatomy Quiz</h1>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-    <p>1. How many pairs of true ribs are there?</p>
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    <button onclick="checkAnswer('A')">A. 5 pairs</button>
-    <button onclick="checkAnswer('B')">B. 7 pairs</button>
-    <button onclick="checkAnswer('C')">C. 10 pairs</button>
-    <button onclick="checkAnswer('D')">D. 12 pairs</button>
+        .app-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-    <p id="result"></p>
+        header {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
 
-    <script>
-        function checkAnswer(answer) {
-            if (answer === 'B') {
-                document.getElementById("result").innerText =
-                    "Correct! 🎉";
-            } else {
-                document.getElementById("result").innerText =
-                    "Incorrect. Try again!";
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            margin-top: 4px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-color);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-color), #818cf8);
+            transition: width 0.3s ease;
+        }
+
+        .quiz-body {
+            padding: 30px;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .option-btn .prefix {
+            font-weight: 700;
+            opacity: 0.7;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            border-color: var(--correct-color) !important;
+            color: #86efac !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--incorrect-color) !important;
+            color: #fca5a5 !important;
+        }
+
+        .explanation-box {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .explanation-box strong {
+            color: var(--text-main);
+        }
+
+        .footer {
+            padding: 20px 30px;
+            background-color: rgba(15, 23, 42, 0.5);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-nav {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-nav:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-nav:disabled {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .score-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .score-screen h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stats-container {
+                width: 100%;
+                justify-content: space-around;
+            }
+            .quiz-body {
+                padding: 20px;
             }
         }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="header-title">
+                <h1>STAS Interactive Reviewer</h1>
+                <p>Prelims Comprehensive Reviewer (100 Items)</p>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="current-score">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Streak</span>
+                    <span class="stat-value" id="current-streak">0 🔥</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="quiz-body" id="quiz-view">
+            <div class="question-meta">
+                <span id="question-number">Question 1 of 100</span>
+                <span id="category-tag">Week 1</span>
+            </div>
+            <div class="question-text" id="question-text">Loading question...</div>
+            <div class="options-grid" id="options-container"></div>
+            <div class="explanation-box" id="explanation-box"></div>
+        </div>
+
+        <div class="score-screen" id="score-view">
+            <h2>Quiz Completed!</h2>
+            <p>Here is your total score:</p>
+            <div class="score-circle" id="final-score">0/100</div>
+            <p id="score-message" style="margin-bottom: 25px; color: var(--text-muted);"></p>
+            <button class="btn-nav" id="restart-btn" onclick="restartQuiz()">Restart Quiz 🔄</button>
+        </div>
+
+        <div class="footer" id="quiz-footer">
+            <button class="btn-nav" id="prev-btn" onclick="prevQuestion()" disabled>Previous</button>
+            <button class="btn-nav" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // Week 1
+            { cat: "Week 1", q: "What is defined as a system of knowledge of the natural world gained through the scientific method?", options: ["Technology", "Science", "Research", "Development"], answer: 1, exp: "Science is the systematic study of the natural world using the scientific method." },
+            { cat: "Week 1", q: "The word 'Technology' originates from Greek 'Techne' and 'Logia'. What does 'Techne' mean?", options: ["Subject or interest", "Practical application", "Art or craft", "Systematic study"], answer: 2, exp: "Techne means art or craft, while Logia means subject or interest." },
+            { cat: "Week 1", q: "The process of transforming research findings into prototype making is known as:", options: ["Research", "Innovation", "Development", "Engineering"], answer: 2, exp: "Development is the phase where research findings are turned into prototypes." },
+            { cat: "Week 1", q: "Which type of research is specifically aimed at gaining new fundamental knowledge without immediate practical application?", options: ["Applied Research", "Basic / Fundamental Research", "Mission-Oriented Research", "Development Research"], answer: 1, exp: "Basic/Fundamental Research aims purely at expanding human knowledge." },
+            { cat: "Week 1", q: "Commercializing a prototype into a marketable product or process is called:", options: ["Innovation", "Production", "Conceptualization", "Synthesis"], answer: 0, exp: "Innovation is the commercialization phase of a prototype." },
+            { cat: "Week 1", q: "Which branch of technology focuses on controlling social activities?", options: ["Information Technology", "Life Technology", "Equipment Technology", "Management Technology"], answer: 3, exp: "Management Technology focuses on controlling and directing social activities." },
+            { cat: "Week 1", q: "Which technology type deals with the design and fabrication of tools?", options: ["Material Technology", "Equipment Technology", "Energy Technology", "Life Technology"], answer: 1, exp: "Equipment Technology deals with fabricating tools and machinery." },
+            { cat: "Week 1", q: "Physics, Chemistry, Astronomy, and Materials Science belong to which branch of science?", options: ["Biological Sciences", "Earth Sciences", "Physical Sciences", "Social Sciences"], answer: 2, exp: "Physical Sciences cover non-living natural systems like physics and chemistry." },
+            { cat: "Week 1", q: "What is the correct sequence of steps in the Scientific Method?", options: ["Question -> Observation -> Experimentation -> Hypothesis -> Conclusion", "Observation -> Question -> Hypothesis -> Experimentation -> Conclusion", "Hypothesis -> Observation -> Question -> Conclusion -> Experimentation", "Observation -> Hypothesis -> Question -> Experimentation -> Conclusion"], answer: 1, exp: "The sequence starts with Observation and ends with Conclusion." },
+            { cat: "Week 1", q: "In the Technological Process, what step immediately follows 'Identification of need'?", options: ["Production", "Conceptualization", "Use phase", "Innovation"], answer: 1, exp: "Technological process: Identification of need -> Conceptualization -> Production -> Use phase." },
+            { cat: "Week 1", q: "The 'Agricultural Age / Revolution' corresponds to which wave of technology?", options: ["First wave Technology", "Second wave Technology", "Third wave Technology", "Post-Industrial wave"], answer: 0, exp: "First Wave Technology focused on farming and irrigation systems." },
+            { cat: "Week 1", q: "The Second Wave of Technology is associated with which historical era?", options: ["Post-Industrial Society", "Industrial Revolution", "Information Age", "Hunter & Gatherer Society"], answer: 1, exp: "Second Wave Technology corresponds to the Industrial Revolution (steam engines, factories)." },
+            { cat: "Week 1", q: "A group of people associated in a community living together is called a:", options: ["Nation", "Paradigm", "Society", "Antecedent"], answer: 2, exp: "Society refers to a large group of people living together in a community." },
+            { cat: "Week 1", q: "Which type of society relied primarily on hunting wild animals and moved to find resources?", options: ["Agricultural society", "Horticultural society", "Hunter and Gatherer society", "Industrial society"], answer: 2, exp: "Hunter and Gatherer societies moved continuously following natural food supplies." },
+            { cat: "Week 1", q: "A society driven primarily by high technology, information, and science-intensive services is:", options: ["Post-Industrial society", "Industrial society", "Agricultural society", "Pastoral society"], answer: 0, exp: "Post-Industrial society is high-tech and information/service-based." },
+
+            // Week 2-3 (Ancient Civilizations)
+            { cat: "Week 2-3", q: "What term refers to events, ideas, or circumstances that came before and influenced something?", options: ["Paradigm", "Historical Antecedents", "Intellectual Revolutions", "Innovations"], answer: 1, exp: "Antecedents refer to prior events or conditions that influenced the present." },
+            { cat: "Week 2-3", q: "Which ancient civilization in Mesopotamia developed Cuneiform writing?", options: ["Egyptian", "Babylonian", "Sumerian", "Indus"], answer: 2, exp: "Sumerians developed Cuneiform, one of the earliest systems of writing." },
+            { cat: "Week 2-3", q: "The sexagesimal system (base 60) and 360-degree circle were first introduced by the:", options: ["Greeks", "Romans", "Sumerians", "Chinese"], answer: 2, exp: "Sumerians introduced the sexagesimal system and 360-degree circle concept." },
+            { cat: "Week 2-3", q: "What massive stepped structure served as a temple complex in ancient Mesopotamia?", options: ["Pyramid", "Stupa", "Ziggurat", "Obelisk"], answer: 2, exp: "Ziggurats were massive temple towers built in ancient Mesopotamian cities." },
+            { cat: "Week 2-3", q: "The Hanging Gardens and the Ishtar Gate were constructed during which civilization?", options: ["Sumerian", "Egyptian", "Babylonian", "Persian"], answer: 2, exp: "Both structures are famous architectural feats of the Babylonian Civilization." },
+            { cat: "Week 2-3", q: "Which famous ancient code of laws is attributed to a king of Babylon?", options: ["Code of Ur-Nammu", "Code of Hammurabi", "Magna Carta", "Edicts of Ashoka"], answer: 1, exp: "King Hammurabi created the Code of Hammurabi in ancient Babylon." },
+            { cat: "Week 2-3", q: "Hieroglyphics, 365-day calendar, and papyrus scrolls belong to which civilization?", options: ["Greek", "Roman", "Egyptian", "Indus-Hindu"], answer: 2, exp: "These are prominent technological and cultural achievements of Ancient Egypt." },
+            { cat: "Week 2-3", q: "Which structure served as a monumental tomb for Egyptian Pharaohs?", options: ["Ziggurat", "Obelisk", "Pyramid", "Pantheon"], answer: 2, exp: "Pyramids were constructed specifically as royal tombs for Egyptian Pharaohs." },
+            { cat: "Week 2-3", q: "Who is widely recognized as the 'Father of Greek Medicine'?", options: ["Thales of Miletus", "Aristotle", "Hippocrates", "Anaxagoras"], answer: 2, exp: "Hippocrates established medicine as a distinct discipline and profession." },
+            { cat: "Week 2-3", q: "Who is considered the 'Father of Philosophy' in Ancient Greece?", options: ["Thales of Miletus", "Anaximander", "Archimedes", "Aristotle"], answer: 0, exp: "Thales of Miletus is traditionally hailed as the Father of Western Philosophy." },
+            { cat: "Week 2-3", q: "The alarm clock, watermill, geometry, and lever/pulley systems are famous inventions of the:", options: ["Romans", "Greeks", "Chinese", "Persians"], answer: 1, exp: "Greeks made major structural advances in mechanics and geometry." },
+            { cat: "Week 2-3", q: "Which civilization is regarded as the cradle of politics and governance and created the bound Codex?", options: ["Greek", "Roman", "Persian", "Arabic"], answer: 1, exp: "Romans excel in politics, legal structures, and invented bound book codices." },
+            { cat: "Week 2-3", q: "The Pantheon, Gladiatorial fights, Newspapers, and Odometer were engineered by the:", options: ["Greeks", "Romans", "Sumerians", "Egyptians"], answer: 1, exp: "These represent signature engineering and cultural advancements of Rome." },
+            { cat: "Week 2-3", q: "The Qanat underground channels, sulfuric acid, and regular postal system were developed by:", options: ["Chinese", "Persian", "Arabic", "Indus"], answer: 1, exp: "Persians created Qanat water networks, sulfuric acid synthesis, and postal delivery." },
+            { cat: "Week 2-3", q: "Which ancient civilization developed silk, chopsticks, gunpowder, and paper printing?", options: ["Chinese", "Japanese", "Indus", "Persian"], answer: 0, exp: "China introduced silk production, gunpowder, chopsticks, and movable type printing." },
+            { cat: "Week 2-3", q: "The Great Wall and earthquake weathercock (seismoscope) were created under which civilization?", options: ["Chinese", "Arabic", "Roman", "Greek"], answer: 0, exp: "The Great Wall and Zhang Heng's seismoscope were created in Ancient China." },
+            { cat: "Week 2-3", q: "Which civilization contributed modern Arabic numerals, magnification optics, and early black powder guns?", options: ["Indus", "Arabic", "Persian", "Chinese"], answer: 1, exp: "The Arabic civilization refined numeral systems, optical magnification, and early firearms." },
+            { cat: "Week 2-3", q: "Plastic surgery, bone repair, Caesarean sections, and positive/negative numbers were early contributions of:", options: ["Egyptian", "Indus-Hindu", "Roman", "Persian"], answer: 1, exp: "Indus-Hindu medicine pioneered complex surgical procedures and zero/negative math." },
+            { cat: "Week 2-3", q: "The Iron Pillar of Delhi and the architectural Stupa originate from which culture?", options: ["Indus-Hindu", "Arabic", "Sumerian", "Greek"], answer: 0, exp: "The rust-resistant Iron Pillar of Delhi and Buddhist Stupas are Indus-Hindu heritage." },
+            { cat: "Week 2-3", q: "Which period lies between Ancient times and Modern times, featuring the heavy plough and mechanical clock?", options: ["Renaissance", "Medieval Times", "Age of Enlightenment", "Industrial Era"], answer: 1, exp: "Medieval Times (Dark & High Middle Ages) bridges Ancient and Modern history." },
+
+            // Week 4 (Intellectual Revolutions)
+            { cat: "Week 4", q: "The Renaissance period is often called the transition of Ancient to Modern times or the:", options: ["Agricultural Era", "Age of Enlightenment", "Information Age", "Bronze Age"], answer: 1, exp: "The Renaissance marks the transition into the Age of Enlightenment." },
+            { cat: "Week 4", q: "What is defined as a standard pattern, model, or framework of scientific thinking?", options: ["Antecedent", "Hypothesis", "Paradigm", "Philosophy"], answer: 2, exp: "A paradigm is a distinct set of concepts or thought patterns in a discipline." },
+            { cat: "Week 4", q: "Which definition of science emphasizes it as an 'observation about nature'?", options: ["Intellectual activity", "Science as an idea", "Body of knowledge", "Personal & social activity"], answer: 1, exp: "Science as an idea = core observations and ideas regarding natural phenomena." },
+            { cat: "Week 4", q: "Before the Copernican Revolution, what was the prevailing astronomical belief?", options: ["Heliocentric model", "Geocentric model", "Galaxy-centered model", "Tychonic model"], answer: 1, exp: "The Geocentric model (Earth at the center) was dominant before Copernicus." },
+            { cat: "Week 4", q: "What does the Geocentric model claim?", options: ["Sun is at the center", "Earth is at the center and planets revolve around it", "Planets revolve around the moon", "Stars expand infinitely"], answer: 1, exp: "Geocentric = Earth-centered planetary universe." },
+            { cat: "Week 4", q: "Who proposed the Heliocentric model of the universe?", options: ["Claudius Ptolemy", "Nicolaus Copernicus", "Johannes Kepler", "Isaac Newton"], answer: 1, exp: "Nicolaus Copernicus proposed that the Sun (Helios) is at the center." },
+            { cat: "Week 4", q: "Which astronomer supported Copernican Theory using telescopic observations?", options: ["Galileo Galilei", "Charles Darwin", "Sigmund Freud", "Tycho Brahe"], answer: 0, exp: "Galileo used his improved telescope to gather physical evidence for heliocentrism." },
+            { cat: "Week 4", q: "Who formulated mathematical laws of planetary motion to support heliocentrism?", options: ["Isaac Newton", "Johannes Kepler", "Thales of Miletus", "Anaxagoras"], answer: 1, exp: "Johannes Kepler established the three laws of planetary orbital motion." },
+            { cat: "Week 4", q: "Which scientist formulated fundamental Laws of Physics that explained planetary gravity?", options: ["Nicolaus Copernicus", "Isaac Newton", "Albert Einstein", "Galileo Galilei"], answer: 1, exp: "Sir Isaac Newton formulated gravity and physical laws governing motion." },
+            { cat: "Week 4", q: "What core mechanism drives biological evolution according to Charles Darwin?", options: ["Inheritance of Acquired Traits", "Natural Selection", "Spontaneous Generation", "Use and Disuse"], answer: 1, exp: "Natural Selection ('Survival of the Fittest') is Darwin's key mechanism." },
+            { cat: "Week 4", q: "In Darwinian Theory, what does 'Survival of the Fittest' mean?", options: ["Strongest physical organisms survive", "Fastest organisms escape predators", "Organisms best adapted to environment survive and reproduce", "Mutated organisms survive"], answer: 2, exp: "'Fittest' means best adapted to environmental conditions." },
+            { cat: "Week 4", q: "Which of the following is NOT a component of Darwin's Natural Selection?", options: ["Variation", "Inheritance", "Inheritance of Acquired Characteristics", "Differential survival"], answer: 2, exp: "Inheritance of Acquired Characteristics was proposed by Lamarck, not Darwin." },
+            { cat: "Week 4", q: "Lamarck proposed that parts used frequently grow stronger while unused parts weaken. This is called:", options: ["Natural Selection", "Use and Disuse", "Psychoanalysis", "Genetic Drift"], answer: 1, exp: "Lamarck's 1st principle is the Law of Use and Disuse." },
+            { cat: "Week 4", q: "According to Lamarck's hypothesis, why do giraffes have long necks?", options: ["Long-necked giraffes randomly survived better", "Stretching necks over lifetimes was passed to offspring", "DNA mutations occurred", "Short-necked giraffes migrated away"], answer: 1, exp: "Lamarck believed acquired lifetime stretching was passed to offspring." },
+            { cat: "Week 4", q: "The Freudian Revolution introduced which field of psychological study?", options: ["Behaviorism", "Psychoanalysis", "Humanistic Psychology", "Cognitive Development"], answer: 1, exp: "Sigmund Freud created Psychoanalysis focusing on unconscious drives." },
+            { cat: "Week 4", q: "Which component of Freud's personality operates purely on the pleasure principle ('I want it now!')?", options: ["Ego", "Superego", "Id", "Conscious"], answer: 2, exp: "The Id operates on instant gratification and pleasure principles." },
+            { cat: "Week 4", q: "Which structural component represents moral rules, conscience, and ethics ('What is right?')?", options: ["Id", "Ego", "Superego", "Subconscious"], answer: 2, exp: "The Superego represents societal conscience and moral standards." },
+            { cat: "Week 4", q: "The Ego operates based on:", options: ["Reality and practicality ('Let's think')", "Immediate pleasure seeking", "Moral perfectionism", "Subconscious instincts"], answer: 0, exp: "The Ego balances instinct (Id) and morality (Superego) using reality." },
+            { cat: "Week 4", q: "You see an unattended phone. The thought 'Stealing is wrong; return it' represents the:", options: ["Id", "Ego", "Superego", "Libido"], answer: 2, exp: "Moral conscience regarding right and wrong comes from the Superego." },
+            { cat: "Week 4", q: "Which theory posits that human population grows faster than food supply?", options: ["Darwinian Theory", "Malthusian Theory", "Copernican Model", "Economic Determinism"], answer: 1, exp: "Thomas Malthus proposed the Malthusian Theory of Population vs resources." },
+
+            // Week 5 (Nation-Building & PH S&T)
+            { cat: "Week 5", q: "In Philippine context, what native word means 'spelling' and refers to ancient pre-colonial script?", options: ["Alibata", "Baybayin", "Balangay", "Caracoa"], answer: 1, exp: "Baybayin comes from the root word meaning 'to spell'." },
+            { cat: "Week 5", q: "What trade route connected Manila and Mexico across the Pacific Ocean using large ships?", options: ["Silk Road", "Galleon Trade", "Spice Route", "Trans-Pacific Railway"], answer: 1, exp: "The Manila-Acapulco Galleon Trade connected Asia and the Americas." },
+            { cat: "Week 5", q: "What is defined as a group of people sharing culture, history, language, and national identity using state power?", options: ["Community", "Nation", "Society", "Colony"], answer: 1, exp: "A Nation builds collective identity via historical and cultural bonds under state power." },
+            { cat: "Week 5", q: "Which of the following is a major product of pre-colonial Filipino engineering?", options: ["San Agustin Church", "Banaue Rice Terraces", "Manila Bay Port", "Intramuros Walls"], answer: 1, exp: "The Banaue Rice Terraces display master engineering by early Filipinos." },
+            { cat: "Week 5", q: "Native seafaring ocean vessels built by early Filipinos included:", options: ["Balangay, banca, caracoa, vinta, and paraw", "Galleons and frigates", "Kayaks and ironclads", "Ziggurats and qanats"], answer: 0, exp: "Balangay, caracoa, vinta, and paraw were traditional Philippine watercraft." },
+            { cat: "Week 5", q: "Formal science education and higher learning institutions were introduced in PH primarily during:", options: ["Pre-colonial Era", "Spanish Colonization", "American Era", "Post-WWII Republic"], answer: 1, exp: "Spanish Catholic orders established formal school systems and universities." },
+            { cat: "Week 5", q: "During Spanish rule, formal study of S&T in universities was mostly accessible to:", options: ["Rural farmers", "Elite Filipinos (Illustrados)", "Foreign traders only", "Public school teachers"], answer: 1, exp: "Higher education was mostly reserved for elite wealthy families (*Illustrados*)." },
+            { cat: "Week 5", q: "Which era established the Bureau of Science as the primary research center until WWII?", options: ["Spanish Era", "American Era", "Marcos Administration", "Post-EDSA Period"], answer: 1, exp: "The Americans established the Bureau of Science to promote public research." },
+            { cat: "Week 5", q: "The University of the Philippines (UP) was established as a modern research university during the:", options: ["Spanish Period", "American Era", "Japanese Occupation", "Commonwealth"], answer: 1, exp: "UP was founded in 1908 during the American Period." },
+            { cat: "Week 5", q: "Which event severely destabilized the technological development of the Philippine republic?", options: ["Spanish-American War", "World War II", "Philippine Revolution", "The Great Depression"], answer: 1, exp: "World War II destroyed much of Manila's infrastructure and research institutions." },
+            { cat: "Week 5", q: "Which PH President declared 'advancement of S&T is key for national development' and established PSHS?", options: ["Corazon Aquino", "Ferdinand Marcos", "Fidel V. Ramos", "Joseph Estrada"], answer: 1, exp: "Ferdinand Marcos emphasized S&T and created Philippine Science High School." },
+            { cat: "Week 5", q: "What board was reorganized under Marcos to support research-oriented high school students?", options: ["DOST", "NSDB (National Science Development Board)", "CHED", "NEDA"], answer: 1, exp: "The NSDB (later NSTA, now DOST) organized Philippine Science High School." },
+            { cat: "Week 5", q: "Under President Corazon Aquino, NSTA was elevated to executive cabinet rank as:", options: ["DENR", "DOST", "DOH", "DICT"], answer: 1, exp: "Executive Order No. 128 under Corazon Aquino elevated NSTA to DOST." },
+            { cat: "Week 5", q: "What was the goal of STAND (Science & Technology Agenda for National Development) under C. Aquino?", options: ["Make science exclusive to elites", "Assist economic recovery and reach newly industrialized country status", "Build nuclear plants", "Ban imports"], answer: 1, exp: "STAND aimed to leverage S&T for economic recovery and industrialization." },
+            { cat: "Week 5", q: "The Magna Carta for Science and Technology Personnel is registered as:", options: ["RA No. 8439", "RA No. 7687", "RA No. 8293", "RA No. 7459"], answer: 0, exp: "RA 8439 is the Magna Carta for S&T Personnel." },
+            { cat: "Week 5", q: "RA No. 7687 passed during Fidel V. Ramos's presidency is officially known as:", options: ["Intellectual Property Code", "Science and Technology Scholarship Law of 1994", "Inventors Incentives Act", "Biofuels Act"], answer: 1, exp: "RA 7687 provides scholarships for talented S&T students." },
+            { cat: "Week 5", q: "Which healthcare program was initiated under Fidel V. Ramos to deploy doctors to remote areas?", options: ["Universal Health Care", "Doctors to the Barrios Program", "Bayanihan Health Drive", "Botika ng Barangay"], answer: 1, exp: "FVR launched 'Doctors to the Barrios' to bring medical services to rural regions." },
+            { cat: "Week 5", q: "The Clean Air Act of 1999 and Electronic Commerce Act of 2000 were enacted under:", options: ["Corazon Aquino", "Joseph Estrada", "Gloria Macapagal Arroyo", "Benigno Aquino III"], answer: 1, exp: "President Joseph Estrada signed the PCAA (1999) and ECA (2000)." },
+            { cat: "Week 5", q: "Whose presidency was dubbed 'The Golden Age of Science and Technology' introducing 'Filipinovations'?", options: ["Fidel V. Ramos", "Gloria Macapagal Arroyo", "Ferdinand Marcos", "Rodrigo Duterte"], answer: 1, exp: "Gloria Macapagal Arroyo's administration highlighted 'Filipinovations'." },
+            { cat: "Week 5", q: "RA 9367 signed under Arroyo to promote environmental protection and energy sustainability is:", options: ["The Biofuels Act", "Renewable Energy Act", "Clean Water Act", "Climate Change Act"], answer: 0, exp: "RA 9367 is the Biofuels Act of 2006." },
+            { cat: "Week 5", q: "Under President Benigno Aquino III, basic education was restructured by introducing:", options: ["Secondary Education Curriculum", "K to 12 Program", "NCEE", "Alternative Learning System"], answer: 1, exp: "PNoy proposed 10 ways to improve education, establishing K to 12." },
+            { cat: "Week 5", q: "RA No. 11035 enacted on June 15, 2018 under President Rodrigo Duterte is the:", options: ["Universal Health Care Law", "Balik Scientist Law", "Philippine Space Act", "Bayanihan Act"], answer: 1, exp: "RA 11035 institutionalized incentives for Filipino scientists returning abroad." },
+            { cat: "Week 5", q: "Micro-satellites Diwata-1 and Diwata-2 were launched under which administration?", options: ["Benigno Aquino III", "Rodrigo Duterte", "Gloria Macapagal Arroyo", "Ferdinand Marcos Jr."], answer: 1, exp: "Diwata microsatellites were deployed into orbit during Duterte's presidency." },
+            { cat: "Week 5", q: "Universal Health Care Act (RA 11223) ensuring healthcare access for all Filipinos was signed under:", options: ["Joseph Estrada", "Rodrigo Duterte", "Fidel V. Ramos", "Corazon Aquino"], answer: 1, exp: "Duterte signed RA 11223 (Universal Health Care) in 2019." },
+            { cat: "Week 5", q: "What emergency legislation was passed during COVID-19 under Duterte for vaccine drive and response?", options: ["Clean Air Act", "Magna Carta for Health Workers", "Bayanihan to Heal As One Act (RA 11469)", "STAND 2000"], answer: 2, exp: "RA 11469 provided emergency pandemic powers and recovery funding." },
+
+            // Notable Figures & Review Wrap-up
+            { cat: "Key Figures", q: "Which National Scientist is a pioneer in child healthcare and founder of early pediatric care in PH?", options: ["Eduardo Quisumbing", "Fe del Mundo", "Angel Alcala", "Gavino Trono"], answer: 1, exp: "Dr. Fe del Mundo was a pioneer in Philippine pediatrics and child healthcare." },
+            { cat: "Key Figures", q: "Dr. Ramon C. Barba is famous for his scientific contribution in:", options: ["Coral reef conservation", "Year-round flowering and production of mangoes", "Seaweed biodiversity", "Herbal medicine"], answer: 1, exp: "Ramon Barba invented potassium nitrate spray for year-round mango flowering." },
+            { cat: "Key Figures", q: "Who is recognized as the 'Father of Seaweed Diversity' in the Philippines?", options: ["Angel C. Alcala", "Gavino C. Trono", "Edgardo D. Gomez", "Eduardo Quisumbing"], answer: 1, exp: "Gavino C. Trono made vast contributions to seaweed biodiversity research." },
+            { cat: "Key Figures", q: "Which biologist is world-renowned for pioneering coral reef conservation?", options: ["Angel C. Alcala", "Edgardo D. Gomez", "Ramon C. Barba", "Eduardo Quisumbing"], answer: 1, exp: "Edgardo Gomez led national marine research and coral reef restoration." },
+            { cat: "Key Figures", q: "Dr. Eduardo Quisumbing is celebrated for his extensive expertise and research in:", options: ["Marine Ecology", "Philippine Medicinal Plants", "Pediatric Surgery", "Satellite Technology"], answer: 1, exp: "Eduardo Quisumbing authored fundamental works on Philippine medicinal plants." },
+            { cat: "Agencies", q: "Which executive department leads S&T policy and project funding in the Philippines?", options: ["DOH", "DOST", "CHED", "DENR"], answer: 1, exp: "DOST (Department of Science and Technology) is the primary S&T body." },
+            { cat: "Agencies", q: "What international research organization located in the Philippines focuses on rice crop production?", options: ["PAGASA", "IRRI", "Bureau of Plant Industry", "SEARCA"], answer: 1, exp: "IRRI (International Rice Research Institute) is headquartered in Los Baños, Laguna." },
+            { cat: "Agencies", q: "PAGASA is responsible for weather forecasting. What does PAGASA stand for?", options: ["Philippine Atmospheric, Geophysical, and Astronomical Services Administration", "Philippine Agency for Geological and Astronomical Scientific Advancement", "Pacific Atmospheric, Geodetic, and Astronomical Services Association", "Philippine Aeronautical, Geophysical, and Astronomical Safety Agency"], answer: 0, exp: "PAGASA = Philippine Atmospheric, Geophysical, and Astronomical Services Administration." },
+            { cat: "Agencies", q: "Which department oversees public health services and medical administration in PH?", options: ["DOST", "DOH", "IRRI", "DSWD"], answer: 1, exp: "DOH (Department of Health) directs public health policies and hospitals." },
+            { cat: "Laws", q: "RA 8293 enacted during Ramos's term protects inventions, trademarks, and creative works. It is:", options: ["Biofuels Act", "Intellectual Property Code of the PH", "Magna Carta for Scientists", "E-Commerce Act"], answer: 1, exp: "RA 8293 is the Intellectual Property Code of the Philippines." },
+            { cat: "Laws", q: "Under Fidel Ramos, RA 7459 was enacted to assist local innovators. What is its title?", options: ["Inventors and Inventions Incentives Act", "Clean Air Act", "Science Scholarship Act", "Technology Transfer Act"], answer: 0, exp: "RA 7459 provides incentives to Filipino inventors and technical patents." },
+            { cat: "History", q: "What ancient Mesopotamian writing implement/style was shaped like wedges stamped into clay tablets?", options: ["Hieroglyphics", "Calligraphy", "Cuneiform", "Baybayin"], answer: 2, exp: "Cuneiform is wedge-shaped script pressed onto soft clay tablets." },
+            { cat: "History", q: "Ancient Indian civilization engineered an iron structure famous for resisting rust for 1600+ years:", options: ["Stupa of Sanchi", "Iron Pillar of Delhi", "Taj Mahal", "Qutub Minar"], answer: 1, exp: "The Iron Pillar of Delhi displays advanced ancient metallurgy and rust resistance." },
+            { cat: "Freud", q: "In psychoanalysis, which component mediates between instinctual drives and societal rules?", options: ["Id", "Ego", "Superego", "Libido"], answer: 1, exp: "The Ego functions as the realistic mediator between Id and Superego." },
+            { cat: "Freud", q: "An individual wanting to eat an entire cake immediately is driven by the:", options: ["Ego", "Superego", "Id", "Conscience"], answer: 2, exp: "The Id demands immediate gratification without regarding consequences." },
+            { cat: "History", q: "Which ancient civilization built underground aqueducts called Qanats?", options: ["Sumerian", "Persian", "Roman", "Greek"], answer: 1, exp: "Persians engineered Qanats to bring water from mountain aquifers through deserts." },
+            { cat: "History", q: "Where was the famous Library of Alexandria built in ancient history?", options: ["Greece", "Egypt", "Rome", "Babylon"], answer: 1, exp: "The Library of Alexandria was the premier center of learning in Ptolemaic Egypt." },
+            { cat: "Tech", q: "The First Wave of technology focused primarily on:", options: ["Steam engines and factories", "Farming and irrigation systems", "Information technology", "Artificial intelligence"], answer: 1, exp: "First Wave = Agricultural Revolution (farming, irrigation, animal power)." },
+            { cat: "Science", q: "Which scientific branch encompasses geology, meteorology, oceanography, and paleontology?", options: ["Physical Sciences", "Biological Sciences", "Earth Sciences", "Life Sciences"], answer: 2, exp: "Earth Sciences focus on the physical structure and atmosphere of Earth." },
+            { cat: "Science", q: "In scientific method, a testable prediction formulated after making observations is a:", options: ["Conclusion", "Hypothesis", "Theory", "Paradigm"], answer: 1, exp: "A Hypothesis is an educated, testable prediction answering a scientific question." }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let streak = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+
+        const questionNumElem = document.getElementById("question-number");
+        const categoryElem = document.getElementById("category-tag");
+        const questionTextElem = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const explanationBox = document.getElementById("explanation-box");
+        const scoreElem = document.getElementById("current-score");
+        const streakElem = document.getElementById("current-streak");
+        const progressBar = document.getElementById("progress-bar");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        function loadQuestion() {
+            const data = quizData[currentIdx];
+            
+            questionNumElem.innerText = `Question ${currentIdx + 1} of ${quizData.length}`;
+            categoryElem.innerText = data.cat;
+            questionTextElem.innerText = data.q;
+            
+            // Update progress bar
+            const progress = ((currentIdx + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            optionsContainer.innerHTML = "";
+            explanationBox.style.display = "none";
+
+            const letters = ["A", "B", "C", "D"];
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerHTML = `<span class="prefix">${letters[index]}.</span> ${opt}`;
+                btn.onclick = () => selectOption(index);
+                
+                // If user already answered this question
+                if (userAnswers[currentIdx] !== null) {
+                    btn.disabled = true;
+                    if (index === data.answer) {
+                        btn.classList.add("correct");
+                    }
+                    if (userAnswers[currentIdx] === index && index !== data.answer) {
+                        btn.classList.add("incorrect");
+                    }
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            if (userAnswers[currentIdx] !== null) {
+                showExplanation();
+            }
+
+            // Button controls
+            prevBtn.disabled = currentIdx === 0;
+            nextBtn.disabled = userAnswers[currentIdx] === null;
+            if (currentIdx === quizData.length - 1 && userAnswers[currentIdx] !== null) {
+                nextBtn.innerText = "Finish Quiz 🎯";
+            } else {
+                nextBtn.innerText = "Next";
+            }
+        }
+
+        function selectOption(index) {
+            if (userAnswers[currentIdx] !== null) return; // Prevent changing answer
+
+            userAnswers[currentIdx] = index;
+            const data = quizData[currentIdx];
+            const buttons = optionsContainer.children;
+
+            if (index === data.answer) {
+                score++;
+                streak++;
+                buttons[index].classList.add("correct");
+            } else {
+                streak = 0;
+                buttons[index].classList.add("incorrect");
+                buttons[data.answer].classList.add("correct");
+            }
+
+            // Disable all options
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            scoreElem.innerText = score;
+            streakElem.innerText = `${streak} 🔥`;
+            
+            showExplanation();
+            nextBtn.disabled = false;
+
+            if (currentIdx === quizData.length - 1) {
+                nextBtn.innerText = "Finish Quiz 🎯";
+            }
+        }
+
+        function showExplanation() {
+            const data = quizData[currentIdx];
+            explanationBox.innerHTML = `<strong>Explanation:</strong> ${data.exp}`;
+            explanationBox.style.display = "block";
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                showScoreScreen();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                loadQuestion();
+            }
+        }
+
+        function showScoreScreen() {
+            document.getElementById("quiz-view").style.display = "none";
+            document.getElementById("quiz-footer").style.display = "none";
+            document.getElementById("score-view").style.display = "block";
+
+            const finalScoreElem = document.getElementById("final-score");
+            const msgElem = document.getElementById("score-message");
+
+            finalScoreElem.innerText = `${score}/100`;
+
+            const percentage = (score / quizData.length) * 100;
+            if (percentage >= 90) {
+                msgElem.innerText = "Outstanding! You are fully prepared for your STAS Prelims! 🌟";
+            } else if (percentage >= 75) {
+                msgElem.innerText = "Great job! You have a solid grasp of the concepts. Review missed items! 👍";
+            } else if (percentage >= 60) {
+                msgElem.innerText = "Good effort! Review the notes and try again to improve your score. 📚";
+            } else {
+                msgElem.innerText = "Keep practicing! Re-read the lecture notes and give it another shot. 💪";
+            }
+        }
+
+        function restartQuiz() {
+            currentIdx = 0;
+            score = 0;
+            streak = 0;
+            userAnswers.fill(null);
+
+            scoreElem.innerText = "0";
+            streakElem.innerText = "0 🔥";
+
+            document.getElementById("quiz-view").style.display = "block";
+            document.getElementById("quiz-footer").style.display = "flex";
+            document.getElementById("score-view").style.display = "none";
+
+            loadQuestion();
+        }
+
+        // Initialize quiz on start
+        loadQuestion();
     </script>
 </body>
 </html>
