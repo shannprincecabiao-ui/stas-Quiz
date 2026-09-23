@@ -1,1 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelim Nursing Anaphy - Hard Level Reviewer</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --border-color: #334155;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 1.5rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- RETURN HOME BUTTON --- */
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.05));
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 0.55rem 1.1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.3px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-home svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.25s ease;
+        }
+
+        .btn-home:hover {
+            background: var(--accent-blue);
+            color: #0f172a;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-home:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .btn-home:active {
+            transform: translateY(0);
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.3);
+        }
+
+        .status-tracker {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .badge-difficulty {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--accent-red);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .quiz-slide-wrapper {
+            position: relative;
+            min-height: 520px;
+        }
+
+        .quiz-card {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .quiz-card.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number {
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .diagram-img {
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin: 0.5rem auto 1rem auto;
+            display: block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .option-btn {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: var(--card-hover);
+            border-color: var(--accent-blue);
+        }
+
+        .option-btn.correct {
+            background-color: rgba(74, 222, 128, 0.2) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(248, 113, 113, 0.2) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: #0f172a;
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover:not([disabled]) {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-submit-action {
+            background: var(--accent-blue);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit-action:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .results-card {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .results-card h2 {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 1rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-retake {
+            background-color: var(--accent-green);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-retake:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .quote-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px dashed var(--accent-blue);
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .quote-author {
+            margin-top: 0.5rem;
+            font-style: normal;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Header Nav with Correct Relative Path -->
+        <div class="header-nav">
+            <a href="../main.html" class="btn-home">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span>Return to Main</span>
+            </a>
+            <div class="status-tracker">
+                <span class="progress-text" id="progress-counter">0 / 75 Answered</span>
+                <span class="badge-difficulty">Hard - 75 Items</span>
+            </div>
+        </div>
+
+        <!-- Single Card Slide Wrapper -->
+        <div class="quiz-slide-wrapper" id="quiz-container"></div>
+
+        <!-- Navigation Controls -->
+        <div class="controls-wrapper" id="controls-panel">
+            <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">← Previous</button>
+            <button class="btn-submit-action" id="submit-btn" onclick="calculateScore()">Submit Exam</button>
+            <button class="nav-btn" id="next-btn" onclick="navigateSlide(1)">Next →</button>
+        </div>
+
+        <!-- Final Results Card -->
+        <div id="results-card" class="results-card">
+            <h2>Exam Completed!</h2>
+            <p style="color: var(--text-secondary);">Hard Level - Prelim Nursing Anatomy & Physiology Reviewer</p>
+            <div class="score-display" id="score-text">0 / 75</div>
+            <p id="percentage-text" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;"></p>
+            
+            <div class="action-buttons">
+                <button class="btn-retake" onclick="resetQuiz()">Retake Exam (Shuffled)</button>
+                <a href="../main.html" class="btn-home" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span>Return to Main Menu</span>
+                </a>
+            </div>
+
+            <div class="quote-box">
+                "Hard work beats talent when talent doesn't work hard. Every hour spent mastering anatomy brings you one step closer to becoming an extraordinary nurse."
+                <div class="quote-author">— Nursing Excellence Motto</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const rawQuizData = [
+            // --- IMAGE-BASED HISTOLOGY QUESTIONS ---
+            {
+                q: "Identify the tissue type shown in this microscopic slide:",
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvzdbErTL7kU5JBUfSqPYiLQU_Tfi2rcXpdj5xBGnFmA&s=10",
+                options: ["Simple Cuboidal Epithelium", "Simple Squamous Epithelium", "Stratified Columnar Epithelium", "Transitional Epithelium"],
+                correctText: "Simple Cuboidal Epithelium",
+                exp: "Simple cuboidal epithelium consists of a single layer of cube-like cells with central spherical nuclei, prominently seen in kidney tubules."
+            },
+            {
+                q: "Identify the tissue type shown in this microscopic slide:",
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2v11MTNOV70cL8SOJmCTBLx0D2Y9cwRFwKTIyvAs-qs0rdL5JIdXxlvpH&s=10",
+                options: ["Simple Columnar Epithelium", "Simple Cuboidal Epithelium", "Stratified Squamous Epithelium", "Transitional Epithelium"],
+                correctText: "Simple Columnar Epithelium",
+                exp: "Simple columnar epithelium features tall, column-shaped cells with oval nuclei located near the basal surface."
+            },
+            {
+                q: "Identify the specialized ciliated tissue type shown in this slide:",
+                img: "https://vmicro.iusm.iu.edu/hs_vm/images/epi9_kerat.jpg",
+                options: ["Ciliated Simple Columnar Epithelium", "Simple Squamous Epithelium", "Transitional Epithelium", "Stratified Columnar Epithelium"],
+                correctText: "Ciliated Simple Columnar Epithelium",
+                exp: "This tissue displays apical hair-like cilia projections that move substances across luminal surfaces."
+            },
+            {
+                q: "Identify the specialized stretching tissue type from the urinary tract:",
+                img: "https://media.sciencephoto.com/image/c0477812/800wm/C0477812-Urinary_bladder_transitional_epithelium,_light_micrograph.jpg",
+                options: ["Transitional Epithelium", "Simple Cuboidal Epithelium", "Stratified Columnar Epithelium", "Simple Squamous Epithelium"],
+                correctText: "Transitional Epithelium",
+                exp: "Transitional epithelium features umbrella-like surface cells capable of shifting shape when organs expand."
+            },
+
+            // --- ADVANCED ANATOMY & PHYSIOLOGY (HARD LEVEL ITEMS 5 TO 75) ---
+            {
+                q: "During muscle contraction, which specific region of the sarcomere shortens and may completely disappear when fully contracted?",
+                options: ["A band", "H zone and I band", "Z disc", "M line"],
+                correctText: "H zone and I band",
+                exp: "As actin filaments slide over myosin toward the center, the I band and H zone narrow and disappear while the A band length remains constant."
+            },
+            {
+                q: "Which specific protein covers the myosin-binding sites on actin filaments when a muscle fiber is at rest?",
+                options: ["Troponin C", "Tropomyosin", "Titin", "Myosin heavy chain"],
+                correctText: "Tropomyosin",
+                exp: "Tropomyosin blocks active binding sites on G-actin subunits until calcium binds to troponin to shift it away."
+            },
+            {
+                q: "The triad structure in skeletal muscle cells consists of which specific organelles?",
+                options: ["One T-tubule and two adjacent terminal cisternae", "Two T-tubules and one sarcoplasmic reticulum", "One myofibril, one sarcolemma, and one T-tubule", "Three sarcoplasmic cisternae"],
+                correctText: "One T-tubule and two adjacent terminal cisternae",
+                exp: "A triad consists of a central T-tubule flanked on both sides by terminal cisternae of the sarcoplasmic reticulum."
+            },
+            {
+                q: "What is the physiological cause of rigor mortis after clinical death?",
+                options: ["Excessive influx of ATP into myofibrils", "Depletion of ATP preventing myosin head detachment from actin", "Lactic acid accumulation destroying actin filaments", "Uncontrolled breakdown of acetylcholine"],
+                correctText: "Depletion of ATP preventing myosin head detachment from actin",
+                exp: "Without ATP synthesis post-mortem, myosin heads cannot release from actin, locking cross-bridges in a rigid state."
+            },
+            {
+                q: "Which layer of the epidermis contains clear cells rich in eleidin, a lipid-rich protein precursor to keratin?",
+                options: ["Stratum granulosum", "Stratum spinosum", "Stratum lucidum", "Stratum basale"],
+                correctText: "Stratum lucidum",
+                exp: "Stratum lucidum contains eleidin, providing a clear protective barrier in thick skin (palms and soles)."
+            },
+            {
+                q: "Desmosomes and keratin intermediate filaments provide high structural strength to which layer of the epidermis?",
+                options: ["Stratum spinosum", "Stratum corneum", "Stratum granulosum", "Stratum basale"],
+                correctText: "Stratum spinosum",
+                exp: "Stratum spinosum cells feature prominent spiny desmosomal connections that resist mechanical shearing forces."
+            },
+            {
+                q: "Which receptor located deep in the dermis and hypodermis responds specifically to high-frequency vibration and deep pressure?",
+                options: ["Meissner's corpuscle", "Pacinian (lamellar) corpuscle", "Merkel cell", "Ruffini corpuscle"],
+                correctText: "Pacinian (lamellar) corpuscle",
+                exp: "Pacinian corpuscles are encapsulated nerve endings that respond rapidly to deep pressure and high-frequency vibration."
+            },
+            {
+                q: "Which structural feature connects Haversian canals to neighboring Volkmann's canals and periosteal blood vessels?",
+                options: ["Canaliculi", "Perforating (Volkmann's) canals", "Central canals", "Concentric lamellae"],
+                correctText: "Perforating (Volkmann's) canals",
+                exp: "Volkmann's canals run perpendicularly to osteons, supplying vascular access from the periosteum to central Haversian canals."
+            },
+            {
+                q: "What type of cartilage forms the epiphyseal plate in growing long bones?",
+                options: ["Fibrocartilage", "Hyaline cartilage", "Elastic cartilage", "Fibrous cartilage"],
+                correctText: "Hyaline cartilage",
+                exp: "Epiphyseal plates consist of hyaline cartilage where chondrocytes undergo active mitosis to lengthen long bones."
+            },
+            {
+                q: "During endochondral ossification, where does the secondary ossification center form?",
+                options: ["Diaphysis", "Epiphysis", "Metaphysis", "Periosteum"],
+                correctText: "Epiphysis",
+                exp: "Secondary ossification centers develop in the epiphyses around the time of birth."
+            },
+            {
+                q: "Which hormone inhibits osteoclast activity and stimulates calcium deposition into bone matrix?",
+                options: ["Parathyroid hormone (PTH)", "Calcitonin", "Aldosterone", "Cortisol"],
+                correctText: "Calcitonin",
+                exp: "Calcitonin secreted by thyroid parafollicular C cells reduces blood calcium by inhibiting osteoclasts."
+            },
+            {
+                q: "Which skull bone houses both the middle/inner ear structures and the carotid canal?",
+                options: ["Sphenoid bone", "Temporal bone", "Occipital bone", "Ethmoid bone"],
+                correctText: "Temporal bone",
+                exp: "The petrous part of the temporal bone contains auditory ossicles, cochlea, and carotid canal."
+            },
+            {
+                q: "The superior orbital fissure and optic canal pass through which cranial bone?",
+                options: ["Ethmoid bone", "Sphenoid bone", "Frontal bone", "Maxilla"],
+                correctText: "Sphenoid bone",
+                exp: "The sphenoid bone contains the optic canal and superior orbital fissure for cranial nerves II, III, IV, VI, and V1."
+            },
+            {
+                q: "Which specific vertebra lacks a body and spinous process?",
+                options: ["Atlas (C1)", "Axis (C2)", "Vertebra prominens (C7)", "Thoracic T1"],
+                correctText: "Atlas (C1)",
+                exp: "C1 (atlas) consists of anterior and posterior arches without a vertebral body or spinous process."
+            },
+            {
+                q: "The articulation between the head of a rib and the superior/inferior costal facets of adjacent vertebrae forms a:",
+                options: ["Costotransverse joint", "Costovertebral joint", "Sternocostal joint", "Interchondral joint"],
+                correctText: "Costovertebral joint",
+                exp: "The costovertebral joint links the head of the rib to vertebral bodies."
+            },
+            {
+                q: "Which specific ligament prevents hyperextension of the knee joint?",
+                options: ["Anterior cruciate ligament (ACL)", "Posterior cruciate ligament (PCL)", "Tibial collateral ligament", "Patellar ligament"],
+                correctText: "Anterior cruciate ligament (ACL)",
+                exp: "The ACL prevents anterior displacement of the tibia and hyperextension of the knee."
+            },
+            {
+                q: "Which muscle belongs to the rotator cuff group and initiates the first 15 degrees of shoulder abduction?",
+                options: ["Infraspinatus", "Supraspinatus", "Subscapularis", "Teres minor"],
+                correctText: "Supraspinatus",
+                exp: "Supraspinatus initiates abduction of the arm before the deltoid takes over."
+            },
+            {
+                q: "What functional classification applies to the pubic symphysis and intervertebral discs?",
+                options: ["Synarthrosis / Fibrous", "Amphiarthrosis / Cartilaginous", "Diarthrosis / Synovial", "Synostosis"],
+                correctText: "Amphiarthrosis / Cartilaginous",
+                exp: "Pubic symphysis and intervertebral discs are fibrocartilaginous amphiarthrotic (slightly movable) joints."
+            },
+            {
+                q: "In neuromuscular transmission, opening of voltage-gated calcium channels in the presynaptic axon terminal triggers:",
+                options: ["Efflux of potassium ions", "Exocytosis of acetylcholine (ACh) vesicles", "Generation of an end-plate action potential", "Inhibition of acetylcholinesterase"],
+                correctText: "Exocytosis of acetylcholine (ACh) vesicles",
+                exp: "Presynaptic calcium influx causes synaptic vesicles to fuse with the membrane and release ACh into the cleft."
+            },
+            {
+                q: "Fast-glycolytic (Type IIb) muscle fibers are characterized by:",
+                options: ["High myoglobin content and high resistance to fatigue", "Low myoglobin content, high glycogen stores, and rapid fatigue", "Abundant mitochondria and slow contraction speeds", "Exclusively aerobic energy production"],
+                correctText: "Low myoglobin content, high glycogen stores, and rapid fatigue",
+                exp: "Type IIb fibers rely on anaerobic glycolysis, producing powerful, fast contractions but fatiguing quickly."
+            },
+            {
+                q: "What is the role of titin filaments in the sarcomere structure?",
+                options: ["Cleaving ATP during the power stroke", "Binding calcium ions to move tropomyosin", "Anchoring thick filaments to the Z disc and providing elastic recoil", "Cross-linking actin filaments at the M line"],
+                correctText: "Anchoring thick filaments to the Z disc and providing elastic recoil",
+                exp: "Titin extends from the Z disc to the M line, stabilizing myosin and restoring sarcomere length after stretching."
+            },
+            {
+                q: "Which structure secretes synovial fluid into the joint cavity to reduce friction?",
+                options: ["Fibrous capsule", "Synovial membrane", "Articular cartilage", "Fibrocartilaginous meniscus"],
+                correctText: "Synovial membrane",
+                exp: "The inner synovial membrane produces hyaluronic-acid-rich synovial fluid."
+            },
+            {
+                q: "Which zone of the epiphyseal plate features columns of enlarged chondrocytes undergoing hypertrophy?",
+                options: ["Zone of reserve cartilage", "Zone of proliferation", "Zone of hypertrophy", "Zone of calcification"],
+                correctText: "Zone of hypertrophy",
+                exp: "In the zone of hypertrophy, older chondrocytes swell and mature, compressing the surrounding matrix."
+            },
+            {
+                q: "Which specific bone feature provides passage for the mandibular branch of the trigeminal nerve (CN V3)?",
+                options: ["Foramen ovale", "Foramen rotundum", "Foramen spinosum", "Jugular foramen"],
+                correctText: "Foramen ovale",
+                exp: "Foramen ovale in the sphenoid bone transmits the mandibular nerve branch (CN V3)."
+            },
+            {
+                q: "Which nerve innervates the anterior compartment muscles of the thigh (such as quadriceps femoris)?",
+                options: ["Obturator nerve", "Femoral nerve", "Sciatic nerve", "Tibial nerve"],
+                correctText: "Femoral nerve",
+                exp: "The femoral nerve (L2-L4) innervates anterior thigh extensors."
+            },
+            {
+                q: "A lesion to the radial nerve results in which classic clinical deficit?",
+                options: ["Foot drop", "Wrist drop", "Claw hand", "Ape hand"],
+                correctText: "Wrist drop",
+                exp: "Radial nerve injury paralyzes forearm extensors, leading to inability to extend the wrist (wrist drop)."
+            },
+            {
+                q: "Which cell type in connective tissue proper synthesizes histamine and heparin during inflammatory responses?",
+                options: ["Fibroblast", "Mast cell", "Plasma cell", "Macrophage"],
+                correctText: "Mast cell",
+                exp: "Mast cells release histamine (vasodilator) and heparin (anticoagulant) upon activation."
+            },
+            {
+                q: "Pseudo-stratified ciliated columnar epithelium is a hallmark histology of which anatomical system?",
+                options: ["Gastrointestinal tract", "Respiratory tract (trachea and bronchi)", "Urinary tract", "Female reproductive duct system"],
+                correctText: "Respiratory tract (trachea and bronchi)",
+                exp: "Pseudostratified ciliated columnar epithelium with goblet cells lines major respiratory passages."
+            },
+            {
+                q: "Sharpey's (perforating) fibers anchor which periosteal component directly into bone matrix?",
+                options: ["Outer collagenous fibrous layer of periosteum into outer circumferential lamellae", "Endosteum into trabeculae", "Epiphyseal plate into diaphysis", "Haversian canal into lacunae"],
+                correctText: "Outer collagenous fibrous layer of periosteum into outer circumferential lamellae",
+                exp: "Sharpey's fibers are bundles of collagen that firmly attach periosteum to compact bone."
+            },
+            {
+                q: "Which anatomical landmark of the pelvis is measured clinically during pelvic examination to estimate the birth canal outlet?",
+                options: ["Ischial spine distance (interspinous diameter)", "Iliac crest width", "Pubic tubercle height", "Acetabular depth"],
+                correctText: "Ischial spine distance (interspinous diameter)",
+                exp: "Interspinous distance between ischial spines represents the narrowest pelvic measurement during labor."
+            },
+            {
+                q: "What type of burn damages the epidermis and upper papillary dermis, forming fluid-filled blisters and marked pain?",
+                options: ["Superficial (1st degree)", "Deep partial-thickness (2nd degree)", "Full-thickness (3rd degree)", "4th degree"],
+                correctText: "Deep partial-thickness (2nd degree)",
+                exp: "Second-degree burns damage dermal layers and typically cause blistering and significant pain due to intact nerve endings."
+            },
+            {
+                q: "Which specific plexus supplies sensory and motor innervation to the upper limb?",
+                options: ["Cervical plexus", "Brachial plexus", "Lumbar plexus", "Sacral plexus"],
+                correctText: "Brachial plexus",
+                exp: "The brachial plexus (C5-T1) provides innervation to shoulder and arm muscles."
+            },
+            {
+                q: "The muscle that flexes the forearm at the elbow and is the primary supinator of the forearm is:",
+                options: ["Brachialis", "Biceps brachii", "Brachioradialis", "Pronator teres"],
+                correctText: "Biceps brachii",
+                exp: "Biceps brachii flexes the elbow joint and acts as a powerful supinator of the forearm."
+            },
+            {
+                q: "Which muscle group forms the posterior hamstring compartment of the thigh?",
+                options: ["Rectus femoris, vastus lateralis, vastus medialis", "Biceps femoris, semitendinosus, semimembranosus", "Gastrocnemius, soleus, plantaris", "Gracilis, pectineus, adductor longus"],
+                correctText: "Biceps femoris, semitendinosus, semimembranosus",
+                exp: "The hamstrings consist of biceps femoris, semitendinosus, and semimembranosus."
+            },
+            {
+                q: "Which specialized cell in the stomach secretes hydrochloric acid (HCl) and intrinsic factor?",
+                options: ["Chief cell", "Parietal cell", "G cell", "Mucous neck cell"],
+                correctText: "Parietal cell",
+                exp: "Parietal cells in gastric glands secrete HCl and intrinsic factor (necessary for Vitamin B12 absorption)."
+            },
+            {
+                q: "What type of muscle tissue exhibits branching fibers, single central nuclei, intercalated discs, and autorhythmicity?",
+                options: ["Skeletal muscle", "Cardiac muscle", "Multi-unit smooth muscle", "Single-unit smooth muscle"],
+                correctText: "Cardiac muscle",
+                exp: "Cardiac muscle cells are branched, single-nucleated, joined by intercalated discs, and contract involuntarily."
+            },
+            {
+                q: "The motor end-plate is a specialized region of the:",
+                options: ["Presynaptic axon terminal", "Sarcolemma", "Sarcoplasmic reticulum", "Endomysium"],
+                correctText: "Sarcolemma",
+                exp: "The motor end-plate is the folded region of sarcolemma containing nicotinic ACh receptors."
+            },
+            {
+                q: "During action potential depolarization in skeletal muscle, which ion rapidly enters the cell?",
+                options: ["Potassium (K+)", "Sodium (Na+)", "Calcium (Ca2+)", "Chloride (Cl-)"],
+                correctText: "Sodium (Na+)",
+                exp: "Opening of voltage-gated sodium channels causes rapid influx of Na+, depolarizing the sarcolemma."
+            },
+            {
+                q: "An enzyme that breaks down ATP to supply energy for myosin head cocking is located on:",
+                options: ["Actin filaments", "Myosin heads", "Troponin complexes", "Tropomyosin strands"],
+                correctText: "Myosin heads",
+                exp: "Myosin heads possess ATPase activity that hydrolyzes ATP to re-energize the cross-bridge."
+            },
+            {
+                q: "Which structure connects the muscle belly to the periosteum of bone as a flat, sheet-like tendon?",
+                options: ["Aponeurosis", "Ligament", "Retinaculum", "Fascia lata"],
+                correctText: "Aponeurosis",
+                exp: "An aponeurosis is a broad, flat sheet of dense connective tissue serving as a attachment."
+            },
+            {
+                q: "Which cranial nerve innervates muscles of facial expression?",
+                options: ["Trigeminal nerve (CN V)", "Facial nerve (CN VII)", "Glossopharyngeal nerve (CN IX)", "Vagus nerve (CN X)"],
+                correctText: "Facial nerve (CN VII)",
+                exp: "Cranial nerve VII (Facial) provides motor supply to muscles of facial expression."
+            },
+            {
+                q: "What muscle forms the muscular floor of the mouth and elevates the hyoid bone during swallowing?",
+                options: ["Mylohyoid", "Sternohyoid", "Omohyoid", "Sternocleidomastoid"],
+                correctText: "Mylohyoid",
+                exp: "The mylohyoid forms the floor of the oral cavity and elevates the hyoid during deglutition."
+            },
+            {
+                q: "Which respiratory muscle expands the thoracic cavity vertically upon contraction?",
+                options: ["External intercostals", "Internal intercostals", "Diaphragm", "Scalenes"],
+                correctText: "Diaphragm",
+                exp: "Contraction of the diaphragm flattens its dome shape, expanding thoracic vertical volume."
+            },
+            {
+                q: "Which bone contains the cribriform plate and superior/middle nasal conchae?",
+                options: ["Sphenoid bone", "Ethmoid bone", "Maxilla", "Palatine bone"],
+                correctText: "Ethmoid bone",
+                exp: "The ethmoid bone contributes to the nasal septum, roof, and lateral nasal walls."
+            },
+            {
+                q: "The structural classification of sutures in the adult skull is:",
+                options: ["Synchondrosis", "Gomphosis", "Symphysis", "Suture (Fibrous synarthrosis)"],
+                correctText: "Suture (Fibrous synarthrosis)",
+                exp: "Adult cranial sutures are immovably fused fibrous joints (synarthroses)."
+            },
+            {
+                q: "Which bone landmark serves as the origin for the rectus femoris muscle?",
+                options: ["Anterior superior iliac spine (ASIS)", "Anterior inferior iliac spine (AIIS)", "Ischial tuberosity", "Greater trochanter"],
+                correctText: "Anterior inferior iliac spine (AIIS)",
+                exp: "Rectus femoris originates specifically from the anterior inferior iliac spine (AIIS)."
+            },
+            {
+                q: "Which bone landmark forms the lateral ankle bulge?",
+                options: ["Medial malleolus", "Lateral malleolus", "Tibial tuberosity", "Calcanium"],
+                correctText: "Lateral malleolus",
+                exp: "The lateral malleolus is the distal expanded tip of the fibula."
+            },
+            {
+                q: "What structural tissue forms the intervertebral disc annulus fibrosus?",
+                options: ["Hyaline cartilage", "Fibrocartilage", "Elastic cartilage", "Areolar tissue"],
+                correctText: "Fibrocartilage",
+                exp: "The annulus fibrosus consists of dense concentric rings of tough fibrocartilage."
+            },
+            {
+                q: "In dense regular connective tissue, collagen fibers are arranged in:",
+                options: ["Random multidirectional bundles", "Parallel linear bundles", "Branching elastic networks", "Reticular meshworks"],
+                correctText: "Parallel linear bundles",
+                exp: "Dense regular connective tissue features parallel collagen fibers designed to withstand tensile forces in one direction."
+            },
+            {
+                q: "Which pigment in subcutaneous fat and keratinocytes produces a yellow-orange hue in skin?",
+                options: ["Melanin", "Carotene", "Hemoglobin", "Bilirubin"],
+                correctText: "Carotene",
+                exp: "Carotene accumulates in stratum corneum and fatty tissues, yielding a yellow-orange tone."
+            },
+            {
+                q: "Which structure produces oil secretions via holocrine mechanisms to lubricate hair shafts?",
+                options: ["Eccrine gland", "Apocrine gland", "Sebaceous gland", "Ceruminous gland"],
+                correctText: "Sebaceous gland",
+                exp: "Sebaceous glands release oily sebum through holocrine cell rupture."
+            },
+            {
+                q: "The functional unit of compact bone is the osteon, which centers around a canal containing:",
+                options: ["Red bone marrow only", "Blood vessels and nerve fibers", "Osteoclasts only", "Synovial fluid"],
+                correctText: "Blood vessels and nerve fibers",
+                exp: "The central (Haversian) canal contains capillaries, venules, and nerve fibers."
+            },
+            {
+                q: "Small spaces within calcified bone matrix housing individual osteocytes are called:",
+                options: ["Canaliculi", "Lacunae", "Lamellae", "Trabeculae"],
+                correctText: "Lacunae",
+                exp: "Lacunae are tiny cavities within matrix housing osteocytes."
+            },
+            {
+                q: "Osteoblasts differentiate from which precursor cell type?",
+                options: ["Osteoclast", "Osteogenic (osteoprogenitor) cell", "Chondrocyte", "Fibroblast"],
+                correctText: "Osteogenic (osteoprogenitor) cell",
+                exp: "Osteogenic stem cells in periosteum/endosteum undergo division to produce osteoblasts."
+            },
+            {
+                q: "During bone repair after a fracture, what structure forms first around the broken ends?",
+                options: ["Bony callus", "Hematoma", "Fibrocartilaginous callus", "Osteon remodeling"],
+                correctText: "Hematoma",
+                exp: "Blood vessel rupture leads immediately to blood clotting, forming a fracture hematoma."
+            },
+            {
+                q: "Which specific tarsal bone articulates anteriorly with the calcaneus?",
+                options: ["Talus", "Cuboid", "Navicular", "Medial cuneiform"],
+                correctText: "Cuboid",
+                exp: "The calcaneus articulates anteriorly with the cuboid tarsal bone."
+            },
+            {
+                q: "Which bone forms the posterior portion of the hard palate?",
+                options: ["Maxilla", "Palatine bone", "Vomer", "Sphenoid"],
+                correctText: "Palatine bone",
+                exp: "The horizontal plates of the palatine bones form the posterior 1/4 of the hard palate."
+            },
+            {
+                q: "Which nerve passes through the carpel tunnel under the flexor retinaculum?",
+                options: ["Ulnar nerve", "Median nerve", "Radial nerve", "Axillary nerve"],
+                correctText: "Median nerve",
+                exp: "Compression of the median nerve within the carpal tunnel leads to Carpal Tunnel Syndrome."
+            },
+            {
+                q: "Which lower leg muscle performs powerful plantar flexion and inserts via the Achilles (calcaneal) tendon?",
+                options: ["Tibialis anterior", "Gastrocnemius", "Extensor digitorum longus", "Peroneus longus"],
+                correctText: "Gastrocnemius",
+                exp: "Gastrocnemius and soleus attach to the calcaneus via the calcaneal tendon to plantarflex the foot."
+            },
+            {
+                q: "In cardiac muscle cells, gap junctions within intercalated discs function to:",
+                options: ["Firmly anchor actin filaments", "Allow direct electrical ionic continuity between cells", "Prevent cell separation during contraction", "Store glycogen stores"],
+                correctText: "Allow direct electrical ionic continuity between cells",
+                exp: "Gap junctions permit rapid ion diffusion, spreading action potentials across the myocardium as a functional syncytium."
+            },
+            {
+                q: "Smooth muscle contraction differs from skeletal muscle because calcium binds to which protein instead of troponin?",
+                options: ["Calmodulin", "Myosin light chain kinase", "Tropomyosin", "Titin"],
+                correctText: "Calmodulin",
+                exp: "Smooth muscle lacks troponin; calcium binds to calmodulin to activate myosin light chain kinase."
+            },
+            {
+                q: "Multi-unit smooth muscle is found in which location?",
+                options: ["Walls of the stomach", "Arrector pili muscles and iris of the eye", "Uterine wall", "Small intestine"],
+                correctText: "Arrector pili muscles and iris of the eye",
+                exp: "Multi-unit smooth muscle fibers act independently and are located in the iris, ciliary body, and arrector pili muscles."
+            },
+            {
+                q: "Which parameter remains unchanged during isometric skeletal muscle contraction?",
+                options: ["Muscle length", "Muscle tension", "ATP consumption rate", "Intracellular calcium levels"],
+                correctText: "Muscle length",
+                exp: "Isometric contraction develops tension while keeping muscle length constant."
+            },
+            {
+                q: "Which connective tissue layer encloses individual muscle fibers?",
+                options: ["Epimysium", "Perimysium", "Endomysium", "Deep fascia"],
+                correctText: "Endomysium",
+                exp: "Endomysium is a delicate loose connective tissue layer surrounding each muscle cell fiber."
+            },
+            {
+                q: "Which specific neurotransmitter receptors are localized at the motor end-plate?",
+                options: ["Muscarinic ACh receptors", "Nicotinic ACh receptors", "Alpha-1 adrenergic receptors", "Beta-2 adrenergic receptors"],
+                correctText: "Nicotinic ACh receptors",
+                exp: "Neuromuscular junctions utilize ionotropic nicotinic acetylcholine receptors."
+            },
+            {
+                q: "What occurs during wave summation in skeletal muscle physiology?",
+                options: ["Individual twitches completely relax between stimuli", "Successive action potentials arrive before complete relaxation, increasing overall force", "Muscle length increases while force stays constant", "Myosin heads permanently detach from actin"],
+                correctText: "Successive action potentials arrive before complete relaxation, increasing overall force",
+                exp: "Summation occurs when second stimuli arrive before muscle relaxation ends, increasing muscle tension."
+            },
+            {
+                q: "The phenomenon where a muscle contracts more forcefully in response to repeated, identical stimuli after complete relaxation is called:",
+                options: ["Tetanus", "Treppe (staircase effect)", "Fatigue", "Isotonic contraction"],
+                correctText: "Treppe (staircase effect)",
+                exp: "Treppe results from increased intracellular calcium availability and warming of muscle enzymes with repeated contractions."
+            },
+            {
+                q: "Which skull bone contains the hypoglossal canal?",
+                options: ["Temporal bone", "Occipital bone", "Sphenoid bone", "Parietal bone"],
+                correctText: "Occipital bone",
+                exp: "The hypoglossal canal passes through the occipital bone near the foramen magnum to transmit CN XII."
+            },
+            {
+                q: "Which specific anatomical landmark of the humerus articulates with the head of the radius?",
+                options: ["Trochlea", "Capitulum", "Olecranon fossa", "Coronoid fossa"],
+                correctText: "Capitulum",
+                exp: "The capitulum is the smooth, rounded lateral condyle of the humerus that articulates with the radial head."
+            },
+            {
+                q: "Which forearm muscle flexes the wrist and abducts the hand (radial deviation)?",
+                options: ["Flexor carpi radialis", "Flexor carpi ulnaris", "Extensor carpi ulnaris", "Pronator quadratus"],
+                correctText: "Flexor carpi radialis",
+                exp: "Flexor carpi radialis flexes the wrist and performs radial deviation (abduction)."
+            },
+            {
+                q: "The muscle that dorsiflexes and inverts the foot at the ankle is the:",
+                options: ["Tibialis anterior", "Gastrocnemius", "Soleus", "Peroneus longus"],
+                correctText: "Tibialis anterior",
+                exp: "Tibialis anterior produces ankle dorsiflexion and foot inversion."
+            }
+        ];
+
+        let activeQuizData = [];
+        let userAnswers = {};
+        let currentSlide = 0;
+        let isSubmitted = false;
+
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function prepareShuffledQuiz() {
+            let shuffledQuestions = shuffleArray(rawQuizData);
+
+            activeQuizData = shuffledQuestions.map(item => {
+                let shuffledOpts = shuffleArray(item.options);
+                let newCorrectIndex = shuffledOpts.indexOf(item.correctText);
+
+                return {
+                    q: item.q,
+                    img: item.img,
+                    options: shuffledOpts,
+                    correct: newCorrectIndex,
+                    exp: item.exp
+                };
+            });
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            userAnswers = {};
+            currentSlide = 0;
+            isSubmitted = false;
+
+            activeQuizData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.className = `quiz-card ${index === 0 ? 'active' : ''}`;
+                card.id = `card-${index}`;
+
+                let imgHTML = data.img ? `<img src="${data.img}" alt="Histology Diagram" class="diagram-img">` : '';
+
+                let optionsHTML = data.options.map((opt, optIndex) => `
+                    <button class="option-btn" onclick="selectOption(${index}, ${optIndex})">
+                        ${String.fromCharCode(65 + optIndex)}. ${opt}
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="question-number">Question ${index + 1} of ${activeQuizData.length}</div>
+                    <div class="question-text">${data.q}</div>
+                    ${imgHTML}
+                    <div class="options-container" id="options-${index}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <strong>Rationale:</strong> ${data.exp}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateSlideUI();
+            updateProgressTracker();
+        }
+
+        function selectOption(qIndex, optIndex) {
+            if (userAnswers.hasOwnProperty(qIndex) || isSubmitted) return;
+
+            userAnswers[qIndex] = optIndex;
+            const data = activeQuizData[qIndex];
+            const optionsContainer = document.getElementById(`options-${qIndex}`);
+            const buttons = optionsContainer.getElementsByClassName('option-btn');
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+
+                if (i === data.correct) {
+                    buttons[i].classList.add('correct');
+                }
+
+                if (optIndex === i && optIndex !== data.correct) {
+                    buttons[i].classList.add('incorrect');
+                }
+            }
+
+            explanationDiv.style.display = 'block';
+            updateProgressTracker();
+        }
+
+        function updateProgressTracker() {
+            const answeredCount = Object.keys(userAnswers).length;
+            document.getElementById('progress-counter').innerText = `${answeredCount} / ${activeQuizData.length} Answered`;
+        }
+
+        function navigateSlide(direction) {
+            const newIndex = currentSlide + direction;
+            if (newIndex >= 0 && newIndex < activeQuizData.length) {
+                jumpToSlide(newIndex);
+            }
+        }
+
+        function jumpToSlide(index) {
+            document.getElementById(`card-${currentSlide}`).classList.remove('active');
+            currentSlide = index;
+            document.getElementById(`card-${currentSlide}`).classList.add('active');
+
+            updateSlideUI();
+        }
+
+        function updateSlideUI() {
+            document.getElementById('prev-btn').disabled = (currentSlide === 0);
+            document.getElementById('next-btn').disabled = (currentSlide === activeQuizData.length - 1);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (isSubmitted) return;
+            if (e.key === 'ArrowLeft') {
+                navigateSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateSlide(1);
+            }
+        });
+
+        function calculateScore() {
+            isSubmitted = true;
+            let score = 0;
+
+            activeQuizData.forEach((data, index) => {
+                const selected = userAnswers[index];
+                if (selected === data.correct) {
+                    score++;
+                }
+            });
+
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('controls-panel').style.display = 'none';
+
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.style.display = 'block';
+
+            document.getElementById('score-text').innerText = `${score} / ${activeQuizData.length}`;
+            const percentage = Math.round((score / activeQuizData.length) * 100);
+            document.getElementById('percentage-text').innerText = `Your Score: ${percentage}%`;
+        }
+
+        function resetQuiz() {
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('controls-panel').style.display = 'flex';
+
+            prepareShuffledQuiz();
+            renderQuiz();
+        }
+
+        prepareShuffledQuiz();
+        renderQuiz();
+    </script>
+</body>
+</html>
