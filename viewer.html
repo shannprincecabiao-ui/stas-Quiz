@@ -1,0 +1,363 @@
+Yep. But one important thing: **`viewer.html` by itself cannot receive data from `extreme.html`**. It needs a shared online database/API.
+
+For now, here's the **viewer dashboard code** designed for the system we discussed. It expects your backend to provide a JSON list of attempts.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Quiz Viewer</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#0b1220;
+ color:#fff;
+ padding:20px;
+}
+.container{
+ max-width:1100px;
+ margin:auto;
+}
+h1{
+ margin:0 0 5px;
+ color:#60a5fa;
+}
+.subtitle{
+ color:#94a3b8;
+ margin-bottom:20px;
+}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin-bottom:20px;
+}
+.stat{
+ background:#111c2e;
+ border:1px solid #24344d;
+ border-radius:10px;
+ padding:15px;
+}
+.stat b{
+ display:block;
+ font-size:25px;
+ color:#60a5fa;
+}
+.stat span{
+ color:#94a3b8;
+ font-size:13px;
+}
+.tablebox{
+ background:#111c2e;
+ border:1px solid #24344d;
+ border-radius:10px;
+ overflow:auto;
+}
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:750px;
+}
+th,td{
+ padding:12px;
+ border-bottom:1px solid #24344d;
+ text-align:left;
+}
+th{
+ background:#17243a;
+ color:#60a5fa;
+}
+tr:hover{
+ background:#162238;
+}
+.score{
+ font-weight:bold;
+ color:#4ade80;
+}
+.time{
+ color:#facc15;
+}
+.device{
+ color:#cbd5e1;
+}
+.empty{
+ text-align:center;
+ padding:40px;
+ color:#94a3b8;
+}
+button{
+ margin-bottom:15px;
+ padding:9px 15px;
+ border:0;
+ border-radius:7px;
+ background:#2563eb;
+ color:white;
+ cursor:pointer;
+}
+button:hover{
+ background:#1d4ed8;
+}
+@media(max-width:700px){
+ .stats{
+  grid-template-columns:repeat(2,1fr);
+ }
+ body{
+  padding:10px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Quiz Viewer</h1>
+<div class="subtitle">Anonymous quiz attempts</div>
+
+<div class="stats">
+ <div class="stat">
+  <b id="totalUsers">0</b>
+  <span>Total Attempts</span>
+ </div>
+
+ <div class="stat">
+  <b id="completed">0</b>
+  <span>Completed</span>
+ </div>
+
+ <div class="stat">
+  <b id="average">0%</b>
+  <span>Average Score</span>
+ </div>
+
+ <div class="stat">
+  <b id="latest">—</b>
+  <span>Latest Attempt</span>
+ </div>
+</div>
+
+<button onclick="loadAttempts()">🔄 Refresh</button>
+
+<div class="tablebox">
+<table>
+<thead>
+<tr>
+ <th>#</th>
+ <th>User</th>
+ <th>Device</th>
+ <th>Score</th>
+ <th>Time</th>
+ <th>Quiz</th>
+ <th>Date</th>
+</tr>
+</thead>
+
+<tbody id="attempts">
+<tr>
+ <td colspan="7" class="empty">
+  Loading attempts...
+ </td>
+</tr>
+</tbody>
+
+</table>
+</div>
+
+</div>
+
+<script>
+
+/*
+=========================================
+PUT YOUR BACKEND URL HERE
+=========================================
+*/
+
+const API_URL = "YOUR_BACKEND_URL_HERE";
+
+
+async function loadAttempts(){
+
+ const table = document.getElementById("attempts");
+
+ table.innerHTML = `
+ <tr>
+  <td colspan="7" class="empty">
+   Loading...
+  </td>
+ </tr>
+ `;
+
+ try{
+
+  const response = await fetch(API_URL);
+
+  if(!response.ok){
+   throw new Error("Server error");
+  }
+
+  const data = await response.json();
+
+  if(!Array.isArray(data)){
+   throw new Error("Invalid data");
+  }
+
+  displayAttempts(data);
+
+ }catch(error){
+
+  console.error(error);
+
+  table.innerHTML = `
+  <tr>
+   <td colspan="7" class="empty">
+    ❌ Could not load attempts.<br><br>
+    Check your backend URL.
+   </td>
+  </tr>
+  `;
+
+ }
+
+}
+
+
+function displayAttempts(data){
+
+ const table = document.getElementById("attempts");
+
+ if(data.length === 0){
+
+  table.innerHTML = `
+  <tr>
+   <td colspan="7" class="empty">
+    No quiz attempts yet.
+   </td>
+  </tr>
+  `;
+
+  updateStats([]);
+
+  return;
+ }
+
+ table.innerHTML = "";
+
+ data.forEach((user,index)=>{
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+   <td>${index+1}</td>
+
+   <td>
+    <b>${escapeHTML(user.user || "Unknown")}</b>
+   </td>
+
+   <td class="device">
+    ${escapeHTML(user.device || "Unknown")}
+   </td>
+
+   <td class="score">
+    ${escapeHTML(user.score || "0/0")}
+    ${user.percentage != null
+      ? `(${escapeHTML(String(user.percentage))}%)`
+      : ""}
+   </td>
+
+   <td class="time">
+    ${escapeHTML(user.time || "—")}
+   </td>
+
+   <td>
+    ${escapeHTML(user.quiz || "Unknown")}
+   </td>
+
+   <td>
+    ${escapeHTML(user.date || "—")}
+   </td>
+  `;
+
+  table.appendChild(row);
+
+ });
+
+ updateStats(data);
+
+}
+
+
+function updateStats(data){
+
+ document.getElementById("totalUsers").textContent =
+  data.length;
+
+ const completed =
+  data.filter(x =>
+   x.completed === true ||
+   x.completed === "true" ||
+   x.completed === "Yes"
+  ).length;
+
+ document.getElementById("completed").textContent =
+  completed;
+
+ if(data.length){
+
+  const percentages =
+   data
+   .map(x=>Number(x.percentage))
+   .filter(x=>!isNaN(x));
+
+  if(percentages.length){
+
+   const avg =
+    percentages.reduce((a,b)=>a+b,0)
+    /percentages.length;
+
+   document.getElementById("average").textContent =
+    avg.toFixed(1)+"%";
+
+  }
+
+  document.getElementById("latest").textContent =
+   data[data.length-1].date || "—";
+
+ }else{
+
+  document.getElementById("average").textContent =
+   "0%";
+
+  document.getElementById("latest").textContent =
+   "—";
+
+ }
+
+}
+
+
+function escapeHTML(value){
+
+ return String(value)
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+loadAttempts();
+
+</script>
+
+</body>
+</html>
+```
