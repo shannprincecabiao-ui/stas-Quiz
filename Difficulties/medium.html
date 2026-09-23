@@ -1,1 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medium Difficulty - Prelim Anaphy Practice Exam</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-yellow: #facc15;
+            --accent-orange: #fb923c;
+            --accent-red: #f87171;
+            --border-color: #334155;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--accent-yellow);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .header-title p {
+            color: var(--accent-yellow);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: var(--border-color);
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--card-hover);
+            color: var(--accent-blue);
+        }
+
+        /* Score Tracker Sticky Bar */
+        .score-bar {
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .score-info {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .score-info span strong {
+            color: var(--accent-blue);
+        }
+
+        .submit-btn {
+            background: var(--accent-blue);
+            color: #0f172a;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease, background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        /* Question Card Styling */
+        .q-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .q-card.correct-card {
+            border-left: 5px solid var(--accent-green);
+        }
+
+        .q-card.incorrect-card {
+            border-left: 5px solid var(--accent-red);
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--accent-yellow);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .q-topic {
+            font-size: 0.75rem;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .q-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .option-label:hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 0.75rem;
+            accent-color: var(--accent-blue);
+        }
+
+        /* Feedback/Rationale Section */
+        .rationale {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .rationale.visible {
+            display: block;
+        }
+
+        .rationale.correct {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--accent-green);
+        }
+
+        .rationale.incorrect {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: var(--accent-red);
+        }
+
+        /* Summary Banner */
+        .results-banner {
+            display: none;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-banner.visible {
+            display: block;
+        }
+
+        .results-banner h2 {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-banner p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Medium Practice Exam</h1>
+                <p>100 Items • Integumentary, Skeletal, and Muscular Fundamentals</p>
+            </div>
+            <a href="../main.html" class="back-btn">← Back to Main Menu</a>
+        </header>
+
+        <!-- Sticky Score Tracker -->
+        <div class="score-bar">
+            <div class="score-info">
+                <span>Answered: <strong id="answered-count">0</strong> / 100</span>
+                <span>Score: <strong id="current-score">--</strong></span>
+            </div>
+            <button class="submit-btn" onclick="gradeExam()">Submit & Check Answers</button>
+        </div>
+
+        <!-- Overall Summary Banner -->
+        <div id="results-banner" class="results-banner">
+            <h2>Exam Completed!</h2>
+            <p id="final-score-text">Your Final Score: 0 / 100 (0%)</p>
+        </div>
+
+        <!-- Questions Container -->
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+        </form>
+    </div>
+
+    <script>
+        const examData = [
+            // INTEGUMENTARY SYSTEM (25 Questions)
+            {
+                topic: "Integumentary System",
+                question: "Which layer of the epidermis is only found in thick skin such as the palms of the hands and soles of the feet?",
+                options: ["Stratum basale", "Stratum spinosum", "Stratum lucidum", "Stratum granulosum"],
+                answer: 2,
+                rationale: "Stratum lucidum is a thin, clear layer of dead keratinocytes found exclusively in thick skin (palms and soles) to provide extra protection against friction."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which cells in the epidermis serve as sensory receptors for touch?",
+                options: ["Langerhans cells", "Merkel cells", "Keratinocytes", "Melanocytes"],
+                answer: 1,
+                rationale: "Merkel cells (tactile cells) associate with sensory nerve endings in the stratum basale to function as receptors for light touch."
+            },
+            {
+                topic: "Integumentary System",
+                question: "What is the primary function of Langerhans cells in the stratum spinosum?",
+                options: ["Melanin synthesis", "Immune defense via antigen presentation", "Keratin production", "Lipid secretion"],
+                answer: 1,
+                rationale: "Langerhans cells (dendritic cells) are specialized macrophages that ingest foreign substances and activate the immune system."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which layer of the dermis accounts for approximately 80% of dermal thickness and contains dense irregular connective tissue?",
+                options: ["Papillary layer", "Reticular layer", "Stratum basale", "Subcutaneous layer"],
+                answer: 1,
+                rationale: "The reticular layer is the deeper, thicker layer of the dermis composed of dense irregular connective tissue with abundant collagen and elastic fibers."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Sebaceous glands release their oily secretion (sebum) primarily through which mechanism of secretion?",
+                options: ["Merocrine secretion", "Apocrine secretion", "Holocrine secretion", "Endocrine secretion"],
+                answer: 2,
+                rationale: "Sebaceous glands are holocrine glands; secretor cells rupture completely to release their oily mixture of lipids and cell fragments."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Eccrine sweat glands are classified functionally as which type of gland?",
+                options: ["Holocrine", "Merocrine", "Apocrine", "Sebaceous"],
+                answer: 1,
+                rationale: "Eccrine glands secrete sweat via exocytosis (merocrine secretion) directly onto the skin surface for thermoregulation."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Apocrine sweat glands, which become active during puberty and open into hair follicles, are located predominantly in which region?",
+                options: ["Forehead and palms", "Axillary and anogenital regions", "Soles of feet and face", "Mucous membranes"],
+                answer: 1,
+                rationale: "Apocrine glands are concentrated in the axillary (armpit) and anogenital areas, producing an odoriferous secretion when broken down by skin bacteria."
+            },
+            {
+                topic: "Integumentary System",
+                question: "The crescent-shaped white area at the proximal end of the nail body is called the:",
+                options: ["Eponychium", "Hyponychium", "Lunula", "Nail matrix"],
+                answer: 2,
+                rationale: "The lunula is the pale, crescent-shaped region at the base of the nail overlying the thick nail matrix."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which protein provides structural strength, durability, and waterproofing to the superficial epidermal layers?",
+                options: ["Collagen", "Elastin", "Keratin", "Actin"],
+                answer: 2,
+                rationale: "Keratin is a tough fibrous protein that fills keratinocytes as they migrate upward, rendering the outer skin tough and water-resistant."
+            },
+            {
+                topic: "Integumentary System",
+                question: "What pigment produced by melanocytes absorbs harmful ultraviolet (UV) radiation?",
+                options: ["Carotene", "Hemoglobin", "Melanin", "Bilirubin"],
+                answer: 2,
+                rationale: "Melanin is synthesized by melanocytes and transferred to keratinocytes to form a protective shield over nuclear DNA against UV damage."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which dermal papillae structures contain capillary loops and nerve endings for touch?",
+                options: ["Meissner's corpuscles", "Pacinian corpuscles", "Ruffini endings", "Hair roots"],
+                answer: 0,
+                rationale: "Meissner's (tactile) corpuscles are housed within dermal papillae and detect light touch and low-frequency vibrations."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which receptor located deep in the dermis or hypodermis detects deep pressure and vibration?",
+                options: ["Merkel disc", "Meissner's corpuscle", "Pacinian (lamellar) corpuscle", "Free nerve ending"],
+                answer: 2,
+                rationale: "Pacinian (lamellar) corpuscles are deep sensory receptors designed to detect coarse touch, deep pressure, and vibration."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which muscle attached to hair follicles contracts to cause 'goosebumps' in response to cold or fear?",
+                options: ["Arrector pili", "Orbicularis oculi", "Dartos muscle", "Levator palpebrae"],
+                answer: 0,
+                rationale: "The arrector pili is a smooth muscle band connected to hair follicles that pulls hair upright when contracted."
+            },
+            {
+                topic: "Integumentary System",
+                question: "The layer of skin containing stratified squamous keratinized epithelium is the:",
+                options: ["Dermis", "Epidermis", "Hypodermis", "Subcutis"],
+                answer: 1,
+                rationale: "The epidermis consists entirely of keratinized stratified squamous epithelium."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which condition involves a yellowish skin discoloration due to excess accumulation of bilirubin in the blood?",
+                options: ["Cyanosis", "Erythema", "Jaundice", "Albinism"],
+                answer: 2,
+                rationale: "Jaundice is the yellowing of skin and sclera caused by elevated serum bilirubin levels, often indicative of liver dysfunction."
+            },
+            {
+                topic: "Integumentary System",
+                question: "The eponychium of the nail is commonly known as the:",
+                options: ["Cuticle", "Quick", "Free edge", "Nail bed"],
+                answer: 0,
+                rationale: "The eponychium, or cuticle, is the proximal fold of skin projecting onto the nail body."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Ceruminous glands are modified apocrine sweat glands located in the:",
+                options: ["Oral cavity", "External auditory canal", "Mammary glands", "Eyelids"],
+                answer: 1,
+                rationale: "Ceruminous glands line the external ear canal and produce cerumen (earwax) to trap foreign objects."
+            },
+            {
+                topic: "Integumentary System",
+                question: "In burn assessment, the 'Rule of Nines' assigns what percentage of total body surface area to the entire head and neck of an adult?",
+                options: ["4.5%", "9%", "18%", "36%"],
+                answer: 1,
+                rationale: "Under the adult Rule of Nines, the head and neck combined account for 9% of total body surface area (4.5% anterior, 4.5% posterior)."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which layer of the epidermis exhibits active mitosis to continually replace lost skin cells?",
+                options: ["Stratum corneum", "Stratum granulosum", "Stratum basale", "Stratum spinosum"],
+                answer: 2,
+                rationale: "Stratum basale (germinativum) is the deepest epidermal layer containing stem cells that actively divide."
+            },
+            {
+                topic: "Integumentary System",
+                question: "A full-thickness burn destroying both epidermis and dermis, including nerve endings, is classified as a:",
+                options: ["First-degree burn", "Second-degree burn", "Third-degree burn", "Fourth-degree burn"],
+                answer: 2,
+                rationale: "Third-degree burns involve full-thickness destruction of epidermis and dermis; sensory nerves are destroyed, rendering the area painless initially."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Which vitamin is synthesized in the skin upon exposure to solar ultraviolet radiation?",
+                options: ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"],
+                answer: 2,
+                rationale: "UV light converts 7-dehydrocholesterol in epidermal cells into Vitamin D3 (cholecalciferol), vital for calcium absorption."
+            },
+            {
+                topic: "Integumentary System",
+                question: "The blue discoloration of skin and nail beds due to inadequate hemoglobin oxygenation is termed:",
+                options: ["Erythema", "Cyanosis", "Pallor", "Ecchymosis"],
+                answer: 1,
+                rationale: "Cyanosis refers to a bluish tint of tissues resulting from poorly oxygenated blood."
+            },
+            {
+                topic: "Integumentary System",
+                question: "What type of tissue composes the hypodermis (subcutaneous tissue)?",
+                options: ["Stratum corneum", "Areolar and adipose tissue", "Dense regular connective tissue", "Hyaline cartilage"],
+                answer: 1,
+                rationale: "The hypodermis consists mostly of adipose tissue and loose areolar connective tissue for thermal insulation and cushioning."
+            },
+            {
+                topic: "Integumentary System",
+                question: "Granules containing glycolipids released in the stratum granulosum function to:",
+                options: ["Synthesize pigment", "Waterproof the epidermal barrier", "Form keratin fibers", "Trigger inflammation"],
+                answer: 1,
+                rationale: "Lamellar granules release water-resistant glycolipids into intercellular spaces, creating a major barrier to water loss."
+            },
+            {
+                topic: "Integumentary System",
+                question: "The portion of hair embedded within the skin is called the:",
+                options: ["Shaft", "Root", "Cuticle", "Bulb"],
+                answer: 1,
+                rationale: "The portion of hair below the skin surface enclosed in the follicle is the root, whereas the visible part above the skin is the shaft."
+            },
+
+            // SKELETAL SYSTEM FUNDAMENTALS (25 Questions)
+            {
+                topic: "Skeletal System",
+                question: "The structural and functional unit of compact bone tissue is called an:",
+                options: ["Osteocyte", "Osteon (Haversian system)", "Trabecula", "Canaliculus"],
+                answer: 1,
+                rationale: "The osteon (Haversian system) is the fundamental structural unit of compact bone, consisting of concentric lamellae around a central canal."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Which cell type is responsible for resorbing and breaking down bone matrix?",
+                options: ["Osteoblast", "Osteoclast", "Osteogenic cell", "Osteocyte"],
+                answer: 1,
+                rationale: "Osteoclasts are multinucleated cells derived from hematopoietic stem cells that secrete acid and enzymes to degrade bone matrix."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Unmineralized bone matrix secreted by osteoblasts during bone formation is known as:",
+                options: ["Hydroxyapatite", "Osteoid", "Osteon", "Callus"],
+                answer: 1,
+                rationale: "Osteoid is the organic matrix (collagen and ground substance) composed prior to calcium salt mineralization."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Intramembranous ossification forms flat bones of the skull and clavicles directly from:",
+                options: ["Hyaline cartilage models", "Fibrous embryonic connective tissue (mesenchyme)", "Elastic cartilage", "Fibrocartilage"],
+                answer: 1,
+                rationale: "Intramembranous ossification develops flat bones directly from fibrous mesenchymal membranes without a cartilage stage."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Endochondral ossification develops most bones in the body by replacing a pre-existing model made of:",
+                options: ["Fibrocartilage", "Hyaline cartilage", "Elastic cartilage", "Mesenchyme"],
+                answer: 1,
+                rationale: "Endochondral ossification forms long bones and most skeleton parts by replacing hyaline cartilage models."
+            },
+            {
+                topic: "Skeletal System",
+                question: "The primary ossification center during endochondral ossification develops in which part of a long bone?",
+                options: ["Epiphysis", "Diaphysis", "Metaphysis", "Epiphyseal plate"],
+                answer: 1,
+                rationale: "The primary ossification center appears in the center of the diaphysis (shaft) during fetal development."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Longitudinal bone growth in children occurs at the site of the:",
+                options: ["Periosteum", "Endosteum", "Epiphyseal plate", "Sharpey's fibers"],
+                answer: 2,
+                rationale: "The epiphyseal plate (growth plate) of hyaline cartilage allows long bones to lengthen during growth."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Small channels connecting lacunae to each other and to the central Haversian canal for nutrient transport are:",
+                options: ["Volkmann's canals", "Canaliculi", "Foramina", "Sharpey's fibers"],
+                answer: 1,
+                rationale: "Canaliculi are tiny hair-like canals extending from lacunae containing cellular processes of osteocytes."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Which hormone is released when blood calcium levels drop, stimulating osteoclast activity to elevate blood calcium?",
+                options: ["Calcitonin", "Parathyroid hormone (PTH)", "Thyroxine", "Insulin"],
+                answer: 1,
+                rationale: "Parathyroid hormone (PTH) responds to hypocalcemia by activating osteoclasts to resorb bone and release calcium into blood."
+            },
+            {
+                topic: "Skeletal System",
+                question: "The inorganic mineral matrix responsible for bone hardness is primarily composed of crystals of:",
+                options: ["Calcium carbonate", "Hydroxyapatite (calcium phosphate)", "Sodium chloride", "Magnesium sulfate"],
+                answer: 1,
+                rationale: "Hydroxyapatite, mineral salts composed mainly of calcium phosphate, gives bone its hardness and compressive strength."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Spongy bone consists of a lattice framework of delicate thin plates called:",
+                options: ["Osteons", "Trabeculae", "Lamellae", "Canaliculi"],
+                answer: 1,
+                rationale: "Spongy (cancellous) bone tissue is structured as a meshwork of thin bony struts called trabeculae."
+            },
+
+            {
+                topic: "Skeletal System",
+                question: "The tough membrane surrounding the outer surface of bone, providing attachment for tendons and ligaments, is the:",
+                options: ["Endosteum", "Perichondrium", "Periosteum", "Epimysium"],
+                answer: 2,
+                rationale: "The periosteum is a double-layered connective tissue membrane covering external bone surfaces."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Red bone marrow is primarily responsible for:",
+                options: ["Fat storage", "Hematopoiesis (blood cell production)", "Calcium storage only", "Bone resorption"],
+                answer: 1,
+                rationale: "Red marrow consists of hematopoietic tissue that produces red blood cells, white blood cells, and platelets."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Perforating canals that connect blood vessels of the periosteum to central Haversian canals run at right angles and are named:",
+                options: ["Haversian canals", "Volkmann's canals", "Canaliculi", "Central channels"],
+                answer: 1,
+                rationale: "Volkmann's (perforating) canals run perpendicularly to osteons to conduct nerves and blood vessels into bone."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Mature bone cells that monitor and maintain the surrounding mineralized bone matrix are:",
+                options: ["Osteoblasts", "Osteoclasts", "Osteocytes", "Chondrocytes"],
+                answer: 2,
+                rationale: "Osteocytes are mature bone cells trapped within lacunae that maintain bone matrix and sense mechanical stress."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Which cranial bone contains the sella turcica, housing the pituitary gland?",
+                options: ["Ethmoid bone", "Sphenoid bone", "Temporal bone", "Frontal bone"],
+                answer: 1,
+                rationale: "The sphenoid bone features a central depression called the sella turcica ('Turkish saddle') which protects the pituitary gland."
+            },
+            {
+                topic: "Skeletal System",
+                question: "The cribriform plate with olfactory foramina is a distinct landmark of which skull bone?",
+                options: ["Sphenoid bone", "Ethmoid bone", "Parietal bone", "Occipital bone"],
+                answer: 1,
+                rationale: "The cribriform plate forms part of the ethmoid bone, allowing nerve fibers for smell (olfactory cranial nerve I) to pass into the nasal cavity."
+            },
+            {
+                topic: "Skeletal System",
+                question: "How many vertebrae compose the cervical region of the human vertebral column?",
+                options: ["5", "7", "12", "1"],
+                answer: 1,
+                rationale: "There are 7 cervical vertebrae (C1-C7) in the human neck region."
+            },
+            {
+                topic: "Skeletal System",
+                question: "The first cervical vertebra (C1), which articulates with occipital condyles to permit nodding, is named the:",
+                options: ["Axis", "Atlas", "Dens", "Coccyx"],
+                answer: 1,
+                rationale: "C1 is called the atlas; it supports the skull and allows the 'yes' nodding motion."
+            },
+            {
+                topic: "Skeletal System",
+                question: "The dens (odontoid process), which serves as a pivot point for head rotation, is located on which vertebra?",
+                options: ["Atlas (C1)", "Axis (C2)", "Vertebra prominens (C7)", "Thoracic 1 (T1)"],
+                answer: 1,
+                rationale: "The axis (C2) possesses the dens projecting upward into C1 to permit rotational 'no' movements."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Ribs that attach directly to the sternum via their own individual costal cartilages (ribs 1-7) are classified as:",
+                options: ["True ribs (vertebrosternal)", "False ribs (vertebrochondral)", "Floating ribs (vertebral)", "Free ribs"],
+                answer: 0,
+                rationale: "Rib pairs 1 through 7 connect directly to the sternum and are designated true (vertebrosternal) ribs."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Which bone fracture type involves the bone breaking into three or more fragments?",
+                options: ["Greenstick fracture", "Comminuted fracture", "Spiral fracture", "Impacted fracture"],
+                answer: 1,
+                rationale: "A comminuted fracture occurs when bone breaks into multiple small pieces or fragments."
+            },
+            {
+                topic: "Skeletal System",
+                question: "An incomplete fracture common in children where one side breaks and the other bends is called a:",
+                options: ["Greenstick fracture", "Compound fracture", "Compression fracture", "Transverse fracture"],
+                answer: 0,
+                rationale: "Greenstick fractures occur in flexible young bones where the bone breaks incompletely, similar to bending a green twig."
+            },
+            {
+                topic: "Skeletal System",
+                question: "Which curve abnormality presents as an excessive lumbar curvature often called 'hollow back'?",
+                options: ["Scoliosis", "Kyphosis", "Lordosis", "Ankylosis"],
+                answer: 2,
+                rationale: "Lordosis is an accentuated inward curvature of the lumbar spine, commonly seen in pregnancy or obesity."
+            },
+            {
+                topic: "Skeletal System",
+                question: "What suture connects the two parietal bones together along the sagittal plane of the skull?",
+                options: ["Coronal suture", "Sagittal suture", "Lambdoid suture", "Squamous suture"],
+                answer: 1,
+                rationale: "The sagittal suture runs anteroposteriorly along the midline connecting the right and left parietal bones."
+            },
+
+            // APPENDICULAR SKELETON (25 Questions)
+            {
+                topic: "Appendicular Skeleton",
+                question: "The pectoral girdle consists of which pair of bones on each side of the body?",
+                options: ["Ilium and Ischium", "Clavicle and Scapula", "Radius and Ulna", "Femur and Tibia"],
+                answer: 1,
+                rationale: "The pectoral (shoulder) girdle consists of the clavicle anteriorly and the scapula posteriorly."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which socket structure on the scapula articulates with the head of the humerus to form the shoulder joint?",
+                options: ["Acetabulum", "Glenoid cavity (fossa)", "Trochlear notch", "Coracoid process"],
+                answer: 1,
+                rationale: "The shallow glenoid cavity of the scapula receives the head of the humerus forming the glenohumeral joint."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The large, prominent process forming the point of the elbow on the ulna is the:",
+                options: ["Coronoid process", "Olecranon process", "Styloid process", "Radial tuberosity"],
+                answer: 1,
+                rationale: "The olecranon process forms the bony point of the elbow and fits into the olecranon fossa of the humerus upon extension."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which forearm bone is located lateral in anatomical position (on the thumb side)?",
+                options: ["Ulna", "Radius", "Tibia", "Fibula"],
+                answer: 1,
+                rationale: "In anatomical position, the radius lies lateral (thumb side) and the ulna lies medial."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "How many carpal bones form the wrist in a single human upper limb?",
+                options: ["5", "7", "8", "14"],
+                answer: 2,
+                rationale: "There are 8 carpal bones arranged in two rows of four in each wrist."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which carpal bone is the most frequently fractured bone in the wrist, often due to falling on an outstretched hand?",
+                options: ["Pisiform", "Scaphoid", "Capitate", "Hamate"],
+                answer: 1,
+                rationale: "The scaphoid bone is particularly susceptible to fracture during falls onto outstretched hands."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The pelvic girdle is formed by two hip bones (coxal bones). Each coxal bone is formed by fusion of which three bones?",
+                options: ["Ilium, Ischium, Pubis", "Sacrum, Coccyx, Ilium", "Femur, Patella, Tibia", "Ischium, Pubis, Talus"],
+                answer: 0,
+                rationale: "Each hip bone (os coxae) develops from the fusion of three bones: ilium, ischium, and pubis."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The deep cup-like socket of the hip bone that receives the head of the femur is called the:",
+                options: ["Glenoid fossa", "Acetabulum", "Obturator foramen", "Iliac fossa"],
+                answer: 1,
+                rationale: "The acetabulum is a deep hemispherical socket formed by all three coxal bones to articulate with the femur head."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "When sitting, body weight is borne predominantly by which rough projection of the hip bone?",
+                options: ["Iliac crest", "Ischial tuberosity", "Pubic symphysis", "Greater sciatic notch"],
+                answer: 1,
+                rationale: "The ischial tuberosities ('sit bones') bear body weight in a seated position."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The largest and strongest bone in the human body is the:",
+                options: ["Tibia", "Femur", "Humerus", "Pelvis"],
+                answer: 1,
+                rationale: "The femur (thigh bone) is the longest, heaviest, and strongest bone in the human body."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The patella is embedded within the tendon of which major muscle group?",
+                options: ["Hamstrings", "Gastrocnemius", "Quadriceps femoris", "Gluteus maximus"],
+                answer: 2,
+                rationale: "The patella is a sesamoid bone located inside the quadriceps femoris tendon."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which bone is the weight-bearing medial bone of the lower leg?",
+                options: ["Fibula", "Tibia", "Femur", "Radius"],
+                answer: 1,
+                rationale: "The tibia (shinbone) is the thick medial leg bone that transmits weight from the femur to the foot."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The lateral malleolus, forming the outer ankle prominence, is a landmark of which bone?",
+                options: ["Tibia", "Fibula", "Calcaneus", "Talus"],
+                answer: 1,
+                rationale: "The distal end of the fibula forms the lateral malleolus."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The largest tarsal bone that forms the heel of the foot is the:",
+                options: ["Talus", "Calcaneus", "Navicular", "Cuboid"],
+                answer: 1,
+                rationale: "The calcaneus is the largest tarsal bone, forming the heel."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which tarsal bone articulates directly with the tibia and fibula to transmit body weight to the foot?",
+                options: ["Calcaneus", "Talus", "Navicular", "Cuniform"],
+                answer: 1,
+                rationale: "The talus articulates superiorly with the tibia and fibula at the ankle joint."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Compared to the male pelvis, the female pelvis generally features:",
+                options: ["A narrower pubic arch (<60 degrees)", "A heart-shaped pelvic inlet", "A wider, broader subpubic angle (>80-90 degrees)", "Heavier and thicker bones"],
+                answer: 2,
+                rationale: "The female pelvis is adapted for childbearing, having a broader subpubic angle (>80-90°), wider pelvic inlet, and lighter structure."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "How many phalanges are present in one hand (excluding metacarpals)?",
+                options: ["10", "12", "14", "16"],
+                answer: 2,
+                rationale: "Each hand has 14 phalanges (2 in thumb/pollex, 3 in each of digits II through V)."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The trochlea and capitulum are distal articular surfaces located on which bone?",
+                options: ["Scapula", "Humerus", "Radius", "Ulna"],
+                answer: 1,
+                rationale: "The distal humerus features the capitulum (articulating with radius) and trochlea (articulating with ulna)."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which landmark on the humerus serves as an attachment site for the deltoid muscle?",
+                options: ["Greater tubercle", "Deltoid tuberosity", "Radial groove", "Surgical neck"],
+                answer: 1,
+                rationale: "The deltoid tuberosity is a V-shaped roughened ridge on the lateral mid-shaft of the humerus for deltoid insertion."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The bony prominence on the medial side of the ankle joint is the medial malleolus of the:",
+                options: ["Fibula", "Tibia", "Femur", "Calcaneus"],
+                answer: 1,
+                rationale: "The medial malleolus is the distal inner projection of the tibia."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "What structure connects the radius and ulna along their shafts?",
+                options: ["Interosseous membrane", "Epiphyseal plate", "Glenoid labrum", "Annular ligament"],
+                answer: 0,
+                rationale: "The interosseous membrane is a fibrous sheet connecting the shafts of the radius and ulna (and tibia and fibula)."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which bone in the thumb is missing compared to digits II through V?",
+                options: ["Proximal phalanx", "Middle phalanx", "Distal phalanx", "Metacarpal"],
+                answer: 1,
+                rationale: "The thumb (pollex) contains only 2 phalanges (proximal and distal) and lacks a middle phalanx."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The notch on the posterior surface of the hip bone through which the sciatic nerve passes is the:",
+                options: ["Obturator foramen", "Greater sciatic notch", "Lesser sciatic notch", "Iliac fossa"],
+                answer: 1,
+                rationale: "The greater sciatic notch allows passage of the sciatic nerve from the pelvis into the lower limb."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "Which bone feature on the anterior aspect of the scapula serves as an attachment for pectoralis minor?",
+                options: ["Acromion", "Coracoid process", "Spine of scapula", "Glenoid cavity"],
+                answer: 1,
+                rationale: "The coracoid process projects anteriorly from the scapula, serving as an attachment site for muscles including pectoralis minor."
+            },
+            {
+                topic: "Appendicular Skeleton",
+                question: "The lateral end of the clavicle articulates with which structure of the scapula?",
+                options: ["Coracoid process", "Glenoid cavity", "Acromion", "Subscapular fossa"],
+                answer: 2,
+                rationale: "The lateral (acromial) end of the clavicle articulates with the acromion of the scapula forming the acromioclavicular (AC) joint."
+            },
+
+            // MUSCULAR SYSTEM FUNDAMENTALS (25 Questions)
+            {
+                topic: "Muscular System",
+                question: "The connective tissue sheath that surrounds an entire individual skeletal muscle is the:",
+                options: ["Endomysium", "Perimysium", "Epimysium", "Sarcolemma"],
+                answer: 2,
+                rationale: "The epimysium is an overcoat of dense irregular connective tissue surrounding the whole muscle."
+            },
+            {
+                topic: "Muscular System",
+                question: "A bundle of muscle fibers wrapped by perimysium is called a:",
+                options: ["Myofibril", "Fascicle", "Sarcomere", "Myofilament"],
+                answer: 1,
+                rationale: "A fascicle is a discrete bundle of muscle fibers grouped together by perimysium."
+            },
+            {
+                topic: "Muscular System",
+                question: "The plasma membrane of a muscle cell is termed the:",
+                options: ["Sarcoplasm", "Sarcolemma", "Sarcoplasmic reticulum", "Perimysium"],
+                answer: 1,
+                rationale: "The sarcolemma is the specialized plasma membrane enclosing a muscle fiber."
+            },
+            {
+                topic: "Muscular System",
+                question: "The functional contractile unit of a skeletal muscle fiber bounded by Z discs is the:",
+                options: ["Myofibril", "Sarcomere", "Myofilament", "Fascicle"],
+                answer: 1,
+                rationale: "The sarcomere is the basic repeating functional unit of contraction extending from one Z disc to the next."
+            },
+            {
+                topic: "Muscular System",
+                question: "According to the sliding filament model, contraction occurs as which filaments slide past each other?",
+                options: ["Collagen over elastin", "Thin (actin) over thick (myosin)", "Myosin over troponin", "Z discs over H zones"],
+                answer: 1,
+                rationale: "Contraction happens when thin actin filaments slide inward past thick myosin filaments toward the center of the sarcomere."
+            },
+            {
+                topic: "Muscular System",
+                question: "Which chemical neurotransmitter is released at the neuromuscular junction to stimulate muscle contraction?",
+                options: ["Dopamine", "Norepinephrine", "Acetylcholine (ACh)", "Serotonin"],
+                answer: 2,
+                rationale: "Axon terminals release acetylcholine (ACh) across the synaptic cleft to bind receptors on the motor end plate."
+            },
+            {
+                topic: "Muscular System",
+                question: "Calcium ions required for skeletal muscle contraction are stored and released by the:",
+                options: ["T-tubules", "Sarcoplasmic reticulum", "Sarcolemma", "Golgi apparatus"],
+                answer: 1,
+                rationale: "The sarcoplasmic reticulum is a specialized smooth endoplasmic reticulum storing calcium ions."
+            },
+            {
+                topic: "Muscular System",
+                question: "Which regulatory protein binds calcium ions, shifting tropomyosin to expose myosin-binding sites on actin?",
+                options: ["Troponin", "Myosin", "Titine", "Dystrophin"],
+                answer: 0,
+                rationale: "Binding of calcium to troponin alters its shape, moving tropomyosin away from binding sites on actin filaments."
+            },
+            {
+                topic: "Muscular System",
+                question: "Invaginations of the sarcolemma that penetrate deep into the muscle cell to conduct electrical impulses are:",
+                options: ["Terminal cisternae", "Transverse (T) tubules", "Sarcoplasmic tubules", "Myofibrils"],
+                answer: 1,
+                rationale: "T-tubules transmit action potentials into the interior of the muscle fiber to trigger calcium release."
+            },
+            {
+                topic: "Muscular System",
+                question: "During muscle contraction, the enzyme that rapidly degrades acetylcholine in the synaptic cleft to prevent continuous stimulation is:",
+                options: ["Creatine kinase", "Acetylcholinesterase (AChE)", "ATPase", "Myosin kinase"],
+                answer: 1,
+                rationale: "Acetylcholinesterase breaks down acetylcholine into choline and acetate, stopping neuromuscular stimulation."
+            },
+            {
+                topic: "Muscular System",
+                question: "A muscle contraction where muscle tension develops but muscle length remains unchanged is called an:",
+                options: ["Isotonic concentric contraction", "Isotonic eccentric contraction", "Isometric contraction", "Isokinetic contraction"],
+                answer: 2,
+                rationale: "In isometric contraction, tension increases but muscle length remains constant (no movement occurs)."
+            },
+            {
+                topic: "Muscular System",
+                question: "Isotonic contraction in which the muscle shortens while doing work is specifically termed:",
+                options: ["Concentric contraction", "Eccentric contraction", "Isometric contraction", "Static contraction"],
+                answer: 0,
+                rationale: "Concentric contractions are isotonic contractions where the muscle shortens as it generates force."
+            },
+            {
+                topic: "Muscular System",
+                question: "The state of sustained, smooth muscle contraction without relaxation due to rapid, high-frequency stimulation is:",
+                options: ["Tetanus", "Treppe", "Twitch", "Fatigue"],
+                answer: 0,
+                rationale: "Tetanus is a smooth, sustained maximal muscle contraction resulting from rapid stimulation frequencies."
+            },
+            {
+                topic: "Muscular System",
+                question: "Oxygen-storing red pigment found in muscle cytoplasm is called:",
+                options: ["Hemoglobin", "Myoglobin", "Cytochrome", "Melanin"],
+                answer: 1,
+                rationale: "Myoglobin is an iron- and oxygen-binding protein found in muscle tissue that stores oxygen for cellular respiration."
+            },
+            {
+                topic: "Muscular System",
+                question: "Lactic acid is produced during muscle exercise primarily through which metabolic pathway when oxygen is limited?",
+                options: ["Aerobic respiration", "Anaerobic glycolysis", "Direct phosphorylation by creatine phosphate", "Beta-oxidation"],
+                answer: 1,
+                rationale: "When oxygen supply is inadequate, pyruvic acid produced during glycolysis is converted into lactic acid (anaerobic pathway)."
+            },
+            {
+                topic: "Muscular System",
+                question: "High-energy molecule stored in muscle fibers that rapidly regenerates ATP from ADP during early exercise is:",
+                options: ["Glucose", "Creatine phosphate", "Glycogen", "Lactic acid"],
+                answer: 1,
+                rationale: "Creatine phosphate transfers a high-energy phosphate group directly to ADP to regenerate ATP rapidly."
+            },
+            {
+                topic: "Muscular System",
+                question: "Rigor mortis occurs after death primarily because:",
+                options: ["Excess ATP causes continuous cross-bridge cycling", "Lack of ATP prevents myosin head detachment from actin", "Calcium is actively pumped out of the sarcoplasm", "Acetylcholine builds up at the synapse"],
+                answer: 1,
+                rationale: "Without ATP production after death, calcium cannot be pumped back and myosin heads remain bound to actin, causing stiffness."
+            },
+            {
+                topic: "Muscular System",
+                question: "The light region in a sarcomere containing only thin (actin) filaments is the:",
+                options: ["A band", "I band", "H zone", "M line"],
+                answer: 1,
+                rationale: "The I band is the light band containing only thin actin filaments; it bisects the Z disc."
+            },
+            {
+                topic: "Muscular System",
+                question: "The dark band containing the full length of thick (myosin) filaments is the:",
+                options: ["I band", "A band", "Z disc", "H zone"],
+                answer: 1,
+                rationale: "The A band corresponds to the full length of thick filaments."
+            },
+            {
+                topic: "Muscular System",
+                question: "A single motor neuron together with all the individual muscle fibers it innervates is called a:",
+                options: ["Neuromuscular junction", "Motor unit", "Synaptic cleft", "Sarcomere"],
+                answer: 1,
+                rationale: "A motor unit consists of one motor neuron and all the muscle fibers it controls."
+            },
+            {
+                topic: "Muscular System",
+                question: "Which structural protein anchors thick filaments to Z discs and helps muscles resist excessive stretching?",
+                options: ["Titine", "Actin", "Tropomyosin", "Myosin"],
+                answer: 0,
+                rationale: "Titin is a massive elastic protein extending from Z disc to M line, stabilizing myosin and providing elasticity."
+            },
+            {
+                topic: "Muscular System",
+                question: "A sheet-like broad tendon that attaches muscle to bone or adjacent fascia is an:",
+                options: ["Ligament", "Aponeurosis", "Retinaculum", "Bursa"],
+                answer: 1,
+                rationale: "An aponeurosis is a broad, flat sheet of dense connective tissue serving as a tendon."
+            },
+            {
+                topic: "Muscular System",
+                question: "In a muscle lever system, the joint around which movement occurs acts as the:",
+                options: ["Effort", "Load", "Fulcrum", "Lever bar"],
+                answer: 2,
+                rationale: "In biological lever systems, joints act as fulcrums, bones act as levers, and muscle tension provides effort."
+            },
+            {
+                topic: "Muscular System",
+                question: "A muscle that directly opposes the action of a prime mover (agonist) is termed an:",
+                options: ["Synergist", "Fixator", "Antagonist", "Agonist"],
+                answer: 2,
+                rationale: "An antagonist muscle opposes or reverses the specific movement executed by an agonist."
+            },
+            {
+                topic: "Muscular System",
+                question: "Muscles that assist prime movers by adding extra force or reducing unnecessary movement are called:",
+                options: ["Antagonists", "Synergists", "Fixators", "Primary movers"],
+                answer: 1,
+                rationale: "Synergists work with prime movers to perform or streamline movements."
+            },
+
+            // APPENDICULAR MUSCLES (25 Questions)
+            {
+                topic: "Appendicular Muscles",
+                question: "Which triangular muscle of the shoulder is the principal abductor of the arm at the glenohumeral joint?",
+                options: ["Pectoralis major", "Deltoid", "Latissimus dorsi", "Trapezius"],
+                answer: 1,
+                rationale: "The deltoid is the prime mover of arm abduction when all its fibers contract together."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which of the following muscles is NOT a member of the rotator cuff group (SITS)?",
+                options: ["Supraspinatus", "Infraspinatus", "Teres major", "Subscapularis"],
+                answer: 2,
+                rationale: "The rotator cuff (SITS) consists of Supraspinatus, Infraspinatus, Teres MINOR, and Subscapularis. Teres major is not part of this cuff."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which rotator cuff muscle initiates the first 15 degrees of arm abduction?",
+                options: ["Supraspinatus", "Infraspinatus", "Subscapularis", "Teres minor"],
+                answer: 0,
+                rationale: "Supraspinatus initiates arm abduction before the deltoid takes over main abduction."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The major two-headed muscle on the anterior arm that flexes the elbow and supinates the forearm is the:",
+                options: ["Brachialis", "Biceps brachii", "Triceps brachii", "Coracobrachialis"],
+                answer: 1,
+                rationale: "Biceps brachii acts to flex the elbow joint and is a powerful supinated mover of the forearm."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The prime mover for elbow extension on the posterior arm is the:",
+                options: ["Biceps brachii", "Triceps brachii", "Brachioradialis", "Anconeus"],
+                answer: 1,
+                rationale: "Triceps brachii is the three-headed prime mover for extending the forearm at the elbow."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which muscle located deep to the biceps brachii is the strongest flexor of the elbow joint?",
+                options: ["Brachialis", "Brachioradialis", "Coracobrachialis", "Pronator teres"],
+                answer: 0,
+                rationale: "Brachialis lies beneath the biceps brachii and provides powerful elbow flexion regardless of forearm orientation."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Large superficial muscle of the lower back that adducts, extends, and medially rotates the arm ('swimmer's muscle'):",
+                options: ["Trapezius", "Latissimus dorsi", "Rhomboid major", "Levator scapulae"],
+                answer: 1,
+                rationale: "Latissimus dorsi is a broad lower back muscle that extends, adducts, and rotates the humerus."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which large buttock muscle is the chief extender of the hip when climbing stairs or running?",
+                options: ["Gluteus medius", "Gluteus minimus", "Gluteus maximus", "Tensor fasciae latae"],
+                answer: 2,
+                rationale: "Gluteus maximus is a powerful hip extensor active during climbing, running, and rising from a squat."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which gluteal muscle is a critical hip abductor used to stabilize the pelvis during walking to prevent pelvic drop?",
+                options: ["Gluteus maximus", "Gluteus medius", "Piriformis", "Obturator externus"],
+                answer: 1,
+                rationale: "Gluteus medius abducts the hip and prevents pelvic tilt toward the unweighted limb while walking."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The long, strap-like muscle crossing diagonally over the anterior thigh ('tailor's muscle') that permits sitting cross-legged is the:",
+                options: ["Gracilis", "Sartorius", "Rectus femoris", "Vastus lateralis"],
+                answer: 1,
+                rationale: "Sartorius is the longest muscle in the body; it flexes, abducts, and laterally rotates the hip while flexing the knee."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which of the following muscles is NOT part of the quadriceps femoris group?",
+                options: ["Rectus femoris", "Vastus lateralis", "Vastus medialis", "Biceps femoris"],
+                answer: 3,
+                rationale: "Quadriceps femoris includes rectus femoris, vastus lateralis, vastus medialis, and vastus intermedius. Biceps femoris is a hamstring muscle."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which member of the quadriceps femoris crosses two joints, flexing the hip and extending the knee?",
+                options: ["Rectus femoris", "Vastus lateralis", "Vastus intermedius", "Vastus medialis"],
+                answer: 0,
+                rationale: "Rectus femoris originates on the anterior inferior iliac spine, allowing it to flex the hip and extend the knee."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The hamstring muscle group on the posterior thigh includes biceps femoris, semitendinosus, and:",
+                options: ["Semimembranosus", "Gracilis", "Sartorius", "Pectineus"],
+                answer: 0,
+                rationale: "The three hamstring muscles are biceps femoris, semitendinosus, and semimembranosus."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The chief action of the hamstring muscle group is:",
+                options: ["Hip extension and knee flexion", "Hip flexion and knee extension", "Adduction of thigh", "Abduction of thigh"],
+                answer: 0,
+                rationale: "Hamstrings extend the thigh at the hip and flex the leg at the knee."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Superficial calf muscle with two heads that plantarflects the foot and flexes the knee is the:",
+                options: ["Soleus", "Gastrocnemius", "Tibialis anterior", "Fibularis longus"],
+                answer: 1,
+                rationale: "Gastrocnemius forms the prominent calf contour, flexing the knee and plantarflexing the foot."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Deep to gastrocnemius, which broad flat muscle works as a powerful plantarflexor of the foot during walking?",
+                options: ["Soleus", "Tibialis anterior", "Plantaris", "Popliteus"],
+                answer: 0,
+                rationale: "Soleus lies deep to gastrocnemius and acts as a major plantarflexor essential for posture and walking."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Both gastrocnemius and soleus insert into the calcaneus bone via the:",
+                options: ["Patellar ligament", "Calcaneal (Achilles) tendon", "Iliotibial tract", "Plantarmuscular aponeurosis"],
+                answer: 1,
+                rationale: "The calcaneal (Achilles) tendon is the thickest tendon in the body, attaching calf muscles to the heel bone."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which anterior leg muscle is the primary dorsiflexor and inverter of the foot?",
+                options: ["Gastrocnemius", "Tibialis anterior", "Fibularis brevis", "Soleus"],
+                answer: 1,
+                rationale: "Tibialis anterior dorsiflects and inverts the foot; weakness causes 'foot drop'."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The tendon of which lateral hip structure inserts into the lateral condyle of the tibia as a thick band of fascia?",
+                options: ["Patellar tendon", "Iliotibial (IT) band / tract", "Inguinal ligament", "Flexor retinaculum"],
+                answer: 1,
+                rationale: "The iliotibial (IT) tract is a lateral thickening of fascia lata associated with tensor fasciae latae and gluteus maximus."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Medial thigh muscles including adductor longus, adductor magnus, and gracilis primarily perform what action?",
+                options: ["Abduction of thigh", "Adduction of thigh", "Extension of knee", "Dorsiflexion"],
+                answer: 1,
+                rationale: "The adductor group pulls the lower limb inward toward the midline of the body."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which intrinsic forearm muscle on the superficial lateral side flexes the forearm when semi-pronated?",
+                options: ["Brachioradialis", "Flexor carpi radialis", "Extensor digitorum", "Pronator quadratus"],
+                answer: 0,
+                rationale: "Brachioradialis flexes the elbow most effectively when the forearm is in a neutral (semi-pronated) position."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Compression of the median nerve beneath the flexor retinaculum in the wrist causes:",
+                options: ["Tennis elbow", "Carpal tunnel syndrome", "Shin splints", "Rotator cuff tear"],
+                answer: 1,
+                rationale: "Carpal tunnel syndrome results from median nerve compression within the carpal canal of the wrist."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which muscle 'unlocks' the knee joint from full extension by laterally rotating the femur on a fixed tibia?",
+                options: ["Popliteus", "Plantaris", "Soleus", "Gastrocnemius"],
+                answer: 0,
+                rationale: "Popliteus unlocks the knee joint to initiate flexion from a fully extended position."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "The superficial muscle group extending digits II through V on the posterior forearm is the:",
+                options: ["Flexor digitorum superficialis", "Extensor digitorum", "Extensor indicis", "Abductor pollicis longus"],
+                answer: 1,
+                rationale: "Extensor digitorum originates on the lateral epicondyle and extends the fingers and wrist."
+            },
+            {
+                topic: "Appendicular Muscles",
+                question: "Which deep pelvic muscle exits through the greater sciatic notch and can cause sciatic nerve compression when tight?",
+                options: ["Piriformis", "Gluteus minimus", "Quadratus femoris", "Obturator internus"],
+                answer: 0,
+                rationale: "The piriformis runs near the sciatic nerve; spasm or tightness leads to piriformis syndrome (sciatic pain)."
+            }
+        ];
+
+        // Render Questions
+        function renderQuiz() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            examData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'q-card';
+                card.id = `q-card-${index}`;
+
+                card.innerHTML = `
+                    <div class="q-header">
+                        <span class="q-number">Question ${index + 1} of 100</span>
+                        <span class="q-topic">${item.topic}</span>
+                    </div>
+                    <div class="q-text">${item.question}</div>
+                    <div class="options-list">
+                        ${item.options.map((opt, oIdx) => `
+                            <label class="option-label">
+                                <input type="radio" name="q${index}" value="${oIdx}" onchange="updateProgress()">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="rationale" id="rationale-${index}"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Live Tracker update
+        function updateProgress() {
+            const formData = new FormData(document.getElementById('quiz-form'));
+            let answered = 0;
+            for (let i = 0; i < examData.length; i++) {
+                if (formData.has(`q${i}`)) {
+                    answered++;
+                }
+            }
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        // Grade Exam and display rationales
+        function gradeExam() {
+            const formData = new FormData(document.getElementById('quiz-form'));
+            let score = 0;
+
+            examData.forEach((item, index) => {
+                const card = document.getElementById(`q-card-${index}`);
+                const rationaleDiv = document.getElementById(`rationale-${index}`);
+                const selected = formData.get(`q${index}`);
+
+                // Remove old classes
+                card.classList.remove('correct-card', 'incorrect-card');
+                rationaleDiv.classList.remove('visible', 'correct', 'incorrect');
+
+                if (selected !== null) {
+                    const selIdx = parseInt(selected);
+                    if (selIdx === item.answer) {
+                        score++;
+                        card.classList.add('correct-card');
+                        rationaleDiv.classList.add('visible', 'correct');
+                        rationaleDiv.innerHTML = `<strong>✓ Correct!</strong><br>${item.rationale}`;
+                    } else {
+                        card.classList.add('incorrect-card');
+                        rationaleDiv.classList.add('visible', 'incorrect');
+                        rationaleDiv.innerHTML = `<strong>✗ Incorrect.</strong> Correct Answer: <strong>${item.options[item.answer]}</strong><br>${item.rationale}`;
+                    }
+                } else {
+                    card.classList.add('incorrect-card');
+                    rationaleDiv.classList.add('visible', 'incorrect');
+                    rationaleDiv.innerHTML = `<strong>! Unanswered.</strong> Correct Answer: <strong>${item.options[item.answer]}</strong><br>${item.rationale}`;
+                }
+            });
+
+            // Update top bar score & display overall summary
+            document.getElementById('current-score').innerText = `${score} / 100`;
+            const percentage = Math.round((score / 100) * 100);
+            
+            const banner = document.getElementById('results-banner');
+            const bannerText = document.getElementById('final-score-text');
+            bannerText.innerText = `Your Final Score: ${score} / 100 (${percentage}%)`;
+            banner.classList.add('visible');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on load
+        window.onload = renderQuiz;
+    </script>
+</body>
+</html>
