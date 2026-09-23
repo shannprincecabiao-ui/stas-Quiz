@@ -166,11 +166,6 @@
             border-color: var(--accent-blue);
         }
 
-        .option-btn.selected {
-            border-color: var(--accent-blue) !important;
-            background-color: var(--card-hover) !important;
-        }
-
         .option-btn.correct {
             background-color: rgba(74, 222, 128, 0.2) !important;
             border-color: var(--accent-green) !important;
@@ -241,59 +236,6 @@
         .btn-submit-action:hover {
             opacity: 0.9;
             transform: translateY(-1px);
-        }
-
-        /* Question Grid Switcher */
-        .grid-toggle-container {
-            margin-top: 1.5rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
-        }
-
-        .grid-title {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        .question-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
-            gap: 0.4rem;
-            max-height: 140px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .grid-num-btn {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.4rem 0;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .grid-num-btn:hover {
-            border-color: var(--accent-blue);
-            color: var(--text-primary);
-        }
-
-        .grid-num-btn.active {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-            font-weight: 700;
-        }
-
-        .grid-num-btn.answered {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
         }
 
         /* Results Card */
@@ -386,12 +328,6 @@
             <button class="nav-btn" id="next-btn" onclick="navigateSlide(1)">Next →</button>
         </div>
 
-        <!-- Question Navigator Grid -->
-        <div class="grid-toggle-container" id="grid-panel">
-            <div class="grid-title">Quick Question Navigator</div>
-            <div class="question-grid" id="question-grid"></div>
-        </div>
-
         <!-- Final Score Card -->
         <div id="results-card" class="results-card">
             <h2>Exam Completed!</h2>
@@ -414,7 +350,7 @@
 
     <script>
         const rawQuizData = [
-            // --- INTRODUCTION TO ANATOMY (Number-Referenced Diagrams) ---
+            // --- INTRODUCTION TO ANATOMY ---
             {
                 q: "Referring to the body planes diagram, which anatomical plane is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/body_planes.png",
@@ -479,7 +415,7 @@
                 exp: "The cranial cavity houses and protects the brain."
             },
 
-            // --- CELL STRUCTURE (Number-Referenced Diagrams) ---
+            // --- CELL STRUCTURE ---
             {
                 q: "Referring to the cell structure diagram, which organelle is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/cell_structure.png",
@@ -545,7 +481,7 @@
                 exp: "Smooth ER specializes in lipid and hormone production."
             },
 
-            // --- TISSUES OVERVIEW (Number-Referenced Diagrams) ---
+            // --- TISSUES OVERVIEW ---
             {
                 q: "Referring to the tissues overview diagram, which primary tissue type is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/tissues_overview.png",
@@ -611,7 +547,7 @@
                 exp: "Fibroblasts generate fiber matrix elements in connective tissue."
             },
 
-            // --- SKIN LAYERS (Number-Referenced Diagrams) ---
+            // --- SKIN LAYERS ---
             {
                 q: "Referring to the skin layers diagram, which skin layer is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skin_layers.png",
@@ -677,7 +613,7 @@
                 exp: "Stratum lucidum is exclusive to thick hairless skin."
             },
 
-            // --- SKELETAL OVERVIEW (Number-Referenced Diagrams) ---
+            // --- SKELETAL OVERVIEW ---
             {
                 q: "Referring to the skeletal overview diagram, which skeletal region is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skeletal_overview.png",
@@ -787,7 +723,7 @@
                 exp: "Metacarpals form the internal framework of the palm."
             },
 
-            // --- MAJOR MUSCLES (Number-Referenced Diagrams) ---
+            // --- MAJOR MUSCLES ---
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
@@ -922,13 +858,11 @@
             });
         }
 
-        // Render Slide Deck & Grid
+        // Render Slide Deck
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
-            const gridContainer = document.getElementById('question-grid');
             
             container.innerHTML = '';
-            gridContainer.innerHTML = '';
             userAnswers = {};
             currentSlide = 0;
             isSubmitted = false;
@@ -959,37 +893,39 @@
                     </div>
                 `;
                 container.appendChild(card);
-
-                // Render Navigator Grid Item
-                const gridBtn = document.createElement('button');
-                gridBtn.className = `grid-num-btn ${index === 0 ? 'active' : ''}`;
-                gridBtn.id = `grid-btn-${index}`;
-                gridBtn.innerText = index + 1;
-                gridBtn.onclick = () => jumpToSlide(index);
-                gridContainer.appendChild(gridBtn);
             });
 
             updateSlideUI();
             updateProgressTracker();
         }
 
-        function selectOption(qIndex, optIndex, btn) {
-            if (isSubmitted) return;
+        function selectOption(qIndex, optIndex, selectedBtn) {
+            // Prevent changing selection once answered or submitted
+            if (userAnswers.hasOwnProperty(qIndex) || isSubmitted) return;
 
             userAnswers[qIndex] = optIndex;
-            
+            const data = activeQuizData[qIndex];
             const optionsContainer = document.getElementById(`options-${qIndex}`);
             const buttons = optionsContainer.getElementsByClassName('option-btn');
-            
-            for (let b of buttons) {
-                b.classList.remove('selected');
+            const explanationDiv = document.getElementById(`explanation-${qIndex}`);
+
+            // Lock all option buttons for this question
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+
+                // Highlight correct option in green
+                if (i === data.correct) {
+                    buttons[i].classList.add('correct');
+                }
+
+                // Highlight selected wrong option in red
+                if (optIndex === i && optIndex !== data.correct) {
+                    buttons[i].classList.add('incorrect');
+                }
             }
 
-            btn.classList.add('selected');
-
-            // Update navigator grid state
-            const gridBtn = document.getElementById(`grid-btn-${qIndex}`);
-            if (gridBtn) gridBtn.classList.add('answered');
+            // Reveal explanation immediately
+            explanationDiv.style.display = 'block';
 
             updateProgressTracker();
         }
@@ -1007,14 +943,9 @@
         }
 
         function jumpToSlide(index) {
-            // Remove active class from current card and grid item
             document.getElementById(`card-${currentSlide}`).classList.remove('active');
-            document.getElementById(`grid-btn-${currentSlide}`).classList.remove('active');
-
-            // Set new active card and grid item
             currentSlide = index;
             document.getElementById(`card-${currentSlide}`).classList.add('active');
-            document.getElementById(`grid-btn-${currentSlide}`).classList.add('active');
 
             updateSlideUI();
         }
@@ -1039,34 +970,15 @@
             let score = 0;
 
             activeQuizData.forEach((data, index) => {
-                const optionsContainer = document.getElementById(`options-${index}`);
-                const buttons = optionsContainer.getElementsByClassName('option-btn');
-                const explanationDiv = document.getElementById(`explanation-${index}`);
                 const selected = userAnswers[index];
-
-                explanationDiv.style.display = 'block';
-
-                for (let i = 0; i < buttons.length; i++) {
-                    buttons[i].disabled = true;
-
-                    if (i === data.correct) {
-                        buttons[i].classList.add('correct');
-                    }
-
-                    if (selected === i && selected !== data.correct) {
-                        buttons[i].classList.add('incorrect');
-                    }
-                }
-
                 if (selected === data.correct) {
                     score++;
                 }
             });
 
-            // Hide Quiz Deck Controls & Navigator, Show Final Score Card
+            // Hide Quiz Deck Controls, Show Final Score Card
             document.getElementById('quiz-container').style.display = 'none';
             document.getElementById('controls-panel').style.display = 'none';
-            document.getElementById('grid-panel').style.display = 'none';
 
             const resultsCard = document.getElementById('results-card');
             resultsCard.style.display = 'block';
@@ -1080,7 +992,6 @@
             document.getElementById('results-card').style.display = 'none';
             document.getElementById('quiz-container').style.display = 'block';
             document.getElementById('controls-panel').style.display = 'flex';
-            document.getElementById('grid-panel').style.display = 'block';
 
             prepareShuffledQuiz();
             renderQuiz();
