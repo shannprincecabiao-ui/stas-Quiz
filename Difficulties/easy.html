@@ -1,1 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Level - Practice Exam Reviewer Prelim Nursing Anaphy 1st year</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --border-color: #334155;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-home {
+            background-color: transparent;
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-home:hover {
+            background-color: var(--accent-blue);
+            color: #0f172a;
+        }
+
+        .status-tracker {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .badge-difficulty {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--accent-green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.2s ease;
+        }
+
+        .quiz-card.answered {
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .question-number {
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .diagram-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin: 0.5rem 0 1.2rem 0;
+            display: block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: var(--card-hover);
+            border-color: var(--accent-blue);
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent-blue) !important;
+            background-color: var(--card-hover) !important;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(74, 222, 128, 0.2) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(248, 113, 113, 0.2) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: #0f172a;
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        #submit-btn {
+            width: 100%;
+            background: var(--accent-blue);
+            color: #0f172a;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        #submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .results-card {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .results-card h2 {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 1rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-retake {
+            background-color: var(--accent-green);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-retake:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .quote-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px dashed var(--accent-blue);
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .quote-author {
+            margin-top: 0.5rem;
+            font-style: normal;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Sticky Header & Nav -->
+        <div class="header-nav">
+            <a href="../main.html" class="btn-home">← Go back home</a>
+            <div class="status-tracker">
+                <span class="progress-text" id="progress-counter">0 / 75 Answered</span>
+                <span class="badge-difficulty">Level: Easy</span>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container"></div>
+
+        <!-- Submit Button -->
+        <button id="submit-btn" onclick="calculateScore()">Submit Practice Exam</button>
+
+        <!-- Final Score Card -->
+        <div id="results-card" class="results-card">
+            <h2>Exam Completed!</h2>
+            <p style="color: var(--text-secondary);">Practice Exam Reviewer Prelim Nursing Anaphy 1st year</p>
+            <div class="score-display" id="score-text">0 / 75</div>
+            <p id="percentage-text" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;"></p>
+            
+            <div class="action-buttons">
+                <button class="btn-retake" onclick="resetQuiz()">Retake Quiz (Shuffled)</button>
+                <a href="../main.html" class="btn-home" style="padding: 0.75rem 1.5rem; font-size: 1rem;">Return to Main Menu</a>
+            </div>
+
+            <!-- Inspirational Quote -->
+            <div class="quote-box">
+                "The trained nurse has become one of the great blessings of humanity, taking a place beside the physician and the priest."
+                <div class="quote-author">— William Osler</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const rawQuizData = [
+            // --- INTRODUCTION TO ANATOMY ---
+            {
+                q: "Referring to the body planes diagram, which plane cuts the body vertically into right and left portions?",
+                img: "../Images/body_planes.png",
+                options: ["Sagittal plane", "Transverse plane", "Frontal (Coronal) plane", "Oblique plane"],
+                correctText: "Sagittal plane",
+                exp: "A sagittal plane runs vertically through the body, dividing it into right and left sections."
+            },
+            {
+                q: "Which anatomical plane divides the body into anterior (front) and posterior (back) parts?",
+                img: "../Images/body_planes.png",
+                options: ["Transverse plane", "Frontal (Coronal) plane", "Sagittal plane", "Horizontal plane"],
+                correctText: "Frontal (Coronal) plane",
+                exp: "The frontal or coronal plane separates the front (anterior) and back (posterior) halves of the body."
+            },
+            {
+                q: "In anatomical directional terms, the elbow is considered _____ to the wrist.",
+                options: ["Distal", "Proximal", "Inferior", "Lateral"],
+                correctText: "Proximal",
+                exp: "Proximal means closer to the origin or point of attachment (the shoulder)."
+            },
+            {
+                q: "What term describes a structure that is closer to the head or higher than another structure?",
+                options: ["Inferior", "Anterior", "Superior", "Posterior"],
+                correctText: "Superior",
+                exp: "Superior means located above or toward the head."
+            },
+            {
+                q: "The anatomical term 'Anterior' refers to which direction?",
+                options: ["Toward the back of the body", "Toward the front of the body", "Toward the midline", "Away from the surface"],
+                correctText: "Toward the front of the body",
+                exp: "Anterior (ventral) refers to the front side of the body."
+            },
+            {
+                q: "Which anatomical plane divides the body into superior (top) and inferior (bottom) portions?",
+                img: "../Images/body_planes.png",
+                options: ["Frontal plane", "Sagittal plane", "Transverse plane", "Coronal plane"],
+                correctText: "Transverse plane",
+                exp: "The transverse (horizontal) plane divides the body horizontally into upper and lower parts."
+            },
+            {
+                q: "The heart is located _____ to the lungs.",
+                options: ["Lateral", "Medial", "Distal", "Superior"],
+                correctText: "Medial",
+                exp: "Medial means closer to the midline of the body."
+            },
+            {
+                q: "The skin is located _____ compared to the skeletal muscles.",
+                options: ["Deep", "Superficial", "Proximal", "Inferior"],
+                correctText: "Superficial",
+                exp: "Superficial means toward or on the surface of the body."
+            },
+            {
+                q: "In anatomical position, the palms of the hands are facing in which direction?",
+                options: ["Posteriorly", "Medially", "Anteriorly", "Inferiorly"],
+                correctText: "Anteriorly",
+                exp: "In standard anatomical position, the human body stands erect with palms facing forward (anteriorly)."
+            },
+            {
+                q: "Which body cavity contains the brain?",
+                options: ["Thoracic cavity", "Abdominal cavity", "Cranial cavity", "Vertebral cavity"],
+                correctText: "Cranial cavity",
+                exp: "The cranial cavity inside the skull houses and protects the brain."
+            },
+
+            // --- CELL ---
+            {
+                q: "Referring to the cell diagram, which organelle is known as the 'powerhouse of the cell' for producing ATP?",
+                img: "../Images/cell_structure.png",
+                options: ["Golgi apparatus", "Mitochondria", "Nucleus", "Ribosome"],
+                correctText: "Mitochondria",
+                exp: "Mitochondria generate energy (ATP) required for cellular metabolic activities."
+            },
+            {
+                q: "What structure encloses the cell and controls the movement of substances in and out?",
+                img: "../Images/cell_structure.png",
+                options: ["Cell Wall", "Plasma Membrane", "Nuclear Envelope", "Endoplasmic Reticulum"],
+                correctText: "Plasma Membrane",
+                exp: "The plasma membrane is a selectively permeable phospholipid bilayer surrounding the cell."
+            },
+            {
+                q: "Which cellular organelle contains genetic material (DNA) and directs cell activities?",
+                img: "../Images/cell_structure.png",
+                options: ["Nucleus", "Lysosome", "Centrosome", "Vacuole"],
+                correctText: "Nucleus",
+                exp: "The nucleus serves as the control center of the cell housing DNA."
+            },
+            {
+                q: "Which organelle is responsible for synthesizing proteins?",
+                options: ["Ribosome", "Smooth ER", "Lysosome", "Peroxisome"],
+                correctText: "Ribosome",
+                exp: "Ribosomes translate genetic information to assemble amino acids into proteins."
+            },
+            {
+                q: "Which organelle modifies, packages, and sorts proteins for secretion or cellular use?",
+                img: "../Images/cell_structure.png",
+                options: ["Golgi apparatus", "Rough ER", "Mitochondria", "Centriole"],
+                correctText: "Golgi apparatus",
+                exp: "The Golgi apparatus acts as the shipping and packaging facility of the cell."
+            },
+            {
+                q: "Lysosomes are primarily responsible for which cellular function?",
+                options: ["Protein synthesis", "Waste digestion and breakdown", "ATP production", "Lipid synthesis"],
+                correctText: "Waste digestion and breakdown",
+                exp: "Lysosomes contain digestive enzymes to break down waste materials and cellular debris."
+            },
+            {
+                q: "What type of transport mechanism requires ATP energy to move particles against their concentration gradient?",
+                options: ["Simple Diffusion", "Facilitated Diffusion", "Osmosis", "Active Transport"],
+                correctText: "Active Transport",
+                exp: "Active transport requires cellular energy (ATP) to push solutes from low to high concentrations."
+            },
+            {
+                q: "Osmosis refers specifically to the diffusion of which substance across a membrane?",
+                options: ["Glucose", "Sodium ions", "Water", "Oxygen"],
+                correctText: "Water",
+                exp: "Osmosis is the passive movement of water molecules across a selectively permeable membrane."
+            },
+            {
+                q: "Which structure in the cell nucleus is the site of ribosome subunit assembly?",
+                options: ["Nucleolus", "Chromatin", "Nuclear Pore", "Centrosome"],
+                correctText: "Nucleolus",
+                exp: "The nucleolus is a dense region inside the nucleus where ribosomal RNA is produced."
+            },
+            {
+                q: "The Smooth Endoplasmic Reticulum is primarily involved in the synthesis of:",
+                options: ["Proteins", "Lipids and Steroids", "Nucleic Acids", "Carbohydrates"],
+                correctText: "Lipids and Steroids",
+                exp: "Smooth ER lacks ribosomes and synthesizes lipids, phospholipids, and steroid hormones."
+            },
+
+            // --- FUNDAMENTAL TISSUES ---
+            {
+                q: "Based on the tissues overview diagram, which tissue type covers body surfaces, lines body cavities, and forms glands?",
+                img: "../Images/tissues_overview.png",
+                options: ["Connective tissue", "Epithelial tissue", "Muscle tissue", "Nervous tissue"],
+                correctText: "Epithelial tissue",
+                exp: "Epithelial tissue acts as a protective barrier covering external and internal surfaces."
+            },
+            {
+                q: "Which tissue type provides support, protection, and holds organs together?",
+                img: "../Images/tissues_overview.png",
+                options: ["Epithelial tissue", "Nervous tissue", "Connective tissue", "Muscle tissue"],
+                correctText: "Connective tissue",
+                exp: "Connective tissue is the most abundant tissue type, connecting and supporting other tissues."
+            },
+            {
+                q: "Blood, bone, and cartilage are classified under which major tissue category?",
+                options: ["Epithelial tissue", "Connective tissue", "Muscular tissue", "Nervous tissue"],
+                correctText: "Connective tissue",
+                exp: "Blood, bone, and cartilage all possess extracellular matrix and belong to connective tissue."
+            },
+            {
+                q: "What type of muscle tissue is striated and under voluntary control?",
+                options: ["Smooth muscle", "Skeletal muscle", "Cardiac muscle", "Visceral muscle"],
+                correctText: "Skeletal muscle",
+                exp: "Skeletal muscle attaches to bones and is controlled voluntarily."
+            },
+            {
+                q: "Which type of muscle tissue is found exclusively in the walls of the heart?",
+                options: ["Skeletal muscle", "Smooth muscle", "Cardiac muscle", "Involuntary smooth muscle"],
+                correctText: "Cardiac muscle",
+                exp: "Cardiac muscle forms the myocardium of the heart and contains intercalated discs."
+            },
+            {
+                q: "Simple squamous epithelium consists of how many layers of cells?",
+                options: ["A single layer of flattened cells", "Multiple layers of cuboidal cells", "A single layer of tall cells", "Multiple layers of flat cells"],
+                correctText: "A single layer of flattened cells",
+                exp: "Simple means one layer; squamous means flat, scale-like cells."
+            },
+            {
+                q: "Neurons and neuroglia are primary cell types of which fundamental tissue?",
+                img: "../Images/tissues_overview.png",
+                options: ["Nervous tissue", "Epithelial tissue", "Connective tissue", "Muscular tissue"],
+                correctText: "Nervous tissue",
+                exp: "Nervous tissue consists of neurons (signal transmission) and neuroglia (supporting cells)."
+            },
+            {
+                q: "What specialized epithelial cell type produces and secretes mucus?",
+                options: ["Keratinocyte", "Goblet cell", "Fibroblast", "Chondrocyte"],
+                correctText: "Goblet cell",
+                exp: "Goblet cells are specialized columnar cells that secrete protective mucus."
+            },
+            {
+                q: "What type of tissue forms non-striated, involuntary walls of internal organs like the stomach and blood vessels?",
+                options: ["Skeletal muscle", "Smooth muscle", "Cardiac muscle", "Dense connective tissue"],
+                correctText: "Smooth muscle",
+                exp: "Smooth muscle operates involuntarily and lacks striations."
+            },
+            {
+                q: "Which cell type is responsible for producing collagen fibers in dense connective tissue?",
+                options: ["Fibroblast", "Osteocyte", "Chondrocyte", "Adipocyte"],
+                correctText: "Fibroblast",
+                exp: "Fibroblasts are the primary active cells in connective tissue proper that synthesize collagen."
+            },
+
+            // --- INTEGUMENTARY SYSTEM ---
+            {
+                q: "Referring to the skin layers diagram, which layer is the outermost, non-vascularized portion of the skin?",
+                img: "../Images/skin_layers.png",
+                options: ["Dermis", "Epidermis", "Hypodermis", "Subcutaneous layer"],
+                correctText: "Epidermis",
+                exp: "The epidermis is the outermost epithelial layer of the skin."
+            },
+            {
+                q: "What is the thick, vascular layer of skin beneath the epidermis containing nerve endings and glands?",
+                img: "../Images/skin_layers.png",
+                options: ["Stratum corneum", "Dermis", "Hypodermis", "Subcutis"],
+                correctText: "Dermis",
+                exp: "The dermis contains blood vessels, nerves, hair follicles, and sweat glands."
+            },
+            {
+                q: "Which pigment is primarily responsible for human skin and hair color?",
+                options: ["Keratin", "Melanin", "Hemoglobin", "Carotene"],
+                correctText: "Melanin",
+                exp: "Melanin is produced by melanocytes in the basal layer of the epidermis."
+            },
+            {
+                q: "What smooth muscle attached to hair follicles causes 'goosebumps' when contracted?",
+                img: "../Images/skin_layers.png",
+                options: ["Arrector pili muscle", "Levator ani", "Orbicularis oculi", "Subclavius"],
+                correctText: "Arrector pili muscle",
+                exp: "The arrector pili muscle contracts in response to cold or fear, pulling hair upright."
+            },
+            {
+                q: "Sebaceous glands secrete an oily substance called:",
+                options: ["Sweat", "Sebum", "Cerumen", "Keratin"],
+                correctText: "Sebum",
+                exp: "Sebaceous glands secrete sebum to lubricate and waterproof the skin and hair."
+            },
+            {
+                q: "Which layer lies beneath the dermis and stores adipose (fat) tissue for insulation?",
+                img: "../Images/skin_layers.png",
+                options: ["Epidermis", "Stratum basale", "Hypodermis (Subcutaneous)", "Stratum spinosum"],
+                correctText: "Hypodermis (Subcutaneous)",
+                exp: "The hypodermis (subcutaneous tissue) consists largely of adipose tissue."
+            },
+            {
+                q: "What tough, fibrous protein fills dead skin cells in the stratum corneum to make skin water-resistant?",
+                options: ["Collagen", "Elastin", "Keratin", "Myosin"],
+                correctText: "Keratin",
+                exp: "Keratin is a structural protein that hardens and protects skin, hair, and nails."
+            },
+            {
+                q: "Sweat glands responsible for body temperature regulation throughout most of the body are:",
+                options: ["Apocrine sweat glands", "Eccrine sweat glands", "Sebaceous glands", "Ceruminous glands"],
+                correctText: "Eccrine sweat glands",
+                exp: "Eccrine glands are widespread merocrine glands essential for evaporative cooling."
+            },
+            {
+                q: "Which stratum layer of the epidermis undergoes constant mitosis to replace lost surface cells?",
+                options: ["Stratum corneum", "Stratum lucidum", "Stratum basale", "Stratum granulosum"],
+                correctText: "Stratum basale",
+                exp: "Stratum basale (germinativum) is the deepest epidermal layer where cell division occurs."
+            },
+            {
+                q: "Which epidermal stratum is present ONLY in thick skin (such as palms and soles)?",
+                options: ["Stratum spinosum", "Stratum lucidum", "Stratum basale", "Stratum corneum"],
+                correctText: "Stratum lucidum",
+                exp: "Stratum lucidum is a clear layer found exclusively in thick skin areas."
+            },
+
+            // --- SKELETAL SYSTEM ---
+            {
+                q: "Referring to the skeletal overview diagram, the skull, vertebral column, and rib cage belong to which division?",
+                img: "../Images/skeletal_overview.png",
+                options: ["Appendicular skeleton", "Axial skeleton", "Pelvic girdle", "Pectoral girdle"],
+                correctText: "Axial skeleton",
+                exp: "The axial skeleton forms the central longitudinal axis of the human body."
+            },
+            {
+                q: "How many total bones make up the adult human skeleton?",
+                options: ["206", "300", "126", "80"],
+                correctText: "206",
+                exp: "An adult human skeleton normally consists of 206 bones."
+            },
+            {
+                q: "The bone cells responsible for breaking down bone tissue during remodeling are:",
+                options: ["Osteoblasts", "Osteocytes", "Osteoclasts", "Osteogenic cells"],
+                correctText: "Osteoclasts",
+                exp: "Osteoclasts dissolve and resorb bone matrix (bone resorption)."
+            },
+            {
+                q: "Bone-forming cells that secrete bone matrix are called:",
+                options: ["Osteoblasts", "Osteoclasts", "Osteocytes", "Chondrocytes"],
+                correctText: "Osteoblasts",
+                exp: "Osteoblasts build bone matrix by depositing collagen and calcium."
+            },
+            {
+                q: "The shaft or central main region of a long bone is called the:",
+                options: ["Epiphysis", "Diaphysis", "Metaphysis", "Periosteum"],
+                correctText: "Diaphysis",
+                exp: "The diaphysis is the tubular shaft forming the long axis of a bone."
+            },
+            {
+                q: "What structural unit forms the functional compact bone tissue?",
+                options: ["Osteon (Haversian system)", "Trabeculae", "Sarcomere", "Nephron"],
+                correctText: "Osteon (Haversian system)",
+                exp: "The osteon is the repeating cylindrical unit of compact bone."
+            },
+            {
+                q: "Red bone marrow is primary site for which process?",
+                options: ["Fat storage", "Blood cell production (Hematopoiesis)", "Calcium resorption", "Synovial fluid secretion"],
+                correctText: "Blood cell production (Hematopoiesis)",
+                exp: "Red bone marrow produces red blood cells, white blood cells, and platelets."
+            },
+            {
+                q: "The ends of long bones covered with articular cartilage are called:",
+                options: ["Diaphyses", "Epiphyses", "Endosteum", "Medullary cavities"],
+                correctText: "Epiphyses",
+                exp: "The epiphysis is the expanded end region of a long bone."
+            },
+            {
+                q: "Which dense membrane covers the outer surface of bones except at joints?",
+                options: ["Endosteum", "Periosteum", "Perichondrium", "Synovium"],
+                correctText: "Periosteum",
+                exp: "The periosteum is a fibrous membrane containing blood vessels and nerve fibers surrounding bone."
+            },
+            {
+                q: "How many total bones form the axial skeleton division alone?",
+                options: ["126", "80", "206", "60"],
+                correctText: "80",
+                exp: "The axial skeleton comprises 80 bones (skull, hyoid, ribs, sternum, and vertebrae)."
+            },
+
+            // --- APPENDICULAR SKELETON ---
+            {
+                q: "Which bone is commonly referred to as the collarbone?",
+                img: "../Images/skeletal_overview.png",
+                options: ["Scapula", "Clavicle", "Sternum", "Humerus"],
+                correctText: "Clavicle",
+                exp: "The clavicle connects the arm to the trunk anteriorly."
+            },
+            {
+                q: "The long bone of the upper arm extending from shoulder to elbow is the:",
+                img: "../Images/skeletal_overview.png",
+                options: ["Radius", "Ulna", "Humerus", "Femur"],
+                correctText: "Humerus",
+                exp: "The humerus is the sole bone of the upper arm region."
+            },
+            {
+                q: "What is the largest, strongest, and longest bone in the human body?",
+                img: "../Images/skeletal_overview.png",
+                options: ["Tibia", "Fibula", "Femur", "Pelvis"],
+                correctText: "Femur",
+                exp: "The femur (thigh bone) is the longest and heaviest bone."
+            },
+            {
+                q: "In the forearm, which bone is located on the lateral (thumb) side?",
+                options: ["Ulna", "Radius", "Tibia", "Fibula"],
+                correctText: "Radius",
+                exp: "The radius lies on the lateral side of the forearm in anatomical position."
+            },
+            {
+                q: "The kneecap bone is anatomically classified as a sesamoid bone called the:",
+                options: ["Patella", "Tarsal", "Calcaneus", "Metatarsal"],
+                correctText: "Patella",
+                exp: "The patella is a sesamoid bone embedded within the quadriceps tendon."
+            },
+            {
+                q: "The heel bone of the foot is known as the:",
+                options: ["Talus", "Calcaneus", "Navicular", "Cuboid"],
+                correctText: "Calcaneus",
+                exp: "The calcaneus is the largest tarsal bone forming the heel."
+            },
+            {
+                q: "How many bones make up the appendicular skeleton?",
+                options: ["80", "126", "206", "100"],
+                correctText: "126",
+                exp: "The appendicular skeleton includes 126 bones of limbs and girdles."
+            },
+            {
+                q: "Which two bones form the pectoral (shoulder) girdle?",
+                options: ["Ilium and Ischium", "Clavicle and Scapula", "Humerus and Radius", "Femur and Patella"],
+                correctText: "Clavicle and Scapula",
+                exp: "The clavicle and shoulder blade (scapula) form the pectoral girdle."
+            },
+            {
+                q: "In the lower leg, the larger weight-bearing medial bone is the:",
+                options: ["Fibula", "Tibia", "Femur", "Patella"],
+                correctText: "Tibia",
+                exp: "The tibia (shinbone) bears body weight on the medial side of the leg."
+            },
+            {
+                q: "Bones forming the palm of the hand are called:",
+                options: ["Carpals", "Metacarpals", "Tarsals", "Phalanges"],
+                correctText: "Metacarpals",
+                exp: "Metacarpals form the palm region between the wrist carpals and fingers."
+            },
+
+            // --- MUSCULAR SYSTEM ---
+            {
+                q: "Referring to the major muscle diagram, which large muscle forms the rounded shape of the shoulder?",
+                img: "../Images/major_muscle.png",
+                options: ["Trapezius", "Pectoralis major", "Deltoid", "Latissimus dorsi"],
+                correctText: "Deltoid",
+                exp: "The deltoid is the major abductor muscle of the shoulder joint."
+            },
+            {
+                q: "What thick muscle forms the prominent bulk of the chest?",
+                img: "../Images/major_muscle.png",
+                options: ["Pectoralis major", "Rectus abdominis", "Latissimus dorsi", "Brachialis"],
+                correctText: "Pectoralis major",
+                exp: "Pectoralis major is the large fan-shaped anterior chest muscle."
+            },
+            {
+                q: "What structural connective tissue attaches a muscle directly to a bone?",
+                options: ["Ligament", "Tendon", "Aponeurosis", "Fascia"],
+                correctText: "Tendon",
+                exp: "Tendons attach skeletal muscles to bones."
+            },
+            {
+                q: "Functional unit of contraction inside a muscle myofibril between two Z-lines is called a:",
+                options: ["Sarcomere", "Sarcolemma", "Sarcoplasm", "Myofilament"],
+                correctText: "Sarcomere",
+                exp: "The sarcomere is the basic functional contractile unit of striated muscle."
+            },
+            {
+                q: "Muscle contraction neurotransmitter released at the neuromuscular junction is:",
+                options: ["Dopamine", "Acetylcholine (ACh)", "Serotonin", "Norepinephrine"],
+                correctText: "Acetylcholine (ACh)",
+                exp: "Acetylcholine (ACh) triggers muscle membrane depolarization."
+            },
+            {
+                q: "Muscle that acts as the primary mover producing a specific movement is the:",
+                options: ["Antagonist", "Synergist", "Agonist", "Fixator"],
+                correctText: "Agonist",
+                exp: "The agonist (prime mover) generates most of the force during a contraction."
+            },
+            {
+                q: "Muscle opposing the action of a prime mover is called the:",
+                options: ["Agonist", "Synergist", "Antagonist", "Fixator"],
+                correctText: "Antagonist",
+                exp: "Antagonist muscles stretch or relax when the prime mover contracts."
+            },
+            {
+                q: "Ion required to expose binding sites on actin filaments initiating muscle contraction is:",
+                options: ["Sodium (Na+)", "Potassium (K+)", "Calcium (Ca2+)", "Iron (Fe2+)"],
+                correctText: "Calcium (Ca2+)",
+                exp: "Calcium binds to troponin, causing tropomyosin to shift off actin active sites."
+            },
+            {
+                q: "Prominent muscle extending down the center of the abdomen ('six-pack' muscle) is the:",
+                img: "../Images/major_muscle.png",
+                options: ["External oblique", "Rectus abdominis", "Transverse abdominis", "Internal oblique"],
+                correctText: "Rectus abdominis",
+                exp: "Rectus abdominis flexes the vertebral column anteriorly."
+            },
+            {
+                q: "Large, flat triangular muscle covering the upper back and neck region is the:",
+                img: "../Images/major_muscle.png",
+                options: ["Latissimus dorsi", "Trapezius", "Rhomboid major", "Infraspinatus"],
+                correctText: "Trapezius",
+                exp: "Trapezius moves the scapula and extends the head."
+            },
+
+            // --- APPENDICULAR MUSCLES ---
+            {
+                q: "Muscle on anterior arm that flexes the elbow and supinates the forearm is the:",
+                img: "../Images/major_muscle.png",
+                options: ["Triceps brachii", "Biceps brachii", "Brachioradialis", "Coracobrachialis"],
+                correctText: "Biceps brachii",
+                exp: "Biceps brachii flexes the elbow joint."
+            },
+            {
+                q: "Large muscle on posterior upper arm responsible for elbow extension is the:",
+                img: "../Images/major_muscle.png",
+                options: ["Biceps brachii", "Triceps brachii", "Deltoid", "Anconeus"],
+                correctText: "Triceps brachii",
+                exp: "Triceps brachii extends the forearm at the elbow joint."
+            },
+            {
+                q: "Large gluteal muscle that forms the main mass of the buttocks and extends the hip is:",
+                img: "../Images/major_muscle.png",
+                options: ["Gluteus medius", "Gluteus maximus", "Gluteus minimus", "Tensor fasciae latae"],
+                correctText: "Gluteus maximus",
+                exp: "Gluteus maximus extends and laterally rotates the thigh at the hip."
+            },
+            {
+                q: "Prominent calf muscle ending in the Achilles tendon that plantarflexes the foot is the:",
+                img: "../Images/major_muscle.png",
+                options: ["Tibialis anterior", "Gastrocnemius", "Soleus", "Peroneus longus"],
+                correctText: "Gastrocnemius",
+                exp: "Gastrocnemius forms the posterior calf bulk."
+            },
+            {
+                q: "Group of four anterior thigh muscles that work together to extend the knee joint is the:",
+                img: "../Images/major_muscle.png",
+                options: ["Hamstrings", "Quadriceps femoris", "Adductors", "Iliopsoas"],
+                correctText: "Quadriceps femoris",
+                exp: "Quadriceps femoris extends the leg at the knee joint."
+            }
+        ];
+
+        let activeQuizData = [];
+        let userAnswers = {};
+
+        // Utility: Fisher-Yates Array Shuffle
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Prepare Shuffled Quiz Data
+        function prepareShuffledQuiz() {
+            // Shuffle question order
+            let shuffledQuestions = shuffleArray(rawQuizData);
+
+            activeQuizData = shuffledQuestions.map(item => {
+                // Shuffle options for each question
+                let shuffledOpts = shuffleArray(item.options);
+                let newCorrectIndex = shuffledOpts.indexOf(item.correctText);
+
+                return {
+                    q: item.q,
+                    img: item.img,
+                    options: shuffledOpts,
+                    correct: newCorrectIndex,
+                    exp: item.exp
+                };
+            });
+        }
+
+        // Render Questions to Page
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            userAnswers = {};
+
+            activeQuizData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.id = `card-${index}`;
+
+                let imgHTML = data.img ? `<img src="${data.img}" alt="Diagram for Question ${index + 1}" class="diagram-img">` : '';
+
+                let optionsHTML = data.options.map((opt, optIndex) => `
+                    <button class="option-btn" onclick="selectOption(${index}, ${optIndex}, this)">
+                        ${String.fromCharCode(65 + optIndex)}. ${opt}
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="question-number">Question ${index + 1} of 75</div>
+                    <div class="question-text">${data.q}</div>
+                    ${imgHTML}
+                    <div class="options-container" id="options-${index}">
+                        ${optionsHTML}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <strong>Explanation:</strong> ${data.exp}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            updateProgressTracker();
+        }
+
+        function selectOption(qIndex, optIndex, btn) {
+            userAnswers[qIndex] = optIndex;
+            
+            const optionsContainer = document.getElementById(`options-${qIndex}`);
+            const buttons = optionsContainer.getElementsByClassName('option-btn');
+            
+            for (let b of buttons) {
+                b.classList.remove('selected');
+            }
+
+            btn.classList.add('selected');
+            document.getElementById(`card-${qIndex}`).classList.add('answered');
+
+            updateProgressTracker();
+        }
+
+        function updateProgressTracker() {
+            const answeredCount = Object.keys(userAnswers).length;
+            document.getElementById('progress-counter').innerText = `${answeredCount} / ${activeQuizData.length} Answered`;
+        }
+
+        function calculateScore() {
+            let score = 0;
+
+            activeQuizData.forEach((data, index) => {
+                const optionsContainer = document.getElementById(`options-${index}`);
+                const buttons = optionsContainer.getElementsByClassName('option-btn');
+                const explanationDiv = document.getElementById(`explanation-${index}`);
+                const selected = userAnswers[index];
+
+                explanationDiv.style.display = 'block';
+
+                for (let i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+
+                    if (i === data.correct) {
+                        buttons[i].classList.add('correct');
+                    }
+
+                    if (selected === i && selected !== data.correct) {
+                        buttons[i].classList.add('incorrect');
+                    }
+                }
+
+                if (selected === data.correct) {
+                    score++;
+                }
+            });
+
+            // Hide Submit & Show Results
+            document.getElementById('submit-btn').style.display = 'none';
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.style.display = 'block';
+
+            document.getElementById('score-text').innerText = `${score} / ${activeQuizData.length}`;
+            const percentage = Math.round((score / activeQuizData.length) * 100);
+            document.getElementById('percentage-text').innerText = `Your Score: ${percentage}%`;
+
+            resultsCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            document.getElementById('results-card').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'block';
+            
+            prepareShuffledQuiz();
+            renderQuiz();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on load
+        prepareShuffledQuiz();
+        renderQuiz();
+    </script>
+</body>
+</html>
