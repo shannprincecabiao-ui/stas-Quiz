@@ -1006,6 +1006,7 @@
             document.getElementById('score-text').innerText = `${score} / ${activeQuizData.length}`;
             const percentage = Math.round((score / activeQuizData.length) * 100);
             document.getElementById('percentage-text').innerText = `Your Score: ${percentage}%`;
+            sendQuizResult(score, activeQuizData.length);
         }
 
         function resetQuiz() {
