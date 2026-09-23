@@ -90,7 +90,6 @@
             font-weight: 600;
         }
 
-        /* Slide View Container */
         .quiz-slide-wrapper {
             position: relative;
             min-height: 480px;
@@ -190,7 +189,6 @@
             display: none;
         }
 
-        /* Navigation Controls */
         .controls-wrapper {
             display: flex;
             justify-content: space-between;
@@ -238,7 +236,6 @@
             transform: translateY(-1px);
         }
 
-        /* Results Card */
         .results-card {
             display: none;
             background: var(--card-bg);
@@ -313,7 +310,7 @@
         <div class="header-nav">
             <a href="../main.html" class="btn-home">← Go back home</a>
             <div class="status-tracker">
-                <span class="progress-text" id="progress-counter">0 / 75 Answered</span>
+                <span class="progress-text" id="progress-counter">0 Answered</span>
                 <span class="badge-difficulty">Level: Easy</span>
             </div>
         </div>
@@ -332,7 +329,7 @@
         <div id="results-card" class="results-card">
             <h2>Exam Completed!</h2>
             <p style="color: var(--text-secondary);">Practice Exam Reviewer Prelim Nursing Anaphy 1st year</p>
-            <div class="score-display" id="score-text">0 / 75</div>
+            <div class="score-display" id="score-text">0 / 0</div>
             <p id="percentage-text" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem;"></p>
             
             <div class="action-buttons">
@@ -350,67 +347,69 @@
 
     <script>
         const rawQuizData = [
-            // --- INTRODUCTION TO ANATOMY ---
+            // --- BODY PLANES ---
             {
                 q: "Referring to the body planes diagram, which anatomical plane is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/body_planes.png",
-                options: ["Sagittal plane", "Transverse plane", "Frontal (Coronal) plane", "Oblique plane"],
-                correctText: "Sagittal plane",
-                exp: "Label #1 marks the sagittal plane, which divides the body vertically into right and left portions."
+                options: ["Transverse plane", "Sagittal plane", "Frontal plane", "Oblique plane"],
+                correctText: "Transverse plane",
+                exp: "Label #1 indicates the Transverse plane, dividing the body into superior and inferior portions."
             },
             {
                 q: "Referring to the body planes diagram, which anatomical plane is indicated by label #2?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/body_planes.png",
-                options: ["Frontal (Coronal) plane", "Transverse plane", "Sagittal plane", "Horizontal plane"],
-                correctText: "Frontal (Coronal) plane",
-                exp: "Label #2 points to the frontal (coronal) plane, dividing the body into anterior and posterior parts."
+                options: ["Sagittal plane", "Frontal plane", "Transverse plane", "Horizontal plane"],
+                correctText: "Sagittal plane",
+                exp: "Label #2 indicates the Sagittal plane, dividing the body into right and left portions."
             },
             {
                 q: "Referring to the body planes diagram, which anatomical plane is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/body_planes.png",
-                options: ["Transverse plane", "Frontal plane", "Sagittal plane", "Coronal plane"],
-                correctText: "Transverse plane",
-                exp: "Label #3 indicates the transverse (horizontal) plane, dividing upper and lower sections."
+                options: ["Frontal plane", "Transverse plane", "Sagittal plane", "Coronal plane"],
+                correctText: "Frontal plane",
+                exp: "Label #3 marks the Frontal plane, dividing the body into anterior and posterior parts."
             },
+
+            // --- INTRODUCTION TO ANATOMY ---
             {
                 q: "In anatomical directional terms, the elbow is considered _____ to the wrist.",
-                options: ["Distal", "Proximal", "Inferior", "Lateral"],
+                options: ["Proximal", "Distal", "Inferior", "Lateral"],
                 correctText: "Proximal",
-                exp: "Proximal means closer to the point of trunk attachment."
+                exp: "Proximal means closer to the point of attachment to the trunk."
             },
             {
                 q: "What term describes a structure that is closer to the head or higher than another structure?",
-                options: ["Inferior", "Anterior", "Superior", "Posterior"],
+                options: ["Superior", "Inferior", "Anterior", "Posterior"],
                 correctText: "Superior",
-                exp: "Superior refers to a location toward the head or higher up."
+                exp: "Superior refers to a structure toward the head or higher up."
             },
             {
                 q: "The anatomical term 'Anterior' refers to which direction?",
-                options: ["Toward the back of the body", "Toward the front of the body", "Toward the midline", "Away from the surface"],
+                options: ["Toward the front of the body", "Toward the back of the body", "Toward the midline", "Away from the surface"],
                 correctText: "Toward the front of the body",
                 exp: "Anterior (ventral) means toward the front surface of the body."
             },
             {
                 q: "The heart is located _____ to the lungs.",
-                options: ["Lateral", "Medial", "Distal", "Superior"],
+                options: ["Medial", "Lateral", "Distal", "Superior"],
                 correctText: "Medial",
-                exp: "Medial means located nearer to the midline."
+                exp: "Medial means located nearer to the midline of the body."
             },
             {
                 q: "The skin is located _____ compared to the skeletal muscles.",
-                options: ["Deep", "Superficial", "Proximal", "Inferior"],
+                options: ["Superficial", "Deep", "Proximal", "Inferior"],
                 correctText: "Superficial",
                 exp: "Superficial means situated near or on the surface."
             },
             {
                 q: "In anatomical position, the palms of the hands are facing in which direction?",
-                options: ["Posteriorly", "Medially", "Anteriorly", "Inferiorly"],
+                options: ["Anteriorly", "Posteriorly", "Medially", "Inferiorly"],
                 correctText: "Anteriorly",
                 exp: "Anatomical position requires palms facing forward (anteriorly)."
             },
             {
                 q: "Which body cavity contains the brain?",
-                options: ["Thoracic cavity", "Abdominal cavity", "Cranial cavity", "Vertebral cavity"],
+                options: ["Cranial cavity", "Thoracic cavity", "Abdominal cavity", "Vertebral cavity"],
                 correctText: "Cranial cavity",
                 exp: "The cranial cavity houses and protects the brain."
             },
@@ -421,7 +420,7 @@
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/cell_structure.png",
                 options: ["Nucleus", "Mitochondria", "Golgi apparatus", "Ribosome"],
                 correctText: "Nucleus",
-                exp: "Label #1 indicates the nucleus, the genetic control center of the cell."
+                exp: "Label #1 indicates the nucleus, the control center of the cell."
             },
             {
                 q: "Referring to the cell structure diagram, which organelle is indicated by label #2?",
@@ -433,16 +432,16 @@
             {
                 q: "Referring to the cell structure diagram, which cellular boundary is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/cell_structure.png",
-                options: ["Cell Wall", "Plasma Membrane", "Nuclear Envelope", "Endoplasmic Reticulum"],
+                options: ["Plasma Membrane", "Cell Wall", "Nuclear Envelope", "Endoplasmic Reticulum"],
                 correctText: "Plasma Membrane",
-                exp: "Label #3 points to the plasma membrane surrounding the cell contents."
+                exp: "Label #3 points to the plasma membrane surrounding the cell."
             },
             {
                 q: "Referring to the cell structure diagram, which organelle is indicated by label #4?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/cell_structure.png",
                 options: ["Golgi apparatus", "Rough ER", "Mitochondria", "Centriole"],
                 correctText: "Golgi apparatus",
-                exp: "Label #4 shows the Golgi apparatus responsible for sorting and packaging proteins."
+                exp: "Label #4 shows the Golgi apparatus responsible for packaging proteins."
             },
             {
                 q: "Which organelle is responsible for synthesizing proteins?",
@@ -452,19 +451,19 @@
             },
             {
                 q: "Lysosomes are primarily responsible for which cellular function?",
-                options: ["Protein synthesis", "Waste digestion and breakdown", "ATP production", "Lipid synthesis"],
+                options: ["Waste digestion and breakdown", "Protein synthesis", "ATP production", "Lipid synthesis"],
                 correctText: "Waste digestion and breakdown",
                 exp: "Lysosomes digest foreign materials and cellular waste."
             },
             {
                 q: "What type of transport mechanism requires ATP energy to move particles against their concentration gradient?",
-                options: ["Simple Diffusion", "Facilitated Diffusion", "Osmosis", "Active Transport"],
+                options: ["Active Transport", "Simple Diffusion", "Facilitated Diffusion", "Osmosis"],
                 correctText: "Active Transport",
                 exp: "Active transport requires metabolic energy (ATP)."
             },
             {
                 q: "Osmosis refers specifically to the diffusion of which substance across a membrane?",
-                options: ["Glucose", "Sodium ions", "Water", "Oxygen"],
+                options: ["Water", "Glucose", "Sodium ions", "Oxygen"],
                 correctText: "Water",
                 exp: "Osmosis is water movement across a semipermeable membrane."
             },
@@ -476,7 +475,7 @@
             },
             {
                 q: "The Smooth Endoplasmic Reticulum is primarily involved in the synthesis of:",
-                options: ["Proteins", "Lipids and Steroids", "Nucleic Acids", "Carbohydrates"],
+                options: ["Lipids and Steroids", "Proteins", "Nucleic Acids", "Carbohydrates"],
                 correctText: "Lipids and Steroids",
                 exp: "Smooth ER specializes in lipid and hormone production."
             },
@@ -485,46 +484,46 @@
             {
                 q: "Referring to the tissues overview diagram, which primary tissue type is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/tissues_overview.png",
-                options: ["Epithelial tissue", "Connective tissue", "Muscle tissue", "Nervous tissue"],
-                correctText: "Epithelial tissue",
-                exp: "Label #1 shows epithelial tissue covering internal and external surfaces."
+                options: ["Connective tissue", "Epithelial tissue", "Muscle tissue", "Nervous tissue"],
+                correctText: "Connective tissue",
+                exp: "Label #1 indicates Connective tissue."
             },
             {
                 q: "Referring to the tissues overview diagram, which primary tissue type is indicated by label #2?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/tissues_overview.png",
                 options: ["Epithelial tissue", "Connective tissue", "Muscle tissue", "Nervous tissue"],
-                correctText: "Connective tissue",
-                exp: "Label #2 identifies connective tissue providing structural support."
+                correctText: "Epithelial tissue",
+                exp: "Label #2 indicates Epithelial tissue."
             },
             {
                 q: "Referring to the tissues overview diagram, which primary tissue type is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/tissues_overview.png",
-                options: ["Muscle tissue", "Nervous tissue", "Epithelial tissue", "Connective tissue"],
+                options: ["Muscle tissue", "Nervous tissue", "Connective tissue", "Epithelial tissue"],
                 correctText: "Muscle tissue",
-                exp: "Label #3 represents muscle tissue designed for contraction."
+                exp: "Label #3 indicates Muscle tissue."
             },
             {
                 q: "Referring to the tissues overview diagram, which primary tissue type is indicated by label #4?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/tissues_overview.png",
-                options: ["Nervous tissue", "Epithelial tissue", "Connective tissue", "Muscle tissue"],
+                options: ["Nervous tissue", "Muscle tissue", "Epithelial tissue", "Connective tissue"],
                 correctText: "Nervous tissue",
-                exp: "Label #4 highlights nervous tissue specialized in electrical impulses."
+                exp: "Label #4 indicates Nervous tissue."
             },
             {
                 q: "Blood, bone, and cartilage are classified under which major tissue category?",
-                options: ["Epithelial tissue", "Connective tissue", "Muscular tissue", "Nervous tissue"],
+                options: ["Connective tissue", "Epithelial tissue", "Muscular tissue", "Nervous tissue"],
                 correctText: "Connective tissue",
-                exp: "All three possess extracellular matrix and belong to connective tissues."
+                exp: "All three contain extracellular matrix and belong to connective tissue."
             },
             {
                 q: "What type of muscle tissue is striated and under voluntary control?",
-                options: ["Smooth muscle", "Skeletal muscle", "Cardiac muscle", "Visceral muscle"],
+                options: ["Skeletal muscle", "Smooth muscle", "Cardiac muscle", "Visceral muscle"],
                 correctText: "Skeletal muscle",
-                exp: "Skeletal muscle is voluntary and features visible striations."
+                exp: "Skeletal muscle is voluntary and striate."
             },
             {
                 q: "Which type of muscle tissue is found exclusively in the walls of the heart?",
-                options: ["Skeletal muscle", "Smooth muscle", "Cardiac muscle", "Involuntary smooth muscle"],
+                options: ["Cardiac muscle", "Skeletal muscle", "Smooth muscle", "Involuntary smooth muscle"],
                 correctText: "Cardiac muscle",
                 exp: "Cardiac muscle makes up the contractile heart wall."
             },
@@ -532,19 +531,19 @@
                 q: "Simple squamous epithelium consists of how many layers of cells?",
                 options: ["A single layer of flattened cells", "Multiple layers of cuboidal cells", "A single layer of tall cells", "Multiple layers of flat cells"],
                 correctText: "A single layer of flattened cells",
-                exp: "Simple squamous denotes one layer of flat, scale-like cells."
+                exp: "Simple squamous consists of one layer of flat cells."
             },
             {
                 q: "What specialized epithelial cell type produces and secretes mucus?",
-                options: ["Keratinocyte", "Goblet cell", "Fibroblast", "Chondrocyte"],
+                options: ["Goblet cell", "Keratinocyte", "Fibroblast", "Chondrocyte"],
                 correctText: "Goblet cell",
-                exp: "Goblet cells secrete protective mucus along mucous membranes."
+                exp: "Goblet cells secrete mucus along mucous membranes."
             },
             {
                 q: "Which cell type is responsible for producing collagen fibers in dense connective tissue?",
                 options: ["Fibroblast", "Osteocyte", "Chondrocyte", "Adipocyte"],
                 correctText: "Fibroblast",
-                exp: "Fibroblasts generate fiber matrix elements in connective tissue."
+                exp: "Fibroblasts synthesize fiber matrix elements in connective tissue."
             },
 
             // --- SKIN LAYERS ---
@@ -553,62 +552,55 @@
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skin_layers.png",
                 options: ["Epidermis", "Dermis", "Hypodermis", "Subcutaneous layer"],
                 correctText: "Epidermis",
-                exp: "Label #1 marks the superficial epidermis layer."
+                exp: "Label #1 indicates the Epidermis."
             },
             {
                 q: "Referring to the skin layers diagram, which skin layer is indicated by label #2?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skin_layers.png",
-                options: ["Stratum corneum", "Dermis", "Hypodermis", "Subcutis"],
+                options: ["Dermis", "Epidermis", "Hypodermis", "Subcutis"],
                 correctText: "Dermis",
-                exp: "Label #2 represents the vascular dermis layer beneath the epidermis."
+                exp: "Label #2 indicates the Dermis."
             },
             {
                 q: "Referring to the skin layers diagram, which skin layer is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skin_layers.png",
-                options: ["Epidermis", "Stratum basale", "Hypodermis (Subcutaneous)", "Stratum spinosum"],
-                correctText: "Hypodermis (Subcutaneous)",
-                exp: "Label #3 marks the hypodermis containing adipose tissue."
-            },
-            {
-                q: "Referring to the skin layers diagram, which structure is indicated by label #4?",
-                img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skin_layers.png",
-                options: ["Arrector pili muscle", "Levator ani", "Orbicularis oculi", "Subclavius"],
-                correctText: "Arrector pili muscle",
-                exp: "Label #4 marks the arrector pili muscle that causes goosebumps."
+                options: ["Hypodermis / Subcutaneous layer", "Epidermis", "Dermis", "Stratum basale"],
+                correctText: "Hypodermis / Subcutaneous layer",
+                exp: "Label #3 indicates the Hypodermis / Subcutaneous layer."
             },
             {
                 q: "Which pigment is primarily responsible for human skin and hair color?",
-                options: ["Keratin", "Melanin", "Hemoglobin", "Carotene"],
+                options: ["Melanin", "Keratin", "Hemoglobin", "Carotene"],
                 correctText: "Melanin",
                 exp: "Melanin produces dark pigmentation shielding DNA from UV light."
             },
             {
                 q: "Sebaceous glands secrete an oily substance called:",
-                options: ["Sweat", "Sebum", "Cerumen", "Keratin"],
+                options: ["Sebum", "Sweat", "Cerumen", "Keratin"],
                 correctText: "Sebum",
-                exp: "Sebaceous glands produce oil (sebum)."
+                exp: "Sebaceous glands secrete sebum."
             },
             {
                 q: "What tough, fibrous protein fills dead skin cells in the stratum corneum to make skin water-resistant?",
-                options: ["Collagen", "Elastin", "Keratin", "Myosin"],
+                options: ["Keratin", "Collagen", "Elastin", "Myosin"],
                 correctText: "Keratin",
-                exp: "Keratin hardens cells making skin tough and water-resistant."
+                exp: "Keratin hardens cells making skin water-resistant."
             },
             {
                 q: "Sweat glands responsible for body temperature regulation throughout most of the body are:",
-                options: ["Apocrine sweat glands", "Eccrine sweat glands", "Sebaceous glands", "Ceruminous glands"],
+                options: ["Eccrine sweat glands", "Apocrine sweat glands", "Sebaceous glands", "Ceruminous glands"],
                 correctText: "Eccrine sweat glands",
                 exp: "Eccrine sweat glands cool the body via evaporation."
             },
             {
                 q: "Which stratum layer of the epidermis undergoes constant mitosis to replace lost surface cells?",
-                options: ["Stratum corneum", "Stratum lucidum", "Stratum basale", "Stratum granulosum"],
+                options: ["Stratum basale", "Stratum corneum", "Stratum lucidum", "Stratum granulosum"],
                 correctText: "Stratum basale",
-                exp: "Stratum basale is the deepest actively dividing epidermal layer."
+                exp: "Stratum basale is the deepest actively dividing layer."
             },
             {
                 q: "Which epidermal stratum is present ONLY in thick skin (such as palms and soles)?",
-                options: ["Stratum spinosum", "Stratum lucidum", "Stratum basale", "Stratum corneum"],
+                options: ["Stratum lucidum", "Stratum spinosum", "Stratum basale", "Stratum corneum"],
                 correctText: "Stratum lucidum",
                 exp: "Stratum lucidum is exclusive to thick hairless skin."
             },
@@ -617,42 +609,42 @@
             {
                 q: "Referring to the skeletal overview diagram, which skeletal region is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skeletal_overview.png",
-                options: ["Appendicular skeleton", "Axial skeleton", "Pelvic girdle", "Pectoral girdle"],
+                options: ["Axial skeleton", "Appendicular skeleton", "Pelvic girdle", "Pectoral girdle"],
                 correctText: "Axial skeleton",
-                exp: "Label #1 highlights the central axial skeleton (skull, ribs, spine)."
+                exp: "Label #1 highlights the axial skeleton."
             },
             {
                 q: "Referring to the skeletal overview diagram, which bone is indicated by label #2?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skeletal_overview.png",
-                options: ["Scapula", "Clavicle", "Sternum", "Humerus"],
+                options: ["Clavicle", "Scapula", "Sternum", "Humerus"],
                 correctText: "Clavicle",
                 exp: "Label #2 points to the clavicle bone."
             },
             {
                 q: "Referring to the skeletal overview diagram, which long bone is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skeletal_overview.png",
-                options: ["Radius", "Ulna", "Humerus", "Femur"],
+                options: ["Humerus", "Radius", "Ulna", "Femur"],
                 correctText: "Humerus",
-                exp: "Label #3 marks the humerus of the arm."
+                exp: "Label #3 marks the humerus."
             },
             {
                 q: "Referring to the skeletal overview diagram, which bone is indicated by label #4?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/skeletal_overview.png",
-                options: ["Tibia", "Fibula", "Femur", "Pelvis"],
+                options: ["Femur", "Tibia", "Fibula", "Pelvis"],
                 correctText: "Femur",
-                exp: "Label #4 identifies the femur thigh bone."
+                exp: "Label #4 identifies the femur."
             },
             {
                 q: "How many total bones make up the adult human skeleton?",
                 options: ["206", "300", "126", "80"],
                 correctText: "206",
-                exp: "The adult human skeleton normally comprises 206 bones."
+                exp: "An adult human skeleton consists of 206 bones."
             },
             {
                 q: "The bone cells responsible for breaking down bone tissue during remodeling are:",
-                options: ["Osteoblasts", "Osteocytes", "Osteoclasts", "Osteogenic cells"],
+                options: ["Osteoclasts", "Osteoblasts", "Osteocytes", "Osteogenic cells"],
                 correctText: "Osteoclasts",
-                exp: "Osteoclasts resorb and break down bone matrix."
+                exp: "Osteoclasts break down bone matrix."
             },
             {
                 q: "Bone-forming cells that secrete bone matrix are called:",
@@ -662,7 +654,7 @@
             },
             {
                 q: "The shaft or central main region of a long bone is called the:",
-                options: ["Epiphysis", "Diaphysis", "Metaphysis", "Periosteum"],
+                options: ["Diaphysis", "Epiphysis", "Metaphysis", "Periosteum"],
                 correctText: "Diaphysis",
                 exp: "The diaphysis is the main shaft portion of a long bone."
             },
@@ -674,7 +666,7 @@
             },
             {
                 q: "Red bone marrow is primary site for which process?",
-                options: ["Fat storage", "Blood cell production (Hematopoiesis)", "Calcium resorption", "Synovial fluid secretion"],
+                options: ["Blood cell production (Hematopoiesis)", "Fat storage", "Calcium resorption", "Synovial fluid secretion"],
                 correctText: "Blood cell production (Hematopoiesis)",
                 exp: "Red bone marrow produces red and white blood cells."
             },
@@ -682,7 +674,7 @@
             // --- APPENDICULAR SKELETON ---
             {
                 q: "In the forearm, which bone is located on the lateral (thumb) side?",
-                options: ["Ulna", "Radius", "Tibia", "Fibula"],
+                options: ["Radius", "Ulna", "Tibia", "Fibula"],
                 correctText: "Radius",
                 exp: "The radius lies lateral on the thumb side."
             },
@@ -694,102 +686,118 @@
             },
             {
                 q: "The heel bone of the foot is known as the:",
-                options: ["Talus", "Calcaneus", "Navicular", "Cuboid"],
+                options: ["Calcaneus", "Talus", "Navicular", "Cuboid"],
                 correctText: "Calcaneus",
                 exp: "The calcaneus is the heel bone."
             },
             {
                 q: "How many bones make up the appendicular skeleton?",
-                options: ["80", "126", "206", "100"],
+                options: ["126", "80", "206", "100"],
                 correctText: "126",
                 exp: "126 bones form the upper and lower extremities and girdles."
             },
             {
                 q: "Which two bones form the pectoral (shoulder) girdle?",
-                options: ["Ilium and Ischium", "Clavicle and Scapula", "Humerus and Radius", "Femur and Patella"],
+                options: ["Clavicle and Scapula", "Ilium and Ischium", "Humerus and Radius", "Femur and Patella"],
                 correctText: "Clavicle and Scapula",
                 exp: "The clavicle and scapula connect upper limbs to the axial skeleton."
             },
             {
                 q: "In the lower leg, the larger weight-bearing medial bone is the:",
-                options: ["Fibula", "Tibia", "Femur", "Patella"],
+                options: ["Tibia", "Fibula", "Femur", "Patella"],
                 correctText: "Tibia",
                 exp: "The tibia (shin bone) bears body weight."
             },
             {
                 q: "Bones forming the palm of the hand are called:",
-                options: ["Carpals", "Metacarpals", "Tarsals", "Phalanges"],
+                options: ["Metacarpals", "Carpals", "Tarsals", "Phalanges"],
                 correctText: "Metacarpals",
-                exp: "Metacarpals form the internal framework of the palm."
+                exp: "Metacarpals form the framework of the palm."
             },
 
-            // --- MAJOR MUSCLES ---
+            // --- MAJOR MUSCLES (1-11) ---
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #1?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Trapezius", "Pectoralis major", "Deltoid", "Latissimus dorsi"],
-                correctText: "Deltoid",
-                exp: "Label #1 points to the shoulder deltoid muscle."
+                options: ["Pectoralis major", "Deltoid", "Biceps brachii", "Trapezius"],
+                correctText: "Pectoralis major",
+                exp: "Label #1 indicates Pectoralis major."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #2?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Pectoralis major", "Rectus abdominis", "Latissimus dorsi", "Brachialis"],
-                correctText: "Pectoralis major",
-                exp: "Label #2 highlights the large chest pectoralis major muscle."
+                options: ["Biceps brachii", "Triceps brachii", "Deltoid", "Brachialis"],
+                correctText: "Biceps brachii",
+                exp: "Label #2 indicates Biceps brachii."
             },
             {
-                q: "Referring to the major muscles diagram, which muscle is indicated by label #3?",
+                q: "Referring to the major muscles diagram, which muscle group is indicated by label #3?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["External oblique", "Rectus abdominis", "Transverse abdominis", "Internal oblique"],
-                correctText: "Rectus abdominis",
-                exp: "Label #3 identifies the abdominal rectus abdominis muscle."
+                options: ["Quadriceps", "Hamstrings", "Gastrocnemius", "Rectus abdominis"],
+                correctText: "Quadriceps",
+                exp: "Label #3 indicates Quadriceps."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #4?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Triceps brachii", "Biceps brachii", "Brachioradialis", "Coracobrachialis"],
-                correctText: "Biceps brachii",
-                exp: "Label #4 points to the biceps brachii on the arm."
+                options: ["Trapezius", "Latissimus dorsi", "Deltoid", "Rhomboid major"],
+                correctText: "Trapezius",
+                exp: "Label #4 indicates Trapezius."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #5?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Biceps brachii", "Triceps brachii", "Deltoid", "Anconeus"],
-                correctText: "Triceps brachii",
-                exp: "Label #5 marks the posterior triceps brachii muscle."
+                options: ["Rectus abdominis", "External oblique", "Pectoralis major", "Latissimus dorsi"],
+                correctText: "Rectus abdominis",
+                exp: "Label #5 indicates Rectus abdominis."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #6?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Gluteus medius", "Gluteus maximus", "Gluteus minimus", "Tensor fasciae latae"],
+                options: ["Gluteus maximus", "Gluteus medius", "Hamstrings", "Tensor fasciae latae"],
                 correctText: "Gluteus maximus",
-                exp: "Label #6 identifies the gluteus maximus."
+                exp: "Label #6 indicates Gluteus maximus."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #7?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Tibialis anterior", "Gastrocnemius", "Soleus", "Peroneus longus"],
+                options: ["Gastrocnemius", "Soleus", "Tibialis anterior", "Peroneus longus"],
                 correctText: "Gastrocnemius",
-                exp: "Label #7 points to the gastrocnemius calf muscle."
+                exp: "Label #7 indicates Gastrocnemius."
             },
             {
-                q: "Referring to the major muscles diagram, which muscle group is indicated by label #8?",
+                q: "Referring to the major muscles diagram, which muscle is indicated by label #8?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Hamstrings", "Quadriceps femoris", "Adductors", "Iliopsoas"],
-                correctText: "Quadriceps femoris",
-                exp: "Label #8 indicates the anterior thigh quadriceps group."
+                options: ["Latissimus dorsi", "Trapezius", "Infraspinatus", "Teres major"],
+                correctText: "Latissimus dorsi",
+                exp: "Label #8 indicates Latissimus dorsi."
             },
             {
                 q: "Referring to the major muscles diagram, which muscle is indicated by label #9?",
                 img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
-                options: ["Latissimus dorsi", "Trapezius", "Rhomboid major", "Infraspinatus"],
-                correctText: "Trapezius",
-                exp: "Label #9 identifies the upper back trapezius muscle."
+                options: ["Deltoid", "Trapezius", "Pectoralis major", "Triceps brachii"],
+                correctText: "Deltoid",
+                exp: "Label #9 indicates Deltoid."
             },
             {
+                q: "Referring to the major muscles diagram, which muscle is indicated by label #10?",
+                img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
+                options: ["Triceps brachii", "Biceps brachii", "Brachioradialis", "Anconeus"],
+                correctText: "Triceps brachii",
+                exp: "Label #10 indicates Triceps brachii."
+            },
+            {
+                q: "Referring to the major muscles diagram, which muscle group is indicated by label #11?",
+                img: "https://shannprincecabiao-ui.github.io/stas-Quiz/Images/major_muscle.png",
+                options: ["Hamstrings", "Quadriceps", "Adductors", "Gastrocnemius"],
+                correctText: "Hamstrings",
+                exp: "Label #11 indicates Hamstrings."
+            },
+
+            // --- MUSCLE PHYSIOLOGY ---
+            {
                 q: "What structural connective tissue attaches a muscle directly to a bone?",
-                options: ["Ligament", "Tendon", "Aponeurosis", "Fascia"],
+                options: ["Tendon", "Ligament", "Aponeurosis", "Fascia"],
                 correctText: "Tendon",
                 exp: "Tendons attach muscle to bone."
             },
@@ -801,25 +809,25 @@
             },
             {
                 q: "Muscle contraction neurotransmitter released at the neuromuscular junction is:",
-                options: ["Dopamine", "Acetylcholine (ACh)", "Serotonin", "Norepinephrine"],
+                options: ["Acetylcholine (ACh)", "Dopamine", "Serotonin", "Norepinephrine"],
                 correctText: "Acetylcholine (ACh)",
                 exp: "ACh signals depolarization at neuromuscular junctions."
             },
             {
                 q: "Muscle that acts as the primary mover producing a specific movement is the:",
-                options: ["Antagonist", "Synergist", "Agonist", "Fixator"],
+                options: ["Agonist", "Antagonist", "Synergist", "Fixator"],
                 correctText: "Agonist",
-                exp: "The agonist drives the action."
+                exp: "The agonist drives the primary movement."
             },
             {
                 q: "Muscle opposing the action of a prime mover is called the:",
-                options: ["Agonist", "Synergist", "Antagonist", "Fixator"],
+                options: ["Antagonist", "Agonist", "Synergist", "Fixator"],
                 correctText: "Antagonist",
                 exp: "The antagonist opposes prime movement."
             },
             {
                 q: "Ion required to expose binding sites on actin filaments initiating muscle contraction is:",
-                options: ["Sodium (Na+)", "Potassium (K+)", "Calcium (Ca2+)", "Iron (Fe2+)"],
+                options: ["Calcium (Ca2+)", "Sodium (Na+)", "Potassium (K+)", "Iron (Fe2+)"],
                 correctText: "Calcium (Ca2+)",
                 exp: "Calcium uncovers active actin binding sites."
             }
@@ -858,17 +866,14 @@
             });
         }
 
-        // Render Slide Deck
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
-            
             container.innerHTML = '';
             userAnswers = {};
             currentSlide = 0;
             isSubmitted = false;
 
             activeQuizData.forEach((data, index) => {
-                // Render Slide Card
                 const card = document.createElement('div');
                 card.className = `quiz-card ${index === 0 ? 'active' : ''}`;
                 card.id = `card-${index}`;
@@ -900,7 +905,6 @@
         }
 
         function selectOption(qIndex, optIndex, selectedBtn) {
-            // Prevent changing selection once answered or submitted
             if (userAnswers.hasOwnProperty(qIndex) || isSubmitted) return;
 
             userAnswers[qIndex] = optIndex;
@@ -909,24 +913,19 @@
             const buttons = optionsContainer.getElementsByClassName('option-btn');
             const explanationDiv = document.getElementById(`explanation-${qIndex}`);
 
-            // Lock all option buttons for this question
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].disabled = true;
 
-                // Highlight correct option in green
                 if (i === data.correct) {
                     buttons[i].classList.add('correct');
                 }
 
-                // Highlight selected wrong option in red
                 if (optIndex === i && optIndex !== data.correct) {
                     buttons[i].classList.add('incorrect');
                 }
             }
 
-            // Reveal explanation immediately
             explanationDiv.style.display = 'block';
-
             updateProgressTracker();
         }
 
@@ -955,7 +954,6 @@
             document.getElementById('next-btn').disabled = (currentSlide === activeQuizData.length - 1);
         }
 
-        // Keyboard Arrow Shortcuts for Slide Navigation
         document.addEventListener('keydown', (e) => {
             if (isSubmitted) return;
             if (e.key === 'ArrowLeft') {
@@ -976,7 +974,6 @@
                 }
             });
 
-            // Hide Quiz Deck Controls, Show Final Score Card
             document.getElementById('quiz-container').style.display = 'none';
             document.getElementById('controls-panel').style.display = 'none';
 
@@ -997,7 +994,6 @@
             renderQuiz();
         }
 
-        // Initialize on page load
         prepareShuffledQuiz();
         renderQuiz();
     </script>
