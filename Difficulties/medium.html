@@ -1200,6 +1200,7 @@
             document.getElementById('score-text').innerText = `${score} / ${activeQuizData.length}`;
             const percentage = Math.round((score / activeQuizData.length) * 100);
             document.getElementById('percentage-text').innerText = `Your Score: ${percentage}%`;
+            sendQuizResult(score, questions.length);
         }
 
         function resetQuiz() {
@@ -1214,5 +1215,29 @@
         prepareShuffledQuiz();
         renderQuiz();
     </script>
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzCrgU6F4A0NbwipwkSNaxkLiPaEfXVOgA83cTnH_bbn7OjxeWbXzriS2Q0Z_cQNLEw/exec";
+
+function sendQuizResult(score, total) {
+    const data = {
+        user: "Anonymous",
+        device: navigator.userAgent,
+        quiz: "Medium",
+        score: score + "/" + total,
+        percentage: Math.round((score / total) * 100),
+        time: new Date().toLocaleTimeString(),
+        completed: true
+    };
+
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "text/plain"
+        },
+        body: JSON.stringify(data)
+    });
+}
+</script>
 </body>
 </html>
