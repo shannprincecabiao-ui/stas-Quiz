@@ -1,1 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomy & Physiology - Extreme Level (100 Items)</title>
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --card-bg: #1c2541;
+            --accent-glow: #64dfdf;
+            --accent-hover: #48cae4;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --correct-bg: #15803d;
+            --correct-border: #22c55e;
+            --incorrect-bg: #b91c1c;
+            --incorrect-border: #ef4444;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --transition-speed: 0.25s;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(100, 223, 223, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            max-height: 92vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-title svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--accent-glow);
+        }
+
+        .counter {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .slide-content {
+            overflow-y: auto;
+            padding: 20px 5px;
+            flex-grow: 1;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-image-container img {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            object-fit: contain;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-main);
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            text-align: left;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: rgba(100, 223, 223, 0.1);
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 12px rgba(100, 223, 223, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-bg) !important;
+            border-color: var(--incorrect-border) !important;
+            color: #ffffff;
+        }
+
+        .option-btn[disabled] {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
+        .explanation-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-left: 4px solid var(--accent-glow);
+            padding: 14px 18px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-top: 15px;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            display: none;
+        }
+
+        .explanation-box.active {
+            display: block;
+        }
+
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--accent-glow);
+            color: var(--accent-glow);
+            padding: 10px 22px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .action-btn:hover:not([disabled]) {
+            background: var(--accent-glow);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(100, 223, 223, 0.4);
+        }
+
+        .action-btn[disabled] {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.25);
+            cursor: not-allowed;
+        }
+
+        /* Results Card */
+        .results-card {
+            display: none;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .results-card.active {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-glow);
+            margin: 15px 0 5px;
+            text-shadow: 0 0 20px rgba(100, 223, 223, 0.3);
+        }
+
+        .percentage-display {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            margin-bottom: 25px;
+        }
+
+        .motivational-msg {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <header>
+            <div class="quiz-title">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                </svg>
+                Nursing A&P - Extreme Assessment
+            </div>
+            <div class="counter" id="itemCounter">Item 1 of 100</div>
+        </header>
+
+        <!-- Question View -->
+        <div id="quizView" style="display: flex; flex-direction: column; flex-grow: 1;">
+            <div class="slide-content">
+                <div class="question-text" id="questionText">Loading item...</div>
+                <div class="question-image-container" id="imageContainer" style="display: none;">
+                    <img id="questionImage" src="" alt="Anatomy Diagram">
+                </div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <div class="explanation-box" id="explanationBox"></div>
+            </div>
+
+            <div class="nav-footer">
+                <button class="action-btn" id="prevBtn" onclick="navigate(-1)">Previous</button>
+                <button class="action-btn" id="nextBtn" onclick="navigate(1)">Next</button>
+            </div>
+        </div>
+
+        <!-- Final Results Card View -->
+        <div class="results-card" id="resultsCard">
+            <h2>Extreme Assessment Completed</h2>
+            <div class="score-display" id="finalScore">0 / 100</div>
+            <div class="percentage-display" id="finalPercentage">0% Overall Mastery</div>
+            <div class="motivational-msg" id="motivationalMessage"></div>
+            
+            <a href="../main.html" class="action-btn" style="margin-top: 10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Return to Main Menu
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Combined and expanded 100 items covering Epithelial/Histology, Integumentary, Skeletal, and Muscular systems.
+        const questions = [
+            // --- Epithelial & Histology System ---
+            {
+                q: "1. Which epithelial tissue consists of a single layer of flattened, scale-like cells ideal for rapid diffusion?",
+                options: ["Simple squamous epithelium", "Simple cuboidal epithelium", "Stratified squamous epithelium", "Transitional epithelium"],
+                answer: 0,
+                exp: "Simple squamous epithelium is structured for passive diffusion and filtration, found in lung alveoli and blood capillaries."
+            },
+            {
+                q: "2. Pseudostratified ciliated columnar epithelium is primarily located in which body system?",
+                image: "../Images/egypt.png",
+                options: ["Digestive tract", "Respiratory tract", "Urinary bladder", "Epidermis"],
+                answer: 1,
+                exp: "Pseudostratified ciliated columnar epithelium lines the upper respiratory tract (trachea, bronchi) to propel mucus and debris."
+            },
+            {
+                q: "3. What epithelial type allows the urinary bladder to stretch without tearing?",
+                options: ["Stratified columnar", "Simple cuboidal", "Transitional epithelium", "Pseudostratified columnar"],
+                answer: 2,
+                exp: "Transitional epithelium expands and thins as the bladder fills, preventing rupture."
+            },
+            {
+                q: "4. Simple cuboidal epithelium is typically found performing secretion and absorption in which structure?",
+                options: ["Renal tubules and thyroid glands", "Alveoli of lungs", "Esophagus lining", "Skin surface"],
+                answer: 0,
+                exp: "Simple cuboidal cells form active secretory/absorptive glands and kidney tubule walls."
+            },
+            {
+                q: "5. Non-keratinized stratified squamous epithelium lines which of the following areas?",
+                options: ["Epidermis of palm", "Oral cavity and esophagus", "Thyroid follicles", "Air sacs of lungs"],
+                answer: 1,
+                exp: "Non-keratinized stratified squamous tissue protects moist abrasion-prone zones such as the mouth, esophagus, and vagina."
+            },
+            {
+                q: "6. Which intercellular junction prevents fluids from leaking between adjacent epithelial cells?",
+                options: ["Desmosomes", "Gap junctions", "Tight junctions (zonula occludens)", "Hemidesmosomes"],
+                answer: 2,
+                exp: "Tight junctions seal intercellular spaces, maintaining distinct fluid barriers across epithelial sheets."
+            },
+            {
+                q: "7. Which junctions provide electrical coupling between adjacent cardiac muscle cells?",
+                options: ["Tight junctions", "Gap junctions", "Desmosomes", "Adherens junctions"],
+                answer: 1,
+                exp: "Gap junctions allow ion passage between cells, facilitating rapid action potential conduction."
+            },
+            {
+                q: "8. Goblet cells are specialized unicellular glands that secrete:",
+                options: ["Sweat", "Mucus", "Sebum", "Hydrochloric acid"],
+                answer: 1,
+                exp: "Goblet cells produce mucin, which hydrates to form protective mucus in respiratory and GI tracts."
+            },
+            {
+                q: "9. Keratinization occurs predominantly in which type of tissue?",
+                options: ["Simple columnar", "Stratified squamous", "Simple squamous", "Transitional"],
+                answer: 1,
+                exp: "Stratified squamous cells accumulate keratin as they migrate outward, creating a waterproof barrier in the epidermis."
+            },
+            {
+                q: "10. Microvilli on simple columnar epithelial cells serve primarily to:",
+                options: ["Propel substances along the lumen", "Increase surface area for absorption", "Anchor cells to basement membrane", "Provide structural strength"],
+                answer: 1,
+                exp: "Microvilli form a brush border that vastly expands the absorptive surface area in the intestines."
+            },
+            {
+                q: "11. Cilia differ from microvilli because cilia contain:",
+                options: ["Actin filaments for rigidity", "Microtubules in a 9+2 arrangement for movement", "Keratin fibers for protection", "Intermediate filaments for elasticity"],
+                answer: 1,
+                exp: "Cilia are motile structures driven by a 9+2 microtubule core powered by dynein motor proteins."
+            },
+            {
+                q: "12. Exocrine glands release secretions via ducts, whereas endocrine glands secrete directly into:",
+                options: ["Lymphatic vessels only", "Interstitial fluid and blood", "Body cavities", "Epithelial surfaces"],
+                answer: 1,
+                exp: "Endocrine glands are ductless, releasing hormones into interstitial spaces and blood plasma."
+            },
+            {
+                q: "13. Glands that accumulate their product until the entire cell ruptures are categorized as:",
+                options: ["Merocrine (eccrine)", "Apocrine", "Holocrine", "Serous"],
+                answer: 2,
+                exp: "Holocrine secretion (e.g., sebaceous glands) involves full cellular lysis to discharge lipid products."
+            },
+            {
+                q: "14. Merocrine glands discharge their secretions through:",
+                options: ["Cell rupture", "Exocytosis without cell loss", "Apical membrane pinching", "Nuclear breakdown"],
+                answer: 1,
+                exp: "Merocrine glands release contents purely via exocytosis without damaging secretory cells."
+            },
+            {
+                q: "15. Basement membranes are composed of two distinct functional zones:",
+                options: ["Basal lamina and reticular lamina", "Stratum basale and dermis", "Epidermis and hypodermis", "Hyaline layer and elastic layer"],
+                answer: 0,
+                exp: "The basement membrane consists of a cell-derived basal lamina and underlying connective tissue-derived reticular lamina."
+            },
+            {
+                q: "16. Simple columnar epithelium lining the stomach secretes protective mucus primarily to prevent:",
+                options: ["Bacterial growth", "Autodigestion by gastric acid and pepsin", "Dehydration", "Tear formations"],
+                answer: 1,
+                exp: "Thick alkaline mucus shields gastric mucosa against corrosive hydrochloric acid and proteolytic enzymes."
+            },
+            {
+                q: "17. What specialized epithelial tissue features cuboidal or columnar basal cells and flattened surface cells when relaxed?",
+                options: ["Transitional epithelium", "Simple squamous", "Pseudostratified", "Stratified columnar"],
+                answer: 0,
+                exp: "Transitional epithelial umbrella cells change shape based on luminal volume and tissue distension."
+            },
+            {
+                q: "18. Endothelium and mesothelium are specialized sub-types of which tissue?",
+                options: ["Simple cuboidal", "Simple squamous", "Stratified squamous", "Pseudostratified columnar"],
+                answer: 1,
+                exp: "Endothelium lines cardiovascular structures; mesothelium lines serous body cavities—both are simple squamous."
+            },
+            {
+                q: "19. Ciliated simple columnar epithelium is specifically found in which section of the female reproductive tract?",
+                options: ["Vagina", "Uterine (fallopian) tubes", "Ovaries", "Cervix outer surface"],
+                answer: 1,
+                exp: "Ciliated cells in uterine tubes sweep fertilized ova toward the uterine cavity."
+            },
+            {
+                q: "20. The primary structural fiber supporting delicate connective tissue networks underneath epithelium is:",
+                options: ["Reticular fibers (collagen type III)", "Elastic fibers", "Hyaline cartilage", "Fibrocartilage"],
+                answer: 0,
+                exp: "Reticular fibers form stroma frameworks supporting epithelial organs and lymphatics."
+            },
+            {
+                q: "21. Epithelial tissues are avascular, meaning they rely on what process for nutrient supply?",
+                options: ["Active transport from lumen", "Diffusion from underlying dermal/connective capillaries", "Direct blood cell absorption", "Lymphatic pumping"],
+                answer: 1,
+                exp: "Avascular epithelia obtain nutrients and oxygen by diffusion across the basement membrane."
+            },
+            {
+                q: "22. Connective tissue anchoring epithelial cells to underlying matrix via integrins utilizes:",
+                options: ["Desmosomes", "Hemidesmosomes", "Gap junctions", "Tight junctions"],
+                answer: 1,
+                exp: "Hemidesmosomes link epithelial intracellular intermediate filaments to basement membrane laminin."
+            },
+            {
+                q: "23. Apocrine glands (e.g., mammary glands) release products by:",
+                options: ["Exocytosis only", "Pinching off the apical portion of the cytoplasm", "Total cell disintegration", "Phagocytosis"],
+                answer: 1,
+                exp: "Apocrine glands shed apical cytoplasm portions into glandular lumens along with secretory products."
+            },
+            {
+                q: "24. Stratified cuboidal epithelium is relatively rare and principally forms duct walls of:",
+                options: ["Kidney tubules", "Sweat and salivary glands", "Alveoli", "Stomach lining"],
+                answer: 1,
+                exp: "Stratified cuboidal epithelium lines sweat, mammary, and salivary gland ducts."
+            },
+            {
+                q: "25. Epithelial metaplasia in long-term smokers converts respiratory pseudostratified ciliated columnar tissue into:",
+                options: ["Simple squamous", "Stratified squamous", "Simple cuboidal", "Transitional"],
+                answer: 1,
+                exp: "Chronic irritant exposure causes adaptive squamous metaplasia, trading delicate ciliated cells for tougher stratified squamous cells."
+            },
+
+            // --- Integumentary System ---
+            {
+                q: "26. Which layer of the epidermis undergoes active mitosis to continuously replace lost skin cells?",
+                options: ["Stratum corneum", "Stratum lucidum", "Stratum basale", "Stratum granulosum"],
+                answer: 2,
+                exp: "Stratum basale contains stem cells that divide to generate keratinocytes."
+            },
+            {
+                q: "27. Stratum lucidum is exclusive to thick skin found on which anatomical regions?",
+                image: "../Images/rome.png",
+                options: ["Palms of hands and soles of feet", "Face and neck", "Abdomen and chest", "Back and shoulders"],
+                answer: 0,
+                exp: "Thick skin on palms and soles includes stratum lucidum between granulosum and corneum layers."
+            },
+            {
+                q: "28. Cells responsible for synthesizing melanin, protecting keratinocyte DNA against UV light, are:",
+                options: ["Keratinocytes", "Melanocytes", "Langerhans cells", "Merkel cells"],
+                answer: 1,
+                exp: "Melanocytes transfer melanin granules to keratinocytes to absorb UV radiation."
+            },
+            {
+                q: "29. Epidermal dendritic cells involved in immune surveillance against pathogens are:",
+                options: ["Merkel cells", "Langerhans cells", "Meissner corpuscles", "Pacini corpuscles"],
+                answer: 1,
+                exp: "Langerhans cells act as antigen-presenting macrophages within the epidermal layers."
+            },
+            {
+                q: "30. The papillary layer of the dermis consists predominantly of which tissue type?",
+                options: ["Dense irregular connective tissue", "Areolar connective tissue", "Adipose tissue", "Hyaline cartilage"],
+                answer: 1,
+                exp: "The superficial dermal papillary layer is composed of loose, highly vascular areolar connective tissue."
+            },
+            {
+                q: "31. The reticular layer of the dermis provides multidirectional tensile strength due to dense networks of:",
+                options: ["Parallel collagen fibers", "Irregularly arranged thick collagen fibers", "Reticular fibers only", "Elastic lamellae"],
+                answer: 1,
+                exp: "Dense irregular connective tissue in the reticular layer withstands multidirectional mechanical stress."
+            },
+            {
+                q: "32. What mechanoreceptor located in dermal papillae detects light touch and low-frequency vibration?",
+                options: ["Pacinian (lamellar) corpuscle", "Meissner (tactile) corpuscle", "Ruffini ending", "Free nerve ending"],
+                answer: 1,
+                exp: "Meissner corpuscles respond to light touch and soft vibrations near skin surfaces."
+            },
+            {
+                q: "33. Deep pressure and high-frequency vibration are detected by sensory structures called:",
+                options: ["Pacinian (lamellar) corpuscles", "Meissner corpuscles", "Merkel discs", "Krause end bulbs"],
+                answer: 0,
+                exp: "Pacinian corpuscles lie deep within dermis/hypodermis and sense firm pressure and rapid vibrations."
+            },
+            {
+                q: "34. Eccrine sweat glands secrete watery fluids primary designed for:",
+                options: ["Hair lubrication", "Thermoregulation via evaporative cooling", "Pheromone release", "Immune cell production"],
+                answer: 1,
+                exp: "Eccrine sweat glands discharge sweat across body surfaces to dissipate heat through evaporation."
+            },
+            {
+                q: "35. Apocrine sweat glands, active starting at puberty, empty into hair follicles in which regions?",
+                options: ["Palms and forehead", "Axillary and anogenital regions", "Soles of feet and shins", "Face and back"],
+                answer: 1,
+                exp: "Apocrine glands in axillary and pubic areas produce viscous secretions decomposed by bacteria to cause odor."
+            },
+            {
+                q: "36. Sebaceous glands secrete an oily substance called sebum through which secretion pathway?",
+                options: ["Merocrine", "Apocrine", "Holocrine", "Eccrine"],
+                answer: 2,
+                exp: "Sebaceous glands use holocrine secretion; cells rupture fully to liberate oily lipids."
+            },
+            {
+                q: "37. Arrector pili muscles are composed of smooth muscle tissue that causes:",
+                options: ["Sweat expulsion from ducts", "Piloerection ('goosebumps') in response to cold or fear", "Hair loss", "Nail bed contraction"],
+                answer: 1,
+                exp: "Arrector pili contraction pulls hair follicles upright, trapping insulating air layers."
+            },
+            {
+                q: "38. The hypodermis (subcutaneous layer) anchors skin to underlying muscle/bone and consists mainly of:",
+                options: ["Stratified squamous tissue", "Areolar and adipose connective tissue", "Dense regular connective tissue", "Elastic cartilage"],
+                answer: 1,
+                exp: "Subcutaneous fat and loose areolar tissue store energy, insulate body core, and cushion organs."
+            },
+            {
+                q: "39. Cyanosis, a bluish skin discoloration, indicates an abnormal concentration of:",
+                options: ["Bilirubin in plasma", "Deoxygenated hemoglobin in blood", "Carotene in fat", "Melanin in basal layers"],
+                answer: 1,
+                exp: "Reduced arterial oxygen saturation increases deoxygenated hemoglobin, causing bluish skin and mucosa."
+            },
+            {
+                q: "40. Jaundice causes yellowing of skin and sclera primarily due to elevated blood levels of:",
+                options: ["Carotene", "Bilirubin", "Hemoglobin", "Melanin"],
+                answer: 1,
+                exp: "Impaired liver function or hemolysis elevates circulating bilirubin, causing skin yellowing."
+            },
+            {
+                q: "41. Granulation tissue formed during secondary intention wound healing contains abundant:",
+                options: ["Osteoclasts and bone matrix", "New capillaries and proliferating fibroblasts", "Mature scar collagen only", "Keratin plaques"],
+                answer: 1,
+                exp: "Granulation tissue is delicate pink tissue rich in capillary sprouts and extracellular-matrix-producing fibroblasts."
+            },
+            {
+                q: "42. First-degree burns damage which layer(s) of the integument?",
+                options: ["Epidermis only", "Epidermis and entire dermis", "Epidermis and superficial papillae of dermis", "Hypodermis and muscle"],
+                answer: 0,
+                exp: "First-degree burns (e.g., sunburn) affect only the epidermal layer without blistering."
+            },
+            {
+                q: "43. Second-degree burns are characterized by damage to epidermis and dermis, presenting with:",
+                options: ["Charred, painless tissue", "Erythema, pain, and blistering", "Complete numbness and white eschar", "Bone exposure"],
+                answer: 1,
+                exp: "Partial-thickness burns destroy epidermis and partial dermis, forming fluid-filled blisters and causing severe pain."
+            },
+            {
+                q: "44. Full-thickness (third-degree) burns damage epidermis, dermis, and subcutaneous tissues, often presenting as:",
+                options: ["Painful fluid blisters", "Insensate (painless) due to destroyed nerve endings", "Mild reddened areas", "Itchy rash"],
+                answer: 1,
+                exp: "Third-degree burns destroy cutaneous sensory receptors, leaving central burned areas insensate."
+            },
+            {
+                q: "45. Hair growth occurs within the hair bulb at the specialized zone known as the:",
+                options: ["Hair cuticle", "Hair matrix", "Arrector pili", "External root sheath"],
+                answer: 1,
+                exp: "The hair matrix contains actively dividing epithelial cells that form hair shafts."
+            },
+            {
+                q: "46. Nail growth originates from active cell division inside the:",
+                options: ["Eponychium", "Hyponychium", "Nail matrix", "Free edge"],
+                answer: 2,
+                exp: "The proximal nail matrix divides continuously to produce keratinized nail plate structures."
+            },
+            {
+                q: "47. Cleavage lines (Langer's lines) in skin reflect the predominant orientation of:",
+                options: ["Epidermal ridges", "Collagen bundles in the dermal reticular layer", "Subcutaneous blood vessels", "Dermal papillae columns"],
+                answer: 1,
+                exp: "Surgical incisions parallel to reticular layer collagen lines heal with minimal scar formation."
+            },
+            {
+                q: "48. Ceruminous glands in the external auditory canal are modified sweat glands producing:",
+                options: ["Sebum", "Earwax (cerumen)", "Milk", "Serous fluid"],
+                answer: 1,
+                exp: "Cerumen traps foreign particles and repels insects within the ear canal."
+            },
+            {
+                q: "49. Vitamin D synthesis begins in skin when UV radiation converts 7-dehydrocholesterol into:",
+                options: ["Calcified matrix", "Cholecalciferol (Vitamin D3)", "Calcitriol", "Parathyroid hormone"],
+                answer: 1,
+                exp: "UV light converts epidermal precursors into cholecalciferol, which is later hydroxylated by liver and kidneys."
+            },
+            {
+                q: "50. Rule of Nines estimates burned body surface area; what percentage is assigned to the entire head and neck?",
+                options: ["4.5%", "9%", "18%", "1%"],
+                answer: 1,
+                exp: "Under the adult Rule of Nines, the head and neck combined account for 9% total body surface area (4.5% anterior, 4.5% posterior)."
+            },
+
+            // --- Skeletal System ---
+            {
+                q: "51. Functional repeating structural units of compact bone are termed:",
+                options: ["Trabeculae", "Osteons (Haversian systems)", "Canaliculi", "Perforating Sharpey fibers"],
+                answer: 1,
+                exp: "Compact bone consists of cylindrical osteons aligned along lines of mechanical stress."
+            },
+            {
+                q: "52. Osteocytes reside in small spaces within bone matrix called:",
+                options: ["Lacunae", "Canaliculi", "Haversian canals", "Volkmann canals"],
+                answer: 0,
+                exp: "Lacunae are micro-cavities containing mature osteocytes surrounded by mineralized matrix."
+            },
+            {
+                q: "53. Microscopic channels connecting adjacent osteocyte lacunae to facilitate nutrient transport are:",
+                options: ["Volkmann canals", "Haversian canals", "Canaliculi", "Sharpey fibers"],
+                answer: 2,
+                exp: "Canaliculi house osteocyte cytoplasmic processes, allowing cell-to-cell gap junction exchange."
+            },
+            {
+                q: "54. Intramembranous ossification directly forms which bones?",
+                options: ["Femur and humerus", "Flat bones of skull and clavicles", "Vertebrae", "Carpals and tarsals"],
+                answer: 1,
+                exp: "Intramembranous ossification converts fibrous connective tissue membranes directly into flat cranial bones."
+            },
+            {
+                q: "55. Endochondral ossification forms most skeletal bones using an initial template made of:",
+                options: ["Fibrocartilage", "Hyaline cartilage", "Elastic cartilage", "Areolar tissue"],
+                answer: 1,
+                exp: "Endochondral bone development replaces pre-existing hyaline cartilage models."
+            },
+            {
+                q: "56. Long bone longitudinal growth occurs at which functional cartilaginous zone?",
+                options: ["Articular cartilage", "Epiphyseal plate", "Periosteum", "Endosteum"],
+                answer: 1,
+                exp: "Cartilage proliferation within epiphyseal plates lengthens long bone diaphyses."
+            },
+            {
+                q: "57. Bone-forming cells that synthesize and secrete unmineralized organic matrix (osteoid) are:",
+                options: ["Osteoclasts", "Osteoblasts", "Osteocytes", "Chondrocytes"],
+                answer: 1,
+                exp: "Osteoblasts build new bone matrix and initiate mineral deposition."
+            },
+            {
+                q: "58. Multinucleated cells responsible for resorption and breakdown of bone matrix are:",
+                options: ["Osteocytes", "Osteoclasts", "Osteoblasts", "Fibroblasts"],
+                answer: 1,
+                exp: "Osteoclasts secrete lysosomal enzymes and acids to degrade mineralized bone matrix during remodeling."
+            },
+            {
+                q: "59. Parathyroid hormone (PTH) elevates serum calcium levels primarily by stimulating:",
+                options: ["Osteoblast activity", "Osteoclast resorption", "Calcitonin release", "Renal calcium excretion"],
+                answer: 1,
+                exp: "PTH triggers osteoclast resorption, releasing stored calcium from bone matrix into blood."
+            },
+            {
+                q: "60. Which hormone opposes PTH by inhibiting osteoclasts and promoting bone calcium deposition?",
+                options: ["Thyroxine", "Calcitonin", "Cortisol", "Aldosterone"],
+                answer: 1,
+                exp: "Calcitonin (produced by thyroid C cells) reduces blood calcium by suppressing osteoclasts."
+            },
+            {
+                q: "61. The structural meshwork characteristic of spongy (cancellous) bone consists of:",
+                options: ["Osteons", "Trabeculae", "Central canals", "Concentric lamellae only"],
+                answer: 1,
+                exp: "Spongy bone forms an interconnected lattice of trabeculae aligned along stress vectors."
+            },
+            {
+                q: "62. Fibrous connective tissue membrane wrapping outer non-articular bone surfaces is the:",
+                options: ["Endosteum", "Perimysium", "Periosteum", "Perichondrium"],
+                answer: 2,
+                exp: "Periosteum coats external bone surfaces, providing attachment for tendons and supplying osteogenic cells."
+            },
+            {
+                q: "63. Canals running perpendicularly to long axes of osteons, carrying blood vessels from periosteum, are:",
+                options: ["Haversian canals", "Volkmann (perforating) canals", "Canaliculi", "Central canals"],
+                answer: 1,
+                exp: "Volkmann canals route neurovascular structures horizontally between medullary cavities and periosteum."
+            },
+            {
+                q: "64. The first cervical vertebra (C1) supporting the cranium is named the:",
+                options: ["Axis", "Atlas", "Vertebra prominens", "Coccyx"],
+                answer: 1,
+                exp: "C1 (Atlas) articulates with occipital condyles, permitting 'nodding' head movements."
+            },
+            {
+                q: "65. The second cervical vertebra (C2) features a prominent bony projection called the dens (odontoid process); it is the:",
+                options: ["Atlas", "Axis", "Sacrum", "Thoracic vertebra"],
+                answer: 1,
+                exp: "C2 (Axis) dens acts as a pivot axis allowing rotational 'no' head movements."
+            },
+            {
+                q: "66. True ribs (ribs 1 to 7) are distinguished because they connect to the sternum via:",
+                options: ["Indirect shared cartilage", "Direct individual costal cartilages", "No cartilaginous connection", "Lumbar fascia"],
+                answer: 1,
+                exp: "Ribs 1–7 attach directly to sternal margins through independent costal cartilage strips."
+            },
+            {
+                q: "67. Ribs 8 through 10 are classified as false ribs because their costal cartilages:",
+                options: ["Attach directly to sternum", "Attach indirectly to costal cartilage of rib 7", "End freely in abdominal wall", "Articulate with lumbar vertebrae"],
+                answer: 1,
+                exp: "False ribs 8–10 fuse their cartilage superiorly onto the cartilage of rib 7."
+            },
+            {
+                q: "68. Rib pairs 11 and 12 are known as floating ribs because they:",
+                options: ["Have no anterior sternal attachment", "Lack posterior vertebral articulation", "Are composed purely of cartilage", "Fuse with pelvic bones"],
+                answer: 0,
+                exp: "Floating ribs terminate freely in posterior abdominal musculature without sternal connections."
+            },
+            {
+                q: "69. Pathological lateral curvature of the spinal column in the frontal plane is termed:",
+                options: ["Kyphosis", "Lordosis", "Scoliosis", "Spondylosis"],
+                answer: 2,
+                exp: "Scoliosis is an abnormal lateral spinal deviation, often accompanied by vertebral rotation."
+            },
+            {
+                q: "70. Exaggerated thoracic curvature ('hunchback') commonly observed in severe osteoporosis is:",
+                options: ["Kyphosis", "Lordosis", "Scoliosis", "Ankylosis"],
+                answer: 0,
+                exp: "Kyphosis presents as enhanced posterior curvature of the thoracic spine."
+            },
+            {
+                q: "71. Exaggerated lumbar curvature ('swayback') associated with pregnancy or obesity is:",
+                options: ["Kyphosis", "Lordosis", "Scoliosis", "Osteoarthritis"],
+                answer: 1,
+                exp: "Lordosis describes accentuated anterior curvature of the lumbar spine."
+            },
+            {
+                q: "72. Knee and elbow synovial joints represent which structural joint classification?",
+                options: ["Pivot joint", "Hinge joint", "Ball-and-socket joint", "Saddle joint"],
+                answer: 1,
+                exp: "Hinge joints restrict movement to uniaxial flexion and extension along a single plane."
+            },
+            {
+                q: "73. Glenohumeral (shoulder) and acetabulofemoral (hip) joints belong to which joint class permitting multiaxial movement?",
+                options: ["Condylar joint", "Pivot joint", "Ball-and-socket joint", "Plane joint"],
+                answer: 2,
+                exp: "Ball-and-socket joints offer wide angular range and rotation across all anatomical planes."
+            },
+            {
+                q: "74. The carpometacarpal joint of the thumb is a classic anatomical example of a:",
+                options: ["Pivot joint", "Saddle joint", "Hinge joint", "Gomphosis"],
+                answer: 1,
+                exp: "Saddle joints feature concave-convex articulation, permitting thumb opposition."
+            },
+            {
+                q: "75. Bone repair follows a specific sequence. Which event occurs first immediately after fracture?",
+                options: ["Fibrocartilaginous callus formation", "Hematoma formation and inflammation", "Bony callus formation", "Bone remodeling"],
+                answer: 1,
+                exp: "Torn blood vessels bleed to create a fracture hematoma within hours of skeletal injury."
+            },
+
+            // --- Muscular System ---
+            {
+                q: "76. Plasma membrane surrounding a skeletal muscle fiber cell is structurally termed the:",
+                options: ["Sarcoplasm", "Sarcolemma", "Sarcoplasmic reticulum", "Epimysium"],
+                answer: 1,
+                exp: "The sarcolemma is the specialized cell membrane conducting action potentials across muscle fibers."
+            },
+            {
+                q: "77. Functional contractile units located between adjacent Z-discs inside myofibrils are:",
+                options: ["Sarcomeres", "Myofilaments", "T-tubules", "Fascicles"],
+                answer: 0,
+                exp: "Sarcomeres contain interdigitating thick and thin filaments, forming basic contractile units."
+            },
+            {
+                q: "78. Thick filaments inside sarcomeres are composed primarily of the motor protein:",
+                options: ["Actin", "Myosin", "Tropomyosin", "Troponin"],
+                answer: 1,
+                exp: "Myosin molecules possess heads that bind actin to pull thin filaments during contraction."
+            },
+            {
+                q: "79. Thin filaments consist of actin wrapped by regulatory proteins called:",
+                options: ["Myosin and titin", "Troponin and tropomyosin", "Dystrophin and nebulin", "Calmodulin and myosin"],
+                answer: 1,
+                exp: "Tropomyosin blocks myosin-binding sites on actin, while troponin binds calcium to shift tropomyosin away."
+            },
+            {
+                q: "80. Neuromuscular junction synaptic cleft transmission relies on release of which neurotransmitter?",
+                options: ["Norepinephrine", "Acetylcholine (ACh)", "Dopamine", "GABA"],
+                answer: 1,
+                exp: "Axon terminals release ACh, which binds motor end-plate receptors to trigger sarcolemma depolarization."
+            },
+            {
+                q: "81. Invaginations of sarcolemma carrying muscle action potentials deep into muscle cell interiors are:",
+                options: ["Sarcoplasmic reticulum", "Transverse (T) tubules", "Z-discs", "Terminal cisternae"],
+                answer: 1,
+                exp: "T-tubules conduct electrical impulses deep inside fibers to stimulate calcium release."
+            },
+            {
+                q: "82. Calcium ions required for skeletal muscle contraction are stored and released by the:",
+                options: ["Golgi apparatus", "Sarcoplasmic reticulum", "Mitochondria", "Lysosomes"],
+                answer: 1,
+                exp: "Sarcoplasmic reticulum network terminal cisternae store high calcium concentrations for rapid release."
+            },
+            {
+                q: "83. During cross-bridge cycles, calcium binds directly to which regulatory protein?",
+                options: ["Actin", "Tropomyosin", "Troponin", "Myosin"],
+                answer: 2,
+                exp: "Calcium binding alters troponin conformation, shifting tropomyosin to expose actin active sites."
+            },
+            {
+                q: "84. Muscle contraction where tension develops while muscle length shortens is termed:",
+                options: ["Isometric contraction", "Concentric isotonic contraction", "Eccentric isotonic contraction", "Passive stretch"],
+                answer: 1,
+                exp: "Concentric isotonic contractions generate force while overcoming resistance to shorten muscle length."
+            },
+            {
+                q: "85. Muscle contraction where tension builds without changing overall muscle length is:",
+                options: ["Concentric contraction", "Isometric contraction", "Eccentric contraction", "Isokinetic contraction"],
+                answer: 1,
+                exp: "Isometric contractions exert force equal to load, holding muscle length constant."
+            },
+            {
+                q: "86. Connective tissue sheath wrapping an entire individual skeletal muscle organ is the:",
+                options: ["Endomysium", "Perimysium", "Epimysium", "Fascia lata"],
+                answer: 2,
+                exp: "Epimysium surrounds full muscle structures, continuous with tendons connecting bone."
+            },
+            {
+                q: "87. Perimysium wraps bundles of muscle fibers known functionally as:",
+                options: ["Myofibrils", "Fascicles", "Sarcomeres", "Myofilaments"],
+                answer: 1,
+                exp: "Fascicles are discrete bundles of muscle fibers compartmentalized by perimysium sheaths."
+            },
+            {
+                q: "88. Endomysium surrounds:",
+                options: ["An entire muscle group", "Individual muscle fibers (cells)", "Muscle fascicles", "Tendons"],
+                answer: 1,
+                exp: "Endomysium is delicate thin connective tissue surrounding individual muscle cells."
+            },
+            {
+                q: "89. In excitation-contraction coupling, ATP binding to myosin heads causes:",
+                options: ["Cross-bridge formation", "Detachment of myosin head from actin", "Power stroke execution", "Calcium uptake"],
+                answer: 1,
+                exp: "ATP binding lowers myosin affinity for actin, causing cross-bridge detachment."
+            },
+            {
+                q: "90. Hydrolysis of ATP into ADP and inorganic phosphate resets myosin heads into which state?",
+                options: ["Low-energy resting state", "High-energy 'cocked' position", "Permanently attached cross-bridge", "Degraded state"],
+                answer: 1,
+                exp: "ATP hydrolysis re-energizes myosin heads into a high-energy angle ready for another stroke."
+            },
+            {
+                q: "91. Rigor mortis occurs post-mortem because cessation of ATP production prevents:",
+                options: ["Calcium release", "Myosin head detachment from actin", "Acetylcholine synthesis", "Action potential conduction"],
+                answer: 1,
+                exp: "Without ATP, cross-bridges cannot detach, locking muscles in contracted states until autolysis occurs."
+            },
+            {
+                q: "92. Primary muscle responsible for generating a specific movement is termed the:",
+                options: ["Antagonist", "Prime mover (agonist)", "Synergist", "Fixator"],
+                answer: 1,
+                exp: "Agonists provide major force directing intended joint actions."
+            },
+            {
+                q: "93. Muscle opposing a specific agonist action to control or slow movement is an:",
+                options: ["Agonist", "Antagonist", "Synergist", "Fixator"],
+                answer: 1,
+                exp: "Antagonists stretch and yield or contract oppositely to regulate agonist movement."
+            },
+            {
+                q: "94. Quadriceps femoris muscle group acts primarily to extend the knee; its four heads include rectus femoris, vastus lateralis, vastus medialis, and:",
+                options: ["Vastus intermedius", "Biceps femoris", "Semimembranosus", "Gracilis"],
+                answer: 0,
+                exp: "Vastus intermedius lies deep to rectus femoris, completing the four quadriceps heads."
+            },
+            {
+                q: "95. Hamstring muscle group flexing the knee and extending the hip consists of biceps femoris, semitendinosus, and:",
+                options: ["Rectus femoris", "Semimembranosus", "Sartorius", "Gastrocnemius"],
+                answer: 1,
+                exp: "Semimembranosus, semitendinosus, and biceps femoris form the posterior thigh hamstring group."
+            },
+            {
+                q: "96. Large calf muscle inserting via calcaneal (Achilles) tendon to plantarflex the foot is the:",
+                options: ["Tibialis anterior", "Gastrocnemius", "Extensor digitorum longus", "Peroneus tertius"],
+                answer: 1,
+                exp: "Gastrocnemius (along with soleus) forms the triceps surae, driving powerful plantarflexion."
+            },
+            {
+                q: "97. Primary muscle responsible for dorsiflexion and inversion of the foot is:",
+                options: ["Gastrocnemius", "Soleus", "Tibialis anterior", "Flexor hallucis longus"],
+                answer: 2,
+                exp: "Tibialis anterior contracts to lift foot toes upward (dorsiflexion)."
+            },
+            {
+                q: "98. Major muscle abducting the arm at the glenohumeral joint beyond initial 15 degrees is the:",
+                options: ["Pectoralis major", "Latissimus dorsi", "Deltoid", "Teres major"],
+                answer: 2,
+                exp: "Deltoid middle fibers abduct upper limbs from 15 to 90 degrees."
+            },
+            {
+                q: "99. Diaphragm contraction during quiet resting respiration causes it to flatten, which:",
+                options: ["Decreases thoracic volume", "Increases thoracic volume, drawing air into lungs", "Forces air out of lungs", "Compresses abdominal organs without volume changes"],
+                answer: 1,
+                exp: "Diaphragm flattening expands vertical thoracic dimensions, lowering intrapulmonary pressure to draw air inside."
+            },
+            {
+                q: "100. Smooth muscle differs from skeletal muscle structurally because smooth muscle cells lack:",
+                options: ["Actin and myosin filaments", "Sarcomeres and striations", "Sarcoplasm", "Nuclei"],
+                answer: 1,
+                exp: "Smooth muscle filaments are arranged diagonally in dense bodies rather than ordered striations/sarcomeres."
+            }
+        ];
+
+        let currentIdx = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        function renderSlide() {
+            const item = questions[currentIdx];
+            document.getElementById("itemCounter").innerText = `Item ${currentIdx + 1} of ${questions.length}`;
+            document.getElementById("questionText").innerText = item.q;
+
+            // Handle image rendering if available
+            const imgContainer = document.getElementById("imageContainer");
+            const imgEl = document.getElementById("questionImage");
+            if (item.image) {
+                imgEl.src = item.image;
+                imgContainer.style.display = "block";
+            } else {
+                imgContainer.style.display = "none";
+            }
+
+            // Render option buttons
+            const grid = document.getElementById("optionsGrid");
+            grid.innerHTML = "";
+            const isAnswered = userAnswers[currentIdx] !== null;
+
+            item.options.forEach((optText, optIdx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = optText;
+
+                if (isAnswered) {
+                    btn.disabled = true;
+                    if (optIdx === item.answer) {
+                        btn.classList.add("correct");
+                    }
+                    if (userAnswers[currentIdx] === optIdx && optIdx !== item.answer) {
+                        btn.classList.add("incorrect");
+                    }
+                } else {
+                    btn.onclick = () => selectOption(optIdx);
+                }
+
+                grid.appendChild(btn);
+            });
+
+            // Handle explanation view
+            const expBox = document.getElementById("explanationBox");
+            if (isAnswered) {
+                expBox.innerText = item.exp;
+                expBox.classList.add("active");
+            } else {
+                expBox.classList.remove("active");
+            }
+
+            // Navigation state
+            document.getElementById("prevBtn").disabled = currentIdx === 0;
+            const nextBtn = document.getElementById("nextBtn");
+            if (currentIdx === questions.length - 1) {
+                nextBtn.innerText = "Finish Quiz";
+            } else {
+                nextBtn.innerText = "Next";
+            }
+        }
+
+        function selectOption(selectedIdx) {
+            userAnswers[currentIdx] = selectedIdx;
+            renderSlide();
+        }
+
+        function navigate(dir) {
+            if (dir === 1 && currentIdx === questions.length - 1) {
+                showResults();
+                return;
+            }
+            
+            const nextIdx = currentIdx + dir;
+            if (nextIdx >= 0 && nextIdx < questions.length) {
+                currentIdx = nextIdx;
+                renderSlide();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quizView").style.display = "none";
+            document.getElementById("itemCounter").style.display = "none";
+            
+            let score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === questions[idx].answer) score++;
+            });
+
+            const pct = Math.round((score / questions.length) * 100);
+            document.getElementById("finalScore").innerText = `${score} / ${questions.length}`;
+            document.getElementById("finalPercentage").innerText = `${pct}% Mastery Level`;
+
+            let msg = "";
+            if (pct >= 90) {
+                msg = "Diretyo graduate kana! share kanaman ng talino!";
+            } else if (pct >= 75) {
+                msg = "pede na yan, wag mo na ulitin beh!";
+            } else if (pct >= 50) {
+                msg = "Okay lang yan! parehas tayong bagsak.";
+            } else {
+                msg = "tara apply nalang tayo ng janitor sa mga mall😭";
+            }
+            
+            document.getElementById("motivationalMessage").innerText = msg;
+            document.getElementById("resultsCard").classList.add("active");
+        }
+
+        // Keyboard arrow navigation
+        document.addEventListener("keydown", (e) => {
+            if (document.getElementById("quizView").style.display !== "none") {
+                if (e.key === "ArrowLeft") {
+                    navigate(-1);
+                } else if (e.key === "ArrowRight") {
+                    navigate(1);
+                }
+            }
+        });
+
+        // Initialize quiz load
+        renderSlide();
+    </script>
+</body>
+</html>
