@@ -32,7 +32,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevents whole-page scrollbars */
+            overflow-x: hidden;
         }
 
         .container {
@@ -52,21 +52,46 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
+        /* --- UPGRADED HOME BUTTON STYLES --- */
         .btn-home {
-            background-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.05));
             color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 0.55rem 1.1rem;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            letter-spacing: 0.3px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-home svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.25s ease;
         }
 
         .btn-home:hover {
-            background-color: var(--accent-blue);
+            background: var(--accent-blue);
             color: #0f172a;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-home:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .btn-home:active {
+            transform: translateY(0);
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.3);
         }
 
         .status-tracker {
@@ -264,6 +289,7 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
             margin-top: 1.5rem;
         }
@@ -273,9 +299,9 @@
             color: #0f172a;
             border: none;
             padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -283,6 +309,7 @@
         .btn-retake:hover {
             opacity: 0.9;
             transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
         }
 
         .quote-box {
@@ -308,9 +335,14 @@
 
     <div class="container">
         
-        <!-- Header Nav -->
+        <!-- Header Nav with Fixed and Enhanced Return Link -->
         <div class="header-nav">
-            <a href="main.html" class="btn-home">← Return Home</a>
+            <a href="../main.html" class="btn-home">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span>Return to Main</span>
+            </a>
             <div class="status-tracker">
                 <span class="progress-text" id="progress-counter">0 / 100 Answered</span>
                 <span class="badge-difficulty">100 Items</span>
@@ -336,7 +368,12 @@
             
             <div class="action-buttons">
                 <button class="btn-retake" onclick="resetQuiz()">Retake Exam (Shuffled)</button>
-                <a href="main.html" class="btn-home" style="padding: 0.75rem 1.5rem; font-size: 1rem;">Return to Main Menu</a>
+                <a href="../main.html" class="btn-home" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span>Return to Main Menu</span>
+                </a>
             </div>
 
             <div class="quote-box">
@@ -500,7 +537,7 @@
             {
                 q: "Ceruminous glands are modified apocrine glands located in the:",
                 options: ["Oral cavity", "External auditory canal", "Mammary glands", "Eyelids"],
-                correctText: "External auditory canal",
+                correctText: "Ceruminous glands",
                 exp: "Ceruminous glands produce earwax (cerumen) in the ear canal."
             },
             {
