@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Exam Reviewer Prelim Nursing Anaphy 1st year</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #bae6fd;
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-difficulties {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .diff-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .diff-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .diff-card.easy { border-color: #22c55e; }
+        .diff-card.easy:hover { background-color: #f0fdf4; }
+        .diff-card.easy h2 { color: #15803d; }
+
+        .diff-card.medium { border-color: #eab308; }
+        .diff-card.medium:hover { background-color: #fefce8; }
+        .diff-card.medium h2 { color: #a16207; }
+
+        .diff-card.hard { border-color: #f97316; }
+        .diff-card.hard:hover { background-color: #fff7ed; }
+        .diff-card.hard h2 { color: #c2410c; }
+
+        .diff-card.extreme { border-color: #ef4444; }
+        .diff-card.extreme:hover { background-color: #fef2f2; }
+        .diff-card.extreme h2 { color: #b91c1c; }
+
+        .diff-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .diff-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .topic-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .topic-card h3 {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-card ul {
+            list-style-type: square;
+            padding-left: 1.2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .topic-card li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Practice Exam Reviewer Prelim Nursing Anaphy 1st year</h1>
+            <p>Select a difficulty level below to start testing your knowledge</p>
+        </header>
+
+        <h2 class="section-title">Select Quiz Difficulty</h2>
+        <div class="grid-difficulties">
+            <a href="Difficulties/easy.html" class="diff-card easy">
+                <div>
+                    <h2>Easy</h2>
+                    <p>Basic terminology, body planes, and cell structures.</p>
+                </div>
+            </a>
+
+            <a href="Difficulties/medium.html" class="diff-card medium">
+                <div>
+                    <h2>Medium</h2>
+                    <p>Tissues, organ systems, homeostasis, and skin layers.</p>
+                </div>
+            </a>
+
+            <a href="Difficulties/hard.html" class="diff-card hard">
+                <div>
+                    <h2>Hard</h2>
+                    <p>Skeletal physiology, bone markings, and joint actions.</p>
+                </div>
+            </a>
+
+            <a href="Difficulties/extreme.html" class="diff-card extreme">
+                <div>
+                    <h2>Extreme</h2>
+                    <p>Clinical scenarios, detailed anatomical pathways, and complex processes.</p>
+                </div>
+            </a>
+        </div>
+
+        <h2 class="section-title">Prelim Topics Covered</h2>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <h3>1. Introduction & Terminology</h3>
+                <ul>
+                    <li>Anatomical Positions & Directional Terms</li>
+                    <li>Body Planes (Sagittal, Frontal, Transverse)</li>
+                    <li>Body Cavities & Membranes</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>2. Cellular & Tissue Level</h3>
+                <ul>
+                    <li>Cell Organelles & Transport Mechanisms</li>
+                    <li>Epithelial & Connective Tissues</li>
+                    <li>Muscle & Nervous Tissues</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>3. Integumentary System</h3>
+                <ul>
+                    <li>Layers of Epidermis & Dermis</li>
+                    <li>Skin Appendages (Glands, Hair, Nails)</li>
+                    <li>Thermoregulation & Protection</li>
+                </ul>
+            </div>
+
+            <div class="topic-card">
+                <h3>4. Skeletal System</h3>
+                <ul>
+                    <li>Axial vs. Appendicular Skeleton</li>
+                    <li>Bone Histology & Ossification</li>
+                    <li>Joints & Articulations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
