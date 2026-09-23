@@ -6,164 +6,190 @@
     <title>Practice Exam Reviewer Prelim Nursing Anaphy 1st year</title>
     <style>
         :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --border: #e2e8f0;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-yellow: #facc15;
+            --accent-orange: #fb923c;
+            --accent-red: #f87171;
+            --border-color: #334155;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            padding: 2rem;
-            line-height: 1.5;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 900px;
         }
 
         header {
-            background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
-            color: white;
-            padding: 2.5rem 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
-            margin-bottom: 2.5rem;
+            padding: 2rem;
             text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
 
         header p {
-            color: #bae6fd;
+            color: var(--accent-blue);
             font-size: 1rem;
         }
 
         .section-title {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-primary);
             margin: 2rem 0 1rem 0;
-            color: var(--text-main);
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .grid-difficulties {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
         .diff-card {
             background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1.5rem;
-            border: 2px solid var(--border);
+            padding: 1.25rem;
             text-decoration: none;
             color: inherit;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease-in-out;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
         .diff-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
+            background-color: var(--card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .diff-card.easy { border-color: #22c55e; }
-        .diff-card.easy:hover { background-color: #f0fdf4; }
-        .diff-card.easy h2 { color: #15803d; }
+        .diff-card.easy { border-top: 4px solid var(--accent-green); }
+        .diff-card.easy h2 { color: var(--accent-green); }
 
-        .diff-card.medium { border-color: #eab308; }
-        .diff-card.medium:hover { background-color: #fefce8; }
-        .diff-card.medium h2 { color: #a16207; }
+        .diff-card.medium { border-top: 4px solid var(--accent-yellow); }
+        .diff-card.medium h2 { color: var(--accent-yellow); }
 
-        .diff-card.hard { border-color: #f97316; }
-        .diff-card.hard:hover { background-color: #fff7ed; }
-        .diff-card.hard h2 { color: #c2410c; }
+        .diff-card.hard { border-top: 4px solid var(--accent-orange); }
+        .diff-card.hard h2 { color: var(--accent-orange); }
 
-        .diff-card.extreme { border-color: #ef4444; }
-        .diff-card.extreme:hover { background-color: #fef2f2; }
-        .diff-card.extreme h2 { color: #b91c1c; }
+        .diff-card.extreme { border-top: 4px solid var(--accent-red); }
+        .diff-card.extreme h2 { color: var(--accent-red); }
 
         .diff-card h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
         }
 
         .diff-card p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
 
         .coverage-box {
             background: var(--card-bg);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .coverage-box h3 {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .coverage-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
         }
 
         .coverage-card {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 1rem 1.25rem;
+            padding: 1rem;
         }
 
-        .coverage-card h3 {
-            color: var(--primary-dark);
-            font-size: 1.1rem;
-            margin-bottom: 0.75rem;
+        .coverage-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.75rem;
         }
 
-        .badge {
-            background: var(--primary);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
+        .coverage-card h4 {
+            color: var(--text-primary);
+            font-size: 0.95rem;
             font-weight: 600;
         }
 
+        .badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
         .coverage-card ul {
-            list-style-type: square;
-            padding-left: 1.2rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
+            list-style-type: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         .coverage-card li {
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.4rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .coverage-card li::before {
+            content: "•";
+            color: var(--accent-blue);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -172,29 +198,29 @@
     <div class="container">
         <header>
             <h1>Practice Exam Reviewer Prelim Nursing Anaphy 1st year</h1>
-            <p>Anatomy and Physiology Preliminary Examination Reviewer</p>
+            <p>Anatomy and Physiology Preliminary Examination</p>
         </header>
 
-        <h2 class="section-title">Select Practice Level</h2>
+        <h2 class="section-title">Select Difficulty Level</h2>
         <div class="grid-difficulties">
             <a href="Difficulties/easy.html" class="diff-card easy">
                 <div>
                     <h2>Easy</h2>
-                    <p>Basic terminology, Cell, and Fundamental Tissues foundational questions.</p>
+                    <p>Basic terminology, Cell, and Fundamental Tissues overview.</p>
                 </div>
             </a>
 
             <a href="Difficulties/medium.html" class="diff-card medium">
                 <div>
                     <h2>Medium</h2>
-                    <p>Integumentary System and basic Skeletal / Muscular concepts.</p>
+                    <p>Integumentary System, Skeletal, and Muscular fundamentals.</p>
                 </div>
             </a>
 
             <a href="Difficulties/hard.html" class="diff-card hard">
                 <div>
                     <h2>Hard</h2>
-                    <p>Appendicular Skeleton and Appendicular Muscles anatomical details.</p>
+                    <p>Appendicular Skeleton and Appendicular Muscles identification.</p>
                 </div>
             </a>
 
@@ -206,14 +232,17 @@
             </a>
         </div>
 
-        <h2 class="section-title">Anatomy & Physiology Prelim Exam Coverage</h2>
-        
+        <h2 class="section-title">Examination Coverage</h2>
+
         <!-- Theoretical Exam Coverage -->
         <div class="coverage-box">
-            <h3 style="color: var(--primary-dark); font-size: 1.2rem;">Theoretical Examination — 100 Items</h3>
+            <h3>Theoretical Examination — 100 Items</h3>
             <div class="coverage-grid">
                 <div class="coverage-card">
-                    <h3>Basic Anatomy & Systems <span class="badge">10 items each</span></h3>
+                    <div class="coverage-card-header">
+                        <h4>General Topics</h4>
+                        <span class="badge">10 items each</span>
+                    </div>
                     <ul>
                         <li>Introduction to Anatomy</li>
                         <li>Cell</li>
@@ -223,7 +252,10 @@
                 </div>
 
                 <div class="coverage-card">
-                    <h3>Skeletal & Muscular <span class="badge">15 items each</span></h3>
+                    <div class="coverage-card-header">
+                        <h4>Skeletal & Muscular</h4>
+                        <span class="badge">15 items each</span>
+                    </div>
                     <ul>
                         <li>Skeletal System</li>
                         <li>Appendicular Skeleton</li>
@@ -236,10 +268,13 @@
 
         <!-- Practical Exam Coverage -->
         <div class="coverage-box">
-            <h3 style="color: var(--primary-dark); font-size: 1.2rem;">Practical Examination — 30 Items</h3>
+            <h3>Practical Examination — 30 Items</h3>
             <div class="coverage-grid">
                 <div class="coverage-card">
-                    <h3>Introductory Practical <span class="badge">3 items each</span></h3>
+                    <div class="coverage-card-header">
+                        <h4>Introductory Identification</h4>
+                        <span class="badge">3 items each</span>
+                    </div>
                     <ul>
                         <li>Introduction to Anatomy</li>
                         <li>Cell</li>
@@ -247,7 +282,10 @@
                 </div>
 
                 <div class="coverage-card">
-                    <h3>Advanced Identification <span class="badge">4 items each</span></h3>
+                    <div class="coverage-card-header">
+                        <h4>Advanced Identification</h4>
+                        <span class="badge">4 items each</span>
+                    </div>
                     <ul>
                         <li>Fundamental Tissues</li>
                         <li>Integumentary System</li>
