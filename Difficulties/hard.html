@@ -1015,7 +1015,7 @@ function sendQuizResult(score, total) {
     const data = {
         user: "Anonymous",
         device: navigator.userAgent,
-        quiz: "Medium",
+        quiz: "Hard",
         score: score + "/" + total,
         percentage: Math.round((score / total) * 100),
         time: new Date().toLocaleTimeString(),
