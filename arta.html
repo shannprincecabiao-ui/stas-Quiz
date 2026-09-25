@@ -1,1 +1,547 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTA Reviewer</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #a855f7;
+            --blue: #38bdf8;
+            --white: #f8fafc;
+            --muted: #8b8b9c;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050505;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Background glow */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            background: rgba(124, 58, 237, 0.14);
+            filter: blur(130px);
+            border-radius: 50%;
+            top: -180px;
+            left: -160px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: rgba(14, 165, 233, 0.10);
+            filter: blur(140px);
+            border-radius: 50%;
+            bottom: -200px;
+            right: -150px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            width: 100%;
+            padding: 24px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--purple);
+        }
+
+        .nav-tag {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        /* Main */
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 80px 24px 50px;
+            text-align: center;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 16px;
+            border: 1px solid rgba(168,85,247,0.3);
+            border-radius: 50px;
+            background: rgba(168,85,247,0.07);
+            color: #c084fc;
+            font-size: 11px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #a855f7;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(42px, 8vw, 85px);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, #c084fc, #818cf8, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            max-width: 580px;
+            margin: 0 auto;
+            color: #9696a8;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        /* Difficulty cards */
+        .mode-container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            max-width: 760px;
+            margin: 65px auto 0;
+        }
+
+        .mode-card {
+            position: relative;
+            text-align: left;
+            padding: 32px;
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,0.055),
+                rgba(255,255,255,0.015)
+            );
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 22px;
+            transition: 0.3s ease;
+            overflow: hidden;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-7px);
+        }
+
+        .easy-card:hover {
+            border-color: rgba(34,197,94,0.6);
+            box-shadow: 0 0 35px rgba(34,197,94,0.08);
+        }
+
+        .hard-card:hover {
+            border-color: rgba(239,68,68,0.6);
+            box-shadow: 0 0 35px rgba(239,68,68,0.08);
+        }
+
+        .mode-icon {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 27px;
+            margin-bottom: 25px;
+        }
+
+        .easy-card .mode-icon {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.25);
+        }
+
+        .hard-card .mode-icon {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.25);
+        }
+
+        .mode-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 9px;
+        }
+
+        .mode-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 25px;
+            margin-bottom: 13px;
+        }
+
+        .easy-card h2 {
+            color: #4ade80;
+        }
+
+        .hard-card h2 {
+            color: #f87171;
+        }
+
+        .mode-description {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #9292a4;
+            min-height: 48px;
+            margin-bottom: 28px;
+        }
+
+        .mode-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 15px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .easy-button {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #4ade80;
+        }
+
+        .easy-button:hover {
+            background: #22c55e;
+            color: #050505;
+        }
+
+        .hard-button {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #f87171;
+        }
+
+        .hard-button:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        /* Music panel */
+        .music-panel {
+            max-width: 760px;
+            margin: 35px auto 0;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .music-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(168,85,247,0.12);
+            border: 1px solid rgba(168,85,247,0.25);
+            border-radius: 14px;
+            font-size: 22px;
+        }
+
+        .music-info h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .music-info p {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .music-button {
+            border: 1px solid rgba(168,85,247,0.4);
+            background: rgba(168,85,247,0.12);
+            color: #c084fc;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .music-button:hover {
+            background: #a855f7;
+            color: white;
+        }
+
+        /* YouTube player */
+        .player-wrap {
+            max-width: 760px;
+            margin: 16px auto 0;
+            text-align: left;
+        }
+
+        .player-wrap iframe {
+            display: block;
+            width: 240px;
+            max-width: 100%;
+            height: 135px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+        }
+
+        .player-wrap.hidden {
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 35px 20px;
+            color: #555568;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer span {
+            color: #a855f7;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            nav {
+                padding: 20px 6%;
+            }
+
+            .nav-tag {
+                font-size: 9px;
+            }
+
+            main {
+                padding: 60px 18px 40px;
+            }
+
+            .mode-container {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                margin-top: 45px;
+            }
+
+            .mode-card {
+                padding: 27px;
+            }
+
+            .music-panel {
+                padding: 17px;
+                gap: 10px;
+            }
+
+            .music-button {
+                padding: 11px 13px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">ARTA<span>.</span></div>
+        <div class="nav-tag">STUDY MODE / 001</div>
+    </nav>
+
+    <main>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            REVIEW SESSION ACTIVE
+        </div>
+
+        <h1>ARTA<br><span>REVIEWER</span></h1>
+
+        <p class="subtitle">
+            Welcome to your Art Appreciation review session.
+            Choose your difficulty, test your knowledge, and
+            prepare yourself for the next quiz.
+        </p>
+
+        <!-- Difficulty selection -->
+        <section class="mode-container">
+
+            <!-- EASY MODE -->
+            <article class="mode-card easy-card">
+                <div class="mode-icon">🌱</div>
+
+                <p class="mode-label">LEVEL 01 / BEGINNER</p>
+                <h2>EASY MODE</h2>
+
+                <p class="mode-description">
+                    Start with the basics. Review key concepts
+                    and build your understanding of art.
+                </p>
+
+                <a
+                    href="https://shannprincecabiao-ui.github.io/stas-Quiz/DIfficulties/easy1.html"
+                    class="mode-button easy-button"
+                >
+                    <span>START REVIEW</span>
+                    <span>→</span>
+                </a>
+            </article>
+
+            <!-- HARD MODE -->
+            <article class="mode-card hard-card">
+                <div class="mode-icon">🔥</div>
+
+                <p class="mode-label">LEVEL 02 / ADVANCED</p>
+                <h2>HARD MODE</h2>
+
+                <p class="mode-description">
+                    Challenge yourself with more difficult
+                    questions and test your understanding.
+                </p>
+
+                <a
+                    href="https://shannprincecabiao-ui.github.io/stas-Quiz/DIfficulties/hard1.html"
+                    class="mode-button hard-button"
+                >
+                    <span>START CHALLENGE</span>
+                    <span>→</span>
+                </a>
+            </article>
+
+        </section>
+
+        <!-- Background music controls -->
+        <section class="music-panel">
+            <div class="music-info">
+                <div class="music-icon">🎵</div>
+                <div>
+                    <h3>BACKGROUND MUSIC</h3>
+                    <p id="musicStatus">ARTA Reviewer • Music off</p>
+                </div>
+            </div>
+
+            <button
+                class="music-button"
+                id="musicToggle"
+                type="button"
+            >
+                ▶ PLAY MUSIC
+            </button>
+        </section>
+
+        <!-- YouTube player -->
+        <div class="player-wrap hidden" id="playerWrap">
+            <iframe
+                id="musicPlayer"
+                title="ARTA Reviewer Background Music"
+                src="about:blank"
+                allow="autoplay; encrypted-media"
+                referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+        </div>
+
+    </main>
+
+    <footer>
+        MADE FOR YOUR STUDY SESSION <span>✦</span> ARTA REVIEWER
+    </footer>
+
+    <script>
+        const videoId = "Lox_jyvBBEk";
+
+        const player = document.getElementById("musicPlayer");
+        const playerWrap = document.getElementById("playerWrap");
+        const musicToggle = document.getElementById("musicToggle");
+        const musicStatus = document.getElementById("musicStatus");
+
+        let isPlaying = false;
+
+        function playMusic() {
+            player.src =
+                "https://www.youtube.com/embed/" + videoId +
+                "?autoplay=1&loop=1&playlist=" + videoId +
+                "&controls=1&rel=0";
+
+            playerWrap.classList.remove("hidden");
+
+            isPlaying = true;
+            musicToggle.textContent = "❚❚ PAUSE MUSIC";
+            musicStatus.textContent = "ARTA Reviewer • Music on";
+        }
+
+        function pauseMusic() {
+            player.src = "about:blank";
+
+            isPlaying = false;
+            musicToggle.textContent = "▶ PLAY MUSIC";
+            musicStatus.textContent = "ARTA Reviewer • Music off";
+        }
+
+        musicToggle.addEventListener("click", () => {
+            if (isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
+        });
+    </script>
+
+</body>
+</html>
