@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTA Reviewer - Easy Mode</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #a855f7;
+            --blue: #38bdf8;
+            --white: #f8fafc;
+            --muted: #8b8b9c;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050505;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Prevents unwanted page scrolling */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Background glow */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            background: rgba(124, 58, 237, 0.14);
+            filter: blur(130px);
+            border-radius: 50%;
+            top: -180px;
+            left: -160px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: rgba(14, 165, 233, 0.10);
+            filter: blur(140px);
+            border-radius: 50%;
+            bottom: -200px;
+            right: -150px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--purple);
+        }
+
+        .nav-tag {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        /* Main Quiz Container */
+        main {
+            flex: 1;
+            max-width: 800px;
+            width: 90%;
+            margin: auto;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quiz-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015));
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 22px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: var(--white);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--white);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+
+        .option-btn.correct {
+            background: rgba(34, 197, 94, 0.2) !important;
+            border-color: var(--green) !important;
+            color: #4ade80 !important;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--red) !important;
+            color: #f87171 !important;
+        }
+
+        /* Controls Footer inside card */
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding-top: 20px;
+        }
+
+        .btn {
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+        }
+
+        .btn-primary:hover {
+            background: var(--green);
+            color: #050505;
+        }
+
+        /* Result / End Screen */
+        .result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .result-screen h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #c084fc, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .motivation-box {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #9696a8;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            padding: 18px;
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #555568;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer span {
+            color: #a855f7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">ARTA<span>.</span></div>
+        <div class="nav-tag">EASY MODE / QUIZ</div>
+    </nav>
+
+    <main>
+        <!-- Quiz Box -->
+        <div id="quizContainer" class="quiz-card">
+            <div class="quiz-header">
+                <span id="questionCounter">QUESTION 1 / 64</span>
+                <span style="color: #4ade80;">INSTANT FEEDBACK ACTIVE</span>
+            </div>
+
+            <div id="questionText" class="question-text">Loading question...</div>
+
+            <div id="optionsContainer" class="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div class="quiz-controls">
+                <button id="prevBtn" class="btn btn-secondary" onclick="prevQuestion()" disabled>← Previous</button>
+                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Result / Motivation Box -->
+        <div id="resultScreen" class="quiz-card result-screen">
+            <h2>REVIEW COMPLETED!</h2>
+            <p id="scoreDisplay" style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--white);"></p>
+            <div id="motivationText" class="motivation-box"></div>
+            <a href="https://shannprincecabiao-ui.github.io/stas-Quiz/arta.html" class="btn btn-primary" style="display: inline-block;">Return to Home ➔</a>
+        </div>
+    </main>
+
+    <!-- Background Music (Same as Home) -->
+    <audio id="bgMusic" autoplay loop preload="auto">
+        <source src="https://shannprincecabiao-ui.github.io/stas-Quiz/music/purity.mp3" type="audio/mpeg">
+    </audio>
+
+    <footer>
+        MADE FOR YOUR STUDY SESSION <span>✦</span> ARTA REVIEWER
+    </footer>
+
+    <!-- Google Apps Script Logger -->
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzCrgU6F4A0NbwipwkSNaxkLiPaEfXVOgA83cTnH_bbn7OjxeWbXzriS2Q0Z_cQNLEw/exec";
+
+        function sendQuizResult(score, total) {
+            const data = {
+                user: "Anonymous",
+                device: navigator.userAgent,
+                quiz: "Easy",
+                score: score + "/" + total,
+                percentage: Math.round((score / total) * 100),
+                time: new Date().toLocaleTimeString(),
+                completed: true
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(data)
+            });
+        }
+    </script>
+
+    <!-- Quiz Engine Script -->
+    <script>
+        // Full Question Bank derived from the ARTA 111 Reviewer source[cite: 2]
+        const rawQuestions = [
+            { q: "During an art appreciation class, a student sees a painting of a mountain. The artist uses unusual colors and shapes to express personal emotions rather than copying the mountain exactly. Which statement best explains the artwork?", options: ["The painting is nature itself because it represents a real mountain.", "The painting is an interpretation of nature shaped by the artist’s imagination and experience.", "The painting is not art because it does not accurately represent the mountain.", "The painting matters only because it records the mountain’s actual appearance."], answer: 1 },
+            { q: "A school holds an exhibit featuring paintings, sculptures, and buildings designed by different artists. Which division of art mainly applies to these works?", options: ["They are auditory arts because people can discuss them.", "They are performing arts because they are presented in public.", "They are visual arts because they are primarily seen and occupy space.", "They are literary arts because they communicate ideas."], answer: 2 },
+            { q: "A student listens to a song about migration and connects it to a family experience. Her classmate hears the same song but understands it differently. What idea does this situation show?", options: ["Art appreciation is shaped by personal experience.", "Art has one meaning for every listener.", "Music is valuable only when its lyrics are factual.", "A song cannot communicate more than one idea."], answer: 0 },
+            { q: "A community creates a mural showing an important local event so younger generations will remember it. What purpose of art is most directly shown?", options: ["Providing decoration", "Creating order and harmony", "Expressing religious values", "Recording and commemorating experience"], answer: 3 },
+            { q: "A student argues that art exists only in museums and that traditional songs from other cultures are not art. Which idea best challenges this claim?", options: ["Art must be expensive to be recognized.", "Art appears across cultures and generations.", "Art is limited to objects made by trained painters.", "Art must follow one universal style."], answer: 1 },
+            { q: "A designer arranges colors, shapes, and lines so the parts of a poster work well together. Which purpose is most directly reflected?", options: ["To preserve a historical event", "To reveal a scientific fact", "To create order and harmony", "To reproduce nature exactly"], answer: 2 },
+            { q: "A person admires a sculpture for its beauty without asking whether it is useful or profitable. Which philosopher’s idea is closest to this response?", options: ["Kant’s disinterested judgment", "The artisan’s practical function", "The curator’s collection management", "The artist’s production schedule"], answer: 0 },
+            { q: "A theater performance combines spoken dialogue, music, costumes, and movement. Which division of art best describes it?", options: ["Visual art only", "Auditory art only", "A natural event rather than art", "Combined or performing art"], answer: 3 },
+            { q: "A student creates an original poster by combining familiar symbols in a new way instead of copying an existing design. What ability is being demonstrated?", options: ["Memorization", "Creativity", "Preservation", "Imitation"], answer: 1 },
+            { q: "Before beginning a sculpture, an artist pictures a fictional creature and its environment in the mind. Which process is most evident?", options: ["Documentation", "Decoration", "Imagination", "Commemoration"], answer: 2 },
+            { q: "A dancer communicates grief through movement and facial expression without speaking. What role of art is most clearly shown?", options: ["Expression of emotion", "Accurate measurement", "Practical construction", "Collection management"], answer: 0 },
+            { q: "A student visits a gallery and says that reading a description online is not the same as seeing the artwork in person. Which assumption about art supports this view?", options: ["Art must always be realistic.", "Art is valuable only when old.", "Art is made only by professionals.", "Art appreciation involves experience."], answer: 3 },
+            { q: "A painter studies a real forest but changes its patterns and colors to communicate a personal view. Which conclusion is most accurate?", options: ["The work is invalid because it is not an exact copy.", "The artist interprets nature rather than reproducing it exactly.", "The work is nature because the forest exists.", "The artist has created a scientific record."], answer: 1 },
+            { q: "A museum displays an ancient artwork beside a contemporary work from another country. Visitors find meaning in both despite differences in age and culture. What idea is illustrated?", options: ["Only recent art can be appreciated.", "Art has value only in its original location.", "Art can connect people across cultures and generations.", "Art must use the same materials everywhere."], answer: 2 },
+            { q: "A student says an artwork is worthless because it is not expensive. Which concept most directly challenges the student’s statement?", options: ["Art has intrinsic worth beyond its price.", "Art must be sold to be meaningful.", "Art is useful only as decoration.", "Art’s value depends entirely on its age."], answer: 0 },
+            { q: "A student studies how the meaning of art changed from ancient practical craft to later emphasis on fine arts. What is the student examining?", options: ["The artist’s studio routine", "A curator’s exhibition plan", "A single artwork’s medium", "The evolution of art"], answer: 3 },
+            { q: "A poet writes verses intended to be heard through spoken performance. Which division of art is most closely associated with poetry in the lesson?", options: ["Visual arts", "Auditory arts", "Architecture", "Sculpture"], answer: 1 },
+            { q: "A student sees a painting with recognizable people, houses, and trees. Which description best fits the subject’s presentation?", options: ["It is non-representational because it uses paint.", "It is purely decorative because it has colors.", "It is representational because recognizable things are shown.", "It is a performance because it tells a story."], answer: 2 },
+            { q: "An artist creates a composition using only abstract shapes and lines, with no recognizable objects. How is the work best described?", options: ["Non-representational art", "A documentary record", "A realistic portrait", "A functional craft"], answer: 0 },
+            { q: "A painting shows a person, but the artist uses the person’s pose and setting to suggest loneliness and isolation. What does the painting’s content include?", options: ["Only the materials used to paint it", "Only the visible outline of the person", "The gallery’s display arrangement", "The ideas or meaning communicated through the image"], answer: 3 },
+            { q: "A visitor describes the visible figures and objects in a painting before explaining what they might symbolize. What is the visitor identifying first?", options: ["The artist’s biography", "The subject matter", "The technique alone", "The artwork’s market value"], answer: 1 },
+            { q: "A student notices that a painting’s meaning changes depending on the viewer’s culture and life experiences. Which idea best explains this?", options: ["Every artwork has only one fixed interpretation.", "Art appreciation depends only on the artist’s intention.", "Interpretation can be influenced by personal and cultural context.", "The artwork has no subject matter."], answer: 2 },
+            { q: "A viewer studies a painting’s arrangement, colors, and shapes without immediately deciding what story it tells. What is the viewer mainly examining?", options: ["Formal elements of the artwork", "The artist’s salary", "The work’s practical use", "The museum’s operating schedule"], answer: 0 },
+            { q: "A student explains that an artwork can have a visible subject and a deeper message about society. Which distinction is the student making?", options: ["Medium and technique", "Artist and artisan", "Balance and rhythm", "Subject and content"], answer: 3 },
+            { q: "A craft worker makes a wooden chair with carefully carved patterns. The chair is intended for everyday use as well as visual appeal. Which role best describes the maker?", options: ["Curator", "Artisan", "Film editor", "Art critic"], answer: 1 },
+            { q: "A painter creates a nonfunctional installation mainly to express an idea and explore aesthetic possibilities. Which role best fits the creator?", options: ["Artisan because every artwork is a useful object", "Curator because the work is displayed", "Artist because the work emphasizes creative and aesthetic expression", "Guild member because the work uses materials"], answer: 2 },
+            { q: "Several craftspeople who specialize in the same trade form an organized group with shared rules and responsibilities. What is this group called?", options: ["A guild", "A studio", "A gallery", "A production crew"], answer: 0 },
+            { q: "A museum employee researches an artwork’s history, selects pieces for an exhibit, and plans how visitors will view them. What is the employee’s role?", options: ["Artisan", "Camera operator", "Storyboard artist", "Art curator"], answer: 3 },
+            { q: "A painter uses a quiet room filled with sketches and tools to experiment and create new works. What is this workspace called?", options: ["Gallery", "Artist’s studio", "Guild hall", "Screening room"], answer: 1 },
+            { q: "A film team is writing the script, choosing locations, planning a budget, and preparing a storyboard before filming begins. Which stage is this?", options: ["Production", "Post-production", "Pre-production", "Exhibition"], answer: 2 },
+            { q: "A film crew is recording scenes and adjusting lighting and sound on set. Which stage is taking place?", options: ["Production", "Pre-production", "Post-production", "Distribution"], answer: 0 },
+            { q: "After filming, an editor arranges clips, corrects colors, and adds music and titles. Which stage is this?", options: ["Pre-production", "Casting", "Production", "Post-production"], answer: 3 },
+            { q: "A sculptor chooses clay for a work and uses a coiling method to build its shape. Which statement correctly identifies the two?", options: ["Clay is the technique; coiling is the medium.", "Clay is the medium; coiling is the technique.", "Both clay and coiling are media.", "Both clay and coiling are techniques."], answer: 1 },
+            { q: "A Filipino artist receives a national honor for significant contributions to Philippine arts. Which recognition is being described?", options: ["GAMABA only, which recognizes all contemporary artists", "A local guild certificate", "The Order of National Artist", "A curator’s exhibition award"], answer: 2 },
+            { q: "A traditional weaver is recognized for exceptional skill in a living community-based art tradition passed down through generations. Which award is most relevant?", options: ["Gawad sa Manlilikha ng Bayan (GAMABA)", "Order of National Artist for every craft worker", "A film production citation", "A museum curator’s award"], answer: 0 },
+            { q: "A designer repeats a curved line at regular intervals across a poster to create a sense of movement. Which principle is being used?", options: ["Contrast", "Proportion", "Emphasis", "Rhythm"], answer: 3 },
+            { q: "A pattern shows circles gradually increasing in size from left to right. What kind of rhythm is most clearly shown?", options: ["Random rhythm", "Progressive rhythm", "Alternating rhythm", "Regular rhythm"], answer: 1 },
+            { q: "A poster alternates red and blue shapes in a repeating sequence. Which rhythm type best fits the arrangement?", options: ["Progressive rhythm", "Random rhythm", "Alternating rhythm", "Flowing rhythm"], answer: 2 },
+            { q: "A room’s design uses related colors and similar shapes that complement one another. Which principle helps the parts feel compatible?", options: ["Harmony", "Emphasis", "Contrast", "Asymmetrical balance"], answer: 0 },
+            { q: "A designer arranges different elements so the entire poster feels like one complete, connected composition. Which principle is most directly shown?", options: ["Variety", "Contrast", "Rhythm", "Unity"], answer: 3 },
+            { q: "A magazine cover uses one large bright title while the remaining text is smaller and muted. Which principle makes the title stand out?", options: ["Proportion", "Emphasis", "Harmony", "Simplicity"], answer: 1 },
+            { q: "A poster places equal visual weight on both sides of its center using matching shapes. Which type of balance is shown?", options: ["Radial balance", "Asymmetrical balance", "Symmetrical balance", "Progressive balance"], answer: 2 },
+            { q: "A designer balances a large dark shape on one side with several smaller light shapes on the other. Which type of balance is this?", options: ["Asymmetrical balance", "Symmetrical balance", "Radial balance", "Alternating rhythm"], answer: 0 },
+            { q: "A circular ceiling design arranges decorative elements outward from a central point. Which type of balance is being used?", options: ["Symmetrical balance", "Asymmetrical balance", "Progressive balance", "Radial balance"], answer: 3 },
+            { q: "A student draws a human figure with arms and legs sized in relation to the body so the parts appear appropriately related. Which principle is involved?", options: ["Contrast", "Proportion", "Emphasis", "Variety"], answer: 1 },
+            { q: "A black shape is placed against a bright white background so the difference is immediately noticeable. Which principle is most evident?", options: ["Harmony", "Unity", "Contrast", "Simplicity"], answer: 2 },
+            { q: "A poster contains only a few necessary words and images, making the message easy to follow. Which design principle is most directly shown?", options: ["Simplicity", "Variety", "Rhythm", "Radial balance"], answer: 0 },
+            { q: "A safety poster uses clear wording and an organized layout so viewers can understand the instruction quickly. Which principle is emphasized?", options: ["Variety", "Harmony", "Proportion", "Clarity"], answer: 3 },
+            { q: "A designer combines rough textures, smooth shapes, bright colors, and muted tones to keep a composition from feeling repetitive. Which principle is shown?", options: ["Unity", "Variety", "Simplicity", "Symmetrical balance"], answer: 1 },
+            { q: "A painting uses related shades and repeated shapes, but also includes a single bright object that attracts attention. Which pair of principles is most directly present?", options: ["Simplicity and radial balance", "Proportion and clarity", "Harmony and emphasis", "Contrast and pre-production"], answer: 2 },
+            { q: "A student says a design is balanced only if both sides are identical. The teacher shows a composition with unequal elements that still feels stable. What is the teacher demonstrating?", options: ["Balance can be asymmetrical as well as symmetrical.", "Balance requires identical shapes on both sides.", "Only radial designs can be balanced.", "Harmony and balance mean exactly the same thing."], answer: 0 },
+            { q: "A gallery label explains that an artwork was made using stone, while the artist shaped it through carving. Which statement is correct?", options: ["Stone is the technique and carving is the medium.", "Both stone and carving are the subject.", "Stone and carving are both the artwork’s content.", "Stone is the medium and carving is the technique."], answer: 3 },
+            { q: "A student sees a portrait and identifies the person shown, then discusses how the pose suggests confidence. Which statement best separates the two observations?", options: ["Both observations describe only the medium.", "The person is the subject, while confidence is part of the content.", "Confidence is the medium, while the person is the technique.", "The person is the principle of design, while confidence is the subject."], answer: 1 },
+            { q: "A community displays religious paintings during a celebration to communicate beliefs and devotion. Which purpose of art is most directly served?", options: ["Creating a film storyboard", "Recording only the artist’s materials", "Expressing religious values", "Showing asymmetrical balance"], answer: 2 },
+            { q: "A photographer creates a series of images showing ordinary workers’ daily lives to reveal social realities. Which purpose of art is most directly suggested?", options: ["Revealing truth", "Providing only decoration", "Creating radial balance", "Showing a production schedule"], answer: 0 },
+            { q: "A sculptor creates a memorial statue of a respected community leader so people will continue to remember them. Which purpose is most directly shown?", options: ["Creating variety", "Providing a workspace", "Making a functional tool", "Immortalizing a person"], answer: 3 },
+            { q: "A student compares a handmade decorative bowl with a painting made for aesthetic expression. Which statement best distinguishes artisan from artist?", options: ["An artisan always creates nonfunctional objects.", "An artisan often makes useful crafted objects, while an artist may focus on creative expression.", "An artist must work in a museum, while an artisan must work at home.", "An artist uses no techniques, while an artisan uses no imagination."], answer: 1 },
+            { q: "A student argues that an artwork must look realistic to be meaningful. The instructor shows an abstract work that communicates anxiety through color and form. What does this example support?", options: ["Art must copy nature exactly.", "Only representational art can express emotion.", "Art can communicate through forms that do not copy recognizable objects.", "Abstract work is not considered art."], answer: 2 },
+            { q: "A film director reviews a storyboard and changes the planned sequence before the crew begins recording. Which activity is taking place?", options: ["Planning during pre-production", "Color correction after filming", "Editing completed footage", "Exhibiting the finished film"], answer: 0 },
+            { q: "A student organizes an exhibition by researching artists, selecting works, writing interpretive labels, and arranging the display. Which role is the student performing?", options: ["Artisan", "Film actor", "Studio assistant only", "Curator"], answer: 3 },
+            { q: "A design uses repeated shapes to guide the viewer’s eyes across the page, while the shapes gradually become smaller. Which principle and type best describe it?", options: ["Harmony and symmetrical balance", "Rhythm and progressive rhythm", "Contrast and radial balance", "Unity and simplicity"], answer: 1 },
+            { q: "A student looks at an artwork and says, “I enjoy its beauty even though I do not need it for anything.” Which idea does this response reflect?", options: ["The practical purpose of an artisan’s craft", "The film’s post-production stage", "Kant’s disinterested judgment", "The subject matter of the artwork"], answer: 2 },
+            { q: "A designer notices that every element in a poster is different, but the composition still feels connected because the elements support one main idea. Which principle best explains this overall feeling?", options: ["Unity", "Randomness", "Imbalance", "Pre-production"], answer: 0 },
+            { q: "A student says art is only something beautiful. The teacher explains that art may also preserve memories, express beliefs, communicate emotions, or reveal ideas. Which understanding is the teacher emphasizing?", options: ["Art is valuable only when decorative.", "Art must be made for sale.", "Art is limited to painting and sculpture.", "Art can serve many purposes beyond beauty."], answer: 3 }
+        ];
+
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let userAnswers = {};
+
+        // Shuffle function (Fisher-Yates / random sort)
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        // Initialize Quiz with Automatic Shuffling on Load/Refresh
+        function initQuiz() {
+            // Shuffle questions, and for each question, shuffle its options while tracking the correct answer index
+            questions = rawQuestions.map(item => {
+                let optionsWithIndex = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+                shuffleArray(optionsWithIndex);
+                let newCorrectIndex = optionsWithIndex.findIndex(opt => opt.originalIndex === item.answer);
+                return {
+                    q: item.q,
+                    options: optionsWithIndex.map(o => o.text),
+                    answer: newCorrectIndex
+                };
+            });
+            shuffleArray(questions);
+
+            currentIndex = 0;
+            score = 0;
+            userAnswers = {};
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById("questionCounter").innerText = `QUESTION ${currentIndex + 1} / ${questions.length}`;
+            document.getElementById("questionText").innerText = q.q;
+
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                
+                // If already answered, show the correct/incorrect state immediately
+                if (userAnswers[currentIndex] !== undefined) {
+                    btn.disabled = true;
+                    if (idx === q.answer) {
+                        btn.classList.add("correct");
+                    } else if (idx === userAnswers[currentIndex]) {
+                        btn.classList.add("incorrect");
+                    }
+                } else {
+                    btn.onclick = () => selectOption(idx);
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById("prevBtn").disabled = currentIndex === 0;
+            document.getElementById("nextBtn").innerText = currentIndex === questions.length - 1 ? "Finish Quiz ➔" : "Next →";
+        }
+
+        function selectOption(selectedIndex) {
+            const q = questions[currentIndex];
+            userAnswers[currentIndex] = selectedIndex;
+
+            const buttons = document.getElementById("optionsContainer").children;
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+                if (i === q.answer) {
+                    buttons[i].classList.add("correct");
+                } else if (i === selectedIndex) {
+                    buttons[i].classList.add("incorrect");
+                }
+            }
+
+            if (selectedIndex === q.answer) {
+                score++;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quizContainer").style.display = "none";
+            const resultScreen = document.getElementById("resultScreen");
+            resultScreen.style.display = "block";
+
+            document.getElementById("scoreDisplay").innerText = `Your Score: ${score} / ${questions.length} (${Math.round((score/questions.length)*100)}%)`;
+            
+            let motivation = "";
+            const percentage = (score / questions.length) * 100;
+            if (percentage >= 80) {
+                motivation = "🌟 Outstanding work! You have mastered the core principles of Art Appreciation. Keep that brilliance shining as you step into your next challenge!";
+            } else if (percentage >= 50) {
+                motivation = "👍 Good effort! You have a solid grasp of the fundamentals, but a little more review will make you unstoppable. Keep pushing forward!";
+            } else {
+                motivation = "💡 Don't worry! Every review session builds your knowledge. Take a deep breath, refresh the page to try again, and watch your confidence grow!";
+            }
+            document.getElementById("motivationText").innerText = motivation;
+
+            // Send score to Google Sheets via Apps Script function
+            sendQuizResult(score, questions.length);
+        }
+
+        // Run initialization on page load
+        window.onload = initQuiz;
+    </script>
+
+    <!-- Background Music Autoplay Handler -->
+    <script>
+        const bgMusic = document.getElementById("bgMusic");
+        bgMusic.volume = 0.4;
+
+        window.addEventListener("load", () => {
+            bgMusic.play().catch(() => {
+                const startOnInteraction = () => {
+                    bgMusic.play().catch(() => {});
+                    document.removeEventListener("click", startOnInteraction);
+                    document.removeEventListener("keydown", startOnInteraction);
+                };
+                document.addEventListener("click", startOnInteraction, { once: true });
+                document.addEventListener("keydown", startOnInteraction, { once: true });
+            });
+        });
+    </script>
+</body>
+</html>
