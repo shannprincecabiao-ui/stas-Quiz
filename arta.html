@@ -467,35 +467,13 @@
 
         </section>
 
-        <!-- Background music controls -->
-        <section class="music-panel">
-            <div class="music-info">
-                <div class="music-icon">🎵</div>
-                <div>
-                    <h3>BACKGROUND MUSIC</h3>
-                    <p id="musicStatus">ARTA Reviewer • Music off</p>
-                </div>
-            </div>
-
-            <button
-                class="music-button"
-                id="musicToggle"
-                type="button"
+        <!-- Automatic Background Music -->
+        <audio id="bgMusic" autoplay loop preload="auto">
+            <source
+                src="https://shannprincecabiao-ui.github.io/stas-Quiz/music/purity.mp3"
+                type="audio/mpeg"
             >
-                ▶ PLAY MUSIC
-            </button>
-        </section>
-
-        <!-- YouTube player -->
-        <div class="player-wrap hidden" id="playerWrap">
-            <iframe
-                id="musicPlayer"
-                title="ARTA Reviewer Background Music"
-                src="about:blank"
-                allow="autoplay; encrypted-media"
-                referrerpolicy="strict-origin-when-cross-origin"
-            ></iframe>
-        </div>
+        </audio>
 
     </main>
 
@@ -504,42 +482,25 @@
     </footer>
 
     <script>
-        const videoId = "Lox_jyvBBEk";
+        const bgMusic = document.getElementById("bgMusic");
 
-        const player = document.getElementById("musicPlayer");
-        const playerWrap = document.getElementById("playerWrap");
-        const musicToggle = document.getElementById("musicToggle");
-        const musicStatus = document.getElementById("musicStatus");
+        // Start at a comfortable volume and attempt autoplay.
+        bgMusic.volume = 0.4;
 
-        let isPlaying = false;
+        // Browsers may block autoplay with sound until the visitor interacts.
+        window.addEventListener("load", () => {
+            bgMusic.play().catch(() => {
+                // Autoplay was blocked by the browser.
+                // Playback can begin after the visitor interacts with the page.
+                const startOnInteraction = () => {
+                    bgMusic.play().catch(() => {});
+                    document.removeEventListener("click", startOnInteraction);
+                    document.removeEventListener("keydown", startOnInteraction);
+                };
 
-        function playMusic() {
-            player.src =
-                "https://www.youtube.com/embed/" + videoId +
-                "?autoplay=1&loop=1&playlist=" + videoId +
-                "&controls=1&rel=0";
-
-            playerWrap.classList.remove("hidden");
-
-            isPlaying = true;
-            musicToggle.textContent = "❚❚ PAUSE MUSIC";
-            musicStatus.textContent = "ARTA Reviewer • Music on";
-        }
-
-        function pauseMusic() {
-            player.src = "about:blank";
-
-            isPlaying = false;
-            musicToggle.textContent = "▶ PLAY MUSIC";
-            musicStatus.textContent = "ARTA Reviewer • Music off";
-        }
-
-        musicToggle.addEventListener("click", () => {
-            if (isPlaying) {
-                pauseMusic();
-            } else {
-                playMusic();
-            }
+                document.addEventListener("click", startOnInteraction, { once: true });
+                document.addEventListener("keydown", startOnInteraction, { once: true });
+            });
         });
     </script>
 
